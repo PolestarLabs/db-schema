@@ -5,7 +5,6 @@ const utils = require("../utils.js");
 
 const { Mixed } = mongoose.Schema.Types;
 
-global.USERCACHE = new Map();
 
 const UserSchema = new mongoose.Schema({
   id: { type: String, required: true, index: { unique: true } },
@@ -151,7 +150,6 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.pre(/^update/, function () {
   this.update({}, { $set: { lastUpdated: new Date() } });
-  USERCACHE.delete(this.id);
 });
 
 UserSchema.methods.addItem = function receiveItem(itemId, amt = 1) {
@@ -246,8 +244,7 @@ MODEL.cat = "users";
 MODEL.check = utils.dbChecker;
 MODEL.set = utils.dbSetter;
 MODEL.get = function (query, project, avoidNew) {
-  const userFromCache = USERCACHE.get(query.id || query);
-  const userFromDatabase = new Promise(async (resolve) => {
+  return new Promise(async (resolve) => {
     if (["string", "number"].includes(typeof query)) {
       query = { id: query.toString() };
     }
@@ -257,13 +254,9 @@ MODEL.get = function (query, project, avoidNew) {
     if (!data && !!this.cat) return resolve(await this.new(PLX[this.cat].find((u) => u.id === query.id)));
     if (data === null) return resolve(null);// return resolve( this.new(PLX.users.find(u=>u.id === query.id)) );
 
-    USERCACHE.set(data.id, data);
-
     return resolve(data);
   });
 
-  if (userFromCache) return userFromCache;
-  return userFromDatabase;
 },
 MODEL.getFull = utils.dbGetterFull;
 
