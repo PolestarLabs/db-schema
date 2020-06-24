@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://gitlab.com/PolestarLabs/database_schema/issues"
   },
-  "homepage": "https://gitlab.com/PolestarLabs/database_schema#README"
+  "homepage": "https://gitlab.com/PolestarLabs/database_schema#README",
+  "dependencies": {
+    "mongoose": "^5.9.20"
+  }
 }
