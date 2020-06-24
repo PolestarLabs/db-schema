@@ -27,7 +27,7 @@ module.exports = {
       }
       if (!project) project = { _id: 0 };
       return this.findOne(query, project).lean().exec().then((data) => {
-        if (!data && !!this.cat) return this.new(PLX[this.cat].find((u) => u.id === query.id).then(resolve));
+        if (!data && !!this.cat && process.env.name === "POLARIS") return this.new(PLX[this.cat].find((u) => u.id === query.id).then(resolve));
         if (data === null) return resolve(null);// return resolve( this.new(PLX.users.find(u=>u.id === query.id)) );
         return resolve(data);
       });
