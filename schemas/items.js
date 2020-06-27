@@ -30,6 +30,7 @@ const Item = new Schema({
   exclusive: String,
   public: Boolean,
   materials: Array,
+  typeCraft: Array,
   gemcraft: {
     rubines: Number,
     jades: Number,
