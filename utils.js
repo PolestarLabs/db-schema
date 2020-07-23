@@ -26,7 +26,7 @@ module.exports = {
         query = { id: query.toString() };
       }
       if (!project) project = { _id: 0 };
-      return this.findOne(query, project).lean().exec().then((data) => {
+      return this.findOne(query, project).lean().then((data) => {
         if (!data && !!this.cat && PLX[this.cat].size) return this.new(PLX[this.cat].find((u) => u.id === query.id).then(resolve));
         if (data === null) return resolve(null);// return resolve( this.new(PLX.users.find(u=>u.id === query.id)) );
         return resolve(data);
