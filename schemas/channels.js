@@ -23,6 +23,7 @@ const ChannelSchema = new mongoose.Schema({
     DROPS: { type: Boolean, default: true },
     BYPASS: { type: Boolean, default: false },
     DISABLED: Array,
+    ENABLED: Array,
     statistics: Mixed,
   },
 }, { strict: false });
