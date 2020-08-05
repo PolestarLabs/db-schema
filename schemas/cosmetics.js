@@ -28,6 +28,7 @@ const cosmetics = Schema({
   exclusive: String,
   public: Boolean,
   filter: String,
+  expires: Number,
 }, { strict: false });
 
 const MODEL = mongoose.model("cosmetics", cosmetics, "cosmetics");
