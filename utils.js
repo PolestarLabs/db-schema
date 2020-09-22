@@ -27,8 +27,12 @@ module.exports = {
       }
       if (!project) project = { _id: 0 };
       return this.findOne(query, project).lean().then((data) => {
-        if (!data && !!this.cat && PLX[this.cat].size) return this.new(PLX[this.cat].find((u) => u.id === query.id).then(resolve));
-        if (data === null) return resolve(null);// return resolve( this.new(PLX.users.find(u=>u.id === query.id)) );
+        try{
+          if (!data && !!this.cat && PLX[this.cat].size) return this.new(PLX[this.cat].find((u) => u.id === query.id)).then(resolve);
+          if (data === null) return resolve(null);// return resolve( this.new(PLX.users.find(u=>u.id === query.id)) );
+        }catch(err){
+            
+        }
         return resolve(data);
       });
     });
@@ -42,7 +46,7 @@ module.exports = {
       if (!project) project = { _id: 0 };
       return this.findOne(query, project).then((data) => {
         try{
-          if (!data && !!this.cat && PLX[this.cat] && typeof this.cat === 'function') return this.new(PLX[this.cat].find((u) => u.id === query.id).then(resolve));
+          if (!data && !!this.cat && PLX[this.cat] ) return this.new(PLX[this.cat].find((u) => u.id === query.id)).then(resolve);
           if (data === null) return resolve(null);// return resolve( this.new(PLX.users.find(u=>u.id === query.id)) );
         }catch(err){
           
