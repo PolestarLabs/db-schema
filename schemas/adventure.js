@@ -28,7 +28,7 @@ LOCATIONS.traceRoutes = (start,depth,options = {} ) => {
     // "exploring" will be used for places that cant be landed but can be explored from adjacent;
 
     const matchQuery = {"dest.id": { $ne: start }};
-    if(soft) matchQuery["dest.jumps"] = depth;
+    if(!soft) matchQuery["dest.jumps"] = depth;
     if(relocating) matchQuery["dest.canSettle"] = true; 
     if(exploring) matchQuery["dest.canExplore"] = true;
 
