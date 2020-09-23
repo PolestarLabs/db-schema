@@ -17,7 +17,7 @@ const Location = new Schema({
     canSettle: Boolean,
 });
 
-const LOCATIONS = mongoose.model("Adventure_Locations", Location, "Adventure_Locations");
+const LOCATIONS = mongoose.model("AdventureLocations", Location, "AdventureLocations");
 
 LOCATIONS.traceRoutes = (start,depth,options = {} ) => {
 
@@ -31,7 +31,7 @@ LOCATIONS.traceRoutes = (start,depth,options = {} ) => {
             {$match: {id: start}},
             {
                 "$graphLookup": {
-                    from: "Adventure_Locations",
+                    from: "AdventureLocations",
                     startWith: start,
                     connectFromField: "id",
                     connectToField: "connects",
