@@ -22,6 +22,7 @@ const LOCATIONS = mongoose.model("AdventureLocations", Location, "AdventureLocat
 LOCATIONS.traceRoutes = (start,depth,options = {} ) => {
 
     const  relocating = options.relocating || true;
+    const  soft       = options.soft       || false;
     const  exploring  = options.exploring  || false;
 
     // "exploring" will be used for places that cant be landed but can be explored from adjacent;
@@ -45,7 +46,7 @@ LOCATIONS.traceRoutes = (start,depth,options = {} ) => {
                 $match: {
                     "dest.id": { $ne: start },
                     "dest.canSettle": relocating,
-                    "dest.jumps": depth
+                    "dest.jumps": soft ? undefined : depth
                 }
             },
             {$project: {id: 0}},
