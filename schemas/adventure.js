@@ -21,9 +21,9 @@ const LOCATIONS = mongoose.model("AdventureLocations", Location, "AdventureLocat
 
 LOCATIONS.traceRoutes = (start,depth,options = {} ) => {
 
-    const  relocating = options.relocating || true;
-    const  soft       = options.soft       || false;
-    const  exploring  = options.exploring  || false;
+    const  relocating = options.relocating ?? true;
+    const  soft       = options.soft       ?? false;
+    const  exploring  = options.exploring  ?? false;
 
     // "exploring" will be used for places that cant be landed but can be explored from adjacent;
 
