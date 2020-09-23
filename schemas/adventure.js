@@ -1,0 +1,73 @@
+
+const mongoose = require("mongoose");
+
+const { Schema } = mongoose;
+const utils = require("../utils.js");
+
+const { Mixed } = Schema.Types; // future use
+
+const Location = new Schema({
+    id: { type: String, required: true, index: { unique: true } },
+    type: String,
+    name: String,
+    description: String,
+    landmark: String,
+    connects: [String],
+    drops: Array,
+    canSettle: Boolean,
+});
+
+const LOCATIONS = mongoose.model("Adventure_Locations", Location, "Adventure_Locations");
+
+LOCATIONS.traceRoutes = (start,depth,options = {} ) => {
+
+    const  relocating = options.relocating || true;
+    const  exploring  = options.exploring  || false;
+
+    // "exploring" will be used for places that cant be landed but can be explored from adjacent;
+
+    return new Promise(resolve=>{        
+        LOCATIONS.aggregate([
+            {$match: {id: start}},
+            {
+                "$graphLookup": {
+                    from: "Adventure_Locations",
+                    startWith: start,
+                    connectFromField: "id",
+                    connectToField: "connects",
+                    as: "dest",
+                    maxDepth: depth,
+                    depthField: "jumps"
+                }
+            },
+            {$unwind: "$dest"},
+            {
+                $match: {
+                    "dest.id": { $ne: start },
+                    "dest.canSettle": relocating,
+                    "dest.jumps": depth
+                }
+            },
+            {$project: {id: 0}},
+            {
+                $group: {
+                    _id: "$dest.id",
+                    name: {$first: "$dest.name"},
+                    type: {$first: "$dest.type"},
+                    distance: {$first: "$dest.jumps"}
+                }
+            }
+        ]).then(res=> resolve(res))
+    })
+}
+
+Location.methods.isAdjacent = function isAdjacent(locationID) {
+    return this.connects.includes(locationID);
+}
+
+
+LOCATIONS.set = utils.dbSetter;
+LOCATIONS.get = utils.dbGetterFull;
+LOCATIONS.read = utils.dbGetter;
+
+module.exports = {LOCATIONS}; // Journeys will be here
