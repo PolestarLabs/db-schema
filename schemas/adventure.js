@@ -46,7 +46,7 @@ LOCATIONS.traceRoutes = (start,depth,options = {} ) => {
                 $match: {
                     "dest.id": { $ne: start },
                     "dest.canSettle": relocating,
-                    "dest.jumps": soft ? undefined : depth
+                    "dest.jumps": soft ? {$lte:depth} : depth
                 }
             },
             {$project: {id: 0}},
