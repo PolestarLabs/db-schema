@@ -27,6 +27,11 @@ LOCATIONS.traceRoutes = (start,depth,options = {} ) => {
 
     // "exploring" will be used for places that cant be landed but can be explored from adjacent;
 
+    const matchQuery = {"dest.id": { $ne: start }};
+    if(soft) matchQuery["dest.jumps"] = depth;
+    if(relocating) matchQuery["dest.canSettle"] = true; 
+    if(exploring) matchQuery["dest.canExplore"] = true;
+
     return new Promise(resolve=>{        
         LOCATIONS.aggregate([
             {$match: {id: start}},
@@ -42,13 +47,7 @@ LOCATIONS.traceRoutes = (start,depth,options = {} ) => {
                 }
             },
             {$unwind: "$dest"},
-            {
-                $match: {
-                    "dest.id": { $ne: start },
-                    "dest.canSettle": relocating,
-                    "dest.jumps": soft ? {$lte:depth} : depth
-                }
-            },
+            {$match: matchQuery},
             {$project: {id: 0}},
             {
                 $group: {
