@@ -178,8 +178,8 @@ UserSchema.methods.upCommend = function upCommend(USER, amt = 1) {
   });
 };
 
-UserSchema.methods.hasItem = function hasItem(itemId) {
-  return this.modules.inventory.find((itm) => itm.id == itemId)?.count >= 1;
+UserSchema.methods.hasItem = function hasItem(itemId,count=1) {
+  return this.modules.inventory.find((itm) => itm.id == itemId)?.count >= count;
 };
 
 UserSchema.methods.amtItem = function amountItem(itemId, search) {
