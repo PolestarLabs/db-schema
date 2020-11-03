@@ -16,6 +16,7 @@ const UserSchema = new mongoose.Schema({
 
   // PREMIUM
   switches: Mixed,
+  progression: Mixed,
   spdaily: Mixed,
   rewardsMonth: Number,
   rewardsClaimed: Boolean,
