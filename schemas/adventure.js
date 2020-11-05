@@ -111,4 +111,4 @@ LOCATIONS.read = utils.dbGetter;
 JOURNEYS.set = utils.dbSetter;
 JOURNEYS.get = utils.dbGetter;
 
-module.exports = {LOCATIONS}; // Journeys will be here
+module.exports = {LOCATIONS,JOURNEYS}; // Journeys will be here
