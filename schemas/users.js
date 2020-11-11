@@ -150,7 +150,7 @@ const UserSchema = new mongoose.Schema({
 }, { strict: false });
 
 UserSchema.pre(/^update/, function () {
-  this.constructor.update({}, { $set: { lastUpdated: new Date() } });
+  this.update({}, { $set: { lastUpdated: new Date() } });
 });
 
 /**
@@ -161,7 +161,7 @@ UserSchema.pre(/^update/, function () {
  */
 
 UserSchema.methods.addItem = function receiveItem(itemId, amt = 1,crafted=false) {
-  return this.constructor.updateOne(
+  return this.updateOne(
     { id: this.id },
     {$inc:{
       "modules.inventory.$[item].count": amt,
@@ -195,7 +195,7 @@ UserSchema.methods.modifyItems = function modifyItems(items) {
     })
   };
 
-  return this.constructor.updateOne(
+  return this.model("UserDB").updateOne(
     { id: this.id },
     {$inc: increments},
     {arrayFilters}
@@ -254,7 +254,7 @@ UserSchema.methods.amtItem = function amountItem(itemId, search) {
  * @param {number} [amt=1] EXP to add 
  */
 UserSchema.methods.addXP = function addXP(amt = 1) {
-  return this.constructor.updateOne({ id: this.id },{ $inc: { "modules.exp": amt } });
+  return this.model("UserDB").updateOne({ id: this.id },{ $inc: { "modules.exp": amt } });
 };
 
 /**
@@ -265,7 +265,7 @@ UserSchema.methods.addXP = function addXP(amt = 1) {
  */
 UserSchema.methods.incrementAttr = function incrementAttr(attr, amt = 1, upper = false) {
   const attrib = upper ? attr : `modules.${attr}`;
-  return this.constructor.updateOne({ id: this.id }, { $inc: { [attrib]: amt } });
+  return this.model("UserDB").updateOne({ id: this.id }, { $inc: { [attrib]: amt } });
 };
 
 const MODEL = mongoose.model("UserDB", UserSchema, "userdb");

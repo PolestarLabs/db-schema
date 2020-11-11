@@ -98,7 +98,7 @@ const ServerSchema = new mongoose.Schema({
 }, { strict: false });
 
 ServerSchema.pre(/^update/, function () {
-  this.constructor.update({}, { $set: { lastUpdated: new Date() } });
+  this.update({}, { $set: { lastUpdated: new Date() } });
 });
 
 const MODEL = mongoose.model("ServerDB", ServerSchema, "serverdb");
