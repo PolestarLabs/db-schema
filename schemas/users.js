@@ -153,9 +153,57 @@ UserSchema.pre(/^update/, function () {
   this.update({}, { $set: { lastUpdated: new Date() } });
 });
 
-UserSchema.methods.addItem = function receiveItem(itemId, amt = 1) {
-  const items = require("./items.js");
-  return items.receive(this.id, itemId, amt);
+/**
+ * 
+ * @param {string} itemId ID of the item
+ * @param {number} [amt=1] - Amount to add to inventory
+ * @param {boolean} [crafted=false] - Whether increment the CRAFTED counter or not
+ */
+
+UserSchema.methods.addItem = function receiveItem(itemId, amt = 1,crafted=false) {
+  return this.model("UserDB").updateOne(
+    { id: this.id },
+    {$inc:{
+      "modules.inventory.$[item].count": amt,
+      "modules.inventory.$[item].crafted": crafted ? amt : 0
+    }},
+    {arrayFilters: [
+      {"item.id":itemId}
+    ]}
+  );
+};
+
+/**
+ * 
+ * @param {array} items Array of items and counts
+ * @param {string} items.id  Item ID
+ * @param {number} items.count Item Amount
+ */
+
+
+UserSchema.methods.modifyItems = function modifyItems(items) {
+
+  const arrayFilters = [];
+  const increments = {};
+  
+  for (i = 0; i < items.length; i++){
+    arrayFilters.push({[`i${i}`]: items[i].id });
+    Object.keys(items[i]).forEach(key=>{
+      if (key !== "id"){
+        increments[`modules.inventory.$[i${i}].${key}`] = items[i][key];
+      }
+    })
+  };
+
+  return this.model("UserDB").updateOne(
+    { id: this.id },
+    {$inc: increments},
+    {arrayFilters}
+  );
+};
+
+UserSchema.methods.removeItem = function destroyItem(itemId, amt = 1) {
+  return UserSchema.methods.addItem(itemId,-amt)
 };
 
 UserSchema.methods.upCommend = function upCommend(USER, amt = 1) {
@@ -179,27 +227,45 @@ UserSchema.methods.upCommend = function upCommend(USER, amt = 1) {
   });
 };
 
+/**
+ * 
+ * @param {string} itemId ID of the item
+ * @param {number} [count=1] - Amount to check against user inventory 
+ * 
+ */
+
 UserSchema.methods.hasItem = function hasItem(itemId,count=1) {
   return this.modules.inventory.find((itm) => itm.id == itemId)?.count >= count;
 };
 
+/**
+ * 
+ * @param {string} itemId ID of the item
+ * @param {string} search - Unused, meant for softmatch in the future
+ */
 UserSchema.methods.amtItem = function amountItem(itemId, search) {
   // find solution for itemtype search
   // if(search)  return this.modules.inventory.find(itm=>itm.id == itemId)?.count || 0;
   return this.modules.inventory.find((itm) => itm.id == itemId)?.count || 0;
 };
 
-UserSchema.methods.removeItem = function destroyItem(itemId, amt = 1) {
-  const items = require("./items.js");
-  return items.consume(this.id, itemId, amt);
-};
+/**
+ * 
+ * @param {number} [amt=1] EXP to add 
+ */
 UserSchema.methods.addXP = function addXP(amt = 1) {
-  return this.update({}, { $inc: { "modules.exp": amt } });
+  return this.model("UserDB").updateOne({ id: this.id },{ $inc: { "modules.exp": amt } });
 };
 
+/**
+ * 
+ * @param {string} attr The attribute to be incremented.
+ * @param {number} [amt=1] Amount
+ * @param {bool} [upper=false] Whether the attribute is under "USERDATA.modules" or on the root of the document
+ */
 UserSchema.methods.incrementAttr = function incrementAttr(attr, amt = 1, upper = false) {
   const attrib = upper ? attr : `modules.${attr}`;
-  return this.model("UserDB").updateOne({ id: this.id }, { $inc: { [`modules.${attr}`]: amt } });
+  return this.model("UserDB").updateOne({ id: this.id }, { $inc: { [attrib]: amt } });
 };
 
 const MODEL = mongoose.model("UserDB", UserSchema, "userdb");
