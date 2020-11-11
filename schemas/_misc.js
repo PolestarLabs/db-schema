@@ -194,7 +194,7 @@ paidroles.new = (payload) => {
 const global = mongoose.model("Global", Globals, "globals");
 global.set = function (alter) {
   if (!typeof alter) console.warn("Invalid Alter Object");
-  return this.updateOne({ id: 0 }, alter);
+  return this.constructor.updateOne({ id: 0 }, alter);
 };
 global.get = async function () {
   try {

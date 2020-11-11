@@ -29,7 +29,7 @@ const ChannelSchema = new mongoose.Schema({
 }, { strict: false });
 
 ChannelSchema.pre(/^update/, function () {
-  this.update({}, { $set: { lastUpdated: new Date() } });
+  this.constructor.update({}, { $set: { lastUpdated: new Date() } });
 });
 
 const MODEL = mongoose.model("ChannelDB", ChannelSchema, "channeldb");
