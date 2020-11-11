@@ -161,6 +161,7 @@ UserSchema.pre(/^update/, function () {
  */
 
 UserSchema.methods.addItem = function receiveItem(itemId, amt = 1,crafted=false) {
+  console.log(this.constructor.updateOne)
   return this.updateOne(
     { id: this.id },
     {$inc:{
