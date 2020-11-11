@@ -161,6 +161,10 @@ UserSchema.pre(/^update/, function () {
  */
 
 UserSchema.methods.addItem = function receiveItem(itemId, amt = 1,crafted=false) {
+
+  let unowned_item =  this.modules.inventory.find((itm) => itm.id == itemId);
+  if(!unowned_item) return this.constructor.updateOne({id:this.id},{$addToSet:{'modules.inventory':{id: itemId, count: amt, crafted: crafted?amt:0}}});
+
   return this.constructor.updateOne(
     { id: this.id },
     {$inc:{
@@ -181,7 +185,7 @@ UserSchema.methods.addItem = function receiveItem(itemId, amt = 1,crafted=false)
  */
 
 
-UserSchema.methods.modifyItems = function modifyItems(items) {
+UserSchema.methods.modifyItems = async function modifyItems(items) {
 
   const arrayFilters = [];
   const increments = {};
@@ -195,11 +199,23 @@ UserSchema.methods.modifyItems = function modifyItems(items) {
     })
   };
 
-  return this.constructor.updateOne(
+  let unowned_items =  this.modules.inventory.filter((itm) => !(items.map(i=>i.id).includes(itm.id)) );
+  if(unowned_items.length){
+    await this.constructor.updateOne({id:this.id},{
+      $addToSet:{
+        'modules.inventory': {
+          $each: unowned_items.map(newItem=> ({id: newItem.id, count: 0}) )
+        }
+      }
+    });
+  }
+
+  const res = await this.constructor.updateOne(
     { id: this.id },
     {$inc: increments},
     {arrayFilters}
   );
+  return res;
 };
 
 UserSchema.methods.removeItem = function destroyItem(itemId, amt = 1) {
