@@ -161,7 +161,7 @@ UserSchema.pre(/^update/, function () {
  */
 
 UserSchema.methods.addItem = function receiveItem(itemId, amt = 1,crafted=false) {
-  return this.model("UserDB").updateOne(
+  return this.updateOne(
     { id: this.id },
     {$inc:{
       "modules.inventory.$[item].count": amt,
