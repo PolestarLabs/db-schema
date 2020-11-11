@@ -195,7 +195,7 @@ UserSchema.methods.modifyItems = function modifyItems(items) {
     })
   };
 
-  return this.model("UserDB").updateOne(
+  return this.updateOne(
     { id: this.id },
     {$inc: increments},
     {arrayFilters}
@@ -254,7 +254,7 @@ UserSchema.methods.amtItem = function amountItem(itemId, search) {
  * @param {number} [amt=1] EXP to add 
  */
 UserSchema.methods.addXP = function addXP(amt = 1) {
-  return this.model("UserDB").updateOne({ id: this.id },{ $inc: { "modules.exp": amt } });
+  return this.updateOne({ id: this.id },{ $inc: { "modules.exp": amt } });
 };
 
 /**
@@ -265,7 +265,7 @@ UserSchema.methods.addXP = function addXP(amt = 1) {
  */
 UserSchema.methods.incrementAttr = function incrementAttr(attr, amt = 1, upper = false) {
   const attrib = upper ? attr : `modules.${attr}`;
-  return this.model("UserDB").updateOne({ id: this.id }, { $inc: { [attrib]: amt } });
+  return this.updateOne({ id: this.id }, { $inc: { [attrib]: amt } });
 };
 
 const MODEL = mongoose.model("UserDB", UserSchema, "userdb");
