@@ -50,30 +50,25 @@ MODEL.cat = async function (cat) {
   return (await MODEL.findOne({ type: cat }));
 };
 
-const itemOperation = (user, item, amt) => {
-  if (user && user.user && user.item && user.amt) {
-    user = user.user;
-    item = user.item;
-    amt = user.amt;
-  }
-  const userDB = require("./users.js");
-  return new Promise(async (resolve) => {
-    await userDB
-      .updateOne({ id: user.id || user, "modules.inventory.id": { $ne: item } }, { $addToSet: { "modules.inventory": { id: item } } }).then((y) => {
-        userDB.updateOne({ id: user.id || user, "modules.inventory.id": item }, { //
-          $inc: { "modules.inventory.$.count": amt },
-        }).then((res) => resolve(res));
-      });
-  });
+const itemOperation = (user, itemId, field, amt=1) => {
+  return this.model("UserDB").updateOne(
+    { id: user.id||user },
+    {$inc:{
+      ["modules.inventory.$[item]."+field]: amt
+    }},
+    {arrayFilters: [
+      {"item.id":itemId}
+    ]}
+  );
 };
 
 MODEL.consume = function (user, item, amt = 1) {
-  return itemOperation(user, item, -amt);
+  return itemOperation(user, item, "count", -amt);
 };
 MODEL.destroy = MODEL.consume;
 
 MODEL.receive = function (user, item, amt = 1) {
-  return itemOperation(user, item, amt);
+  return itemOperation(user, item, "count", amt);
 };
 MODEL.add = MODEL.receive;
 
