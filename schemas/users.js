@@ -160,13 +160,13 @@ UserSchema.pre(/^update/, function () {
  * @param {boolean} [crafted=false] - Whether increment the CRAFTED counter or not
  */
 
-UserSchema.methods.addItem = function receiveItem(itemId, amt = 1,crafted=false) {
+function addItem(USERDATA,itemId, amt = 1,crafted=false) {
 
-  let unowned_item =  this.modules.inventory.find((itm) => itm.id == itemId);
-  if(!unowned_item) return this.constructor.updateOne({id:this.id},{$addToSet:{'modules.inventory':{id: itemId, count: amt, crafted: crafted?amt:0}}});
+  let unowned_item =  USERDATA.modules.inventory.find((itm) => itm.id == itemId);
+  if(!unowned_item) return USERDATA.constructor.updateOne({id:USERDATA.id},{$addToSet:{'modules.inventory':{id: itemId, count: amt, crafted: crafted?amt:0}}});
 
-  return this.constructor.updateOne(
-    { id: this.id },
+  return USERDATA.constructor.updateOne(
+    { id: USERDATA.id },
     {$inc:{
       "modules.inventory.$[item].count": amt,
       "modules.inventory.$[item].crafted": crafted ? amt : 0
@@ -176,6 +176,10 @@ UserSchema.methods.addItem = function receiveItem(itemId, amt = 1,crafted=false)
     ]}
   );
 };
+
+UserSchema.methods.addItem = function(item,amt,crafted){
+  return addItem(this,item,amt,crafted)
+}
 
 /**
  * 
@@ -218,9 +222,9 @@ UserSchema.methods.modifyItems = async function modifyItems(items) {
   return res;
 };
 
-UserSchema.methods.removeItem = function destroyItem(itemId, amt = 1) {
-  return UserSchema.methods.addItem(itemId,-amt)
-};
+UserSchema.methods.addItem = function(item,amt=1,crafted){
+  return addItem(this,item,-amt,crafted)
+}
 
 UserSchema.methods.upCommend = function upCommend(USER, amt = 1) {
   const miscDB = require("./_misc.js");
