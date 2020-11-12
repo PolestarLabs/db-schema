@@ -32,9 +32,9 @@ const Item = new Schema({
   materials: Array,
   typeCraft: Array,
   gemcraft: {
-    rubines: Number,
-    jades: Number,
-    sapphires: Number,
+    RBN: Number,
+    JDE: Number,
+    SPH: Number,
   },
 
 }, { strict: false });
