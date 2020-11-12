@@ -159,6 +159,9 @@ module.exports = async function ({hook,	url, options}) {
 		db.on("error", console.error.bind(console, "• ".red + "DB connection error:".red));
 		db.once("open", async () => {
 			console.log("• ".green, "DB connection successful");
+			Schemas.collections = Schemas.users.db.collections;
+			Schemas.raw = Schemas.users.db;
+
 			return resolve(Schemas);
 		});		
 		db.on("reconnected", () => {
