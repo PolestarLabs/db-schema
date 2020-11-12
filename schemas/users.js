@@ -222,7 +222,7 @@ UserSchema.methods.modifyItems = async function modifyItems(items) {
   return res;
 };
 
-UserSchema.methods.addItem = function(item,amt=1,crafted){
+UserSchema.methods.removeItem = function(item,amt=1,crafted){
   return addItem(this,item,-amt,crafted)
 }
 
