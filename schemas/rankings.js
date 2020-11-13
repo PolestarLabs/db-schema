@@ -6,7 +6,7 @@ const utils = require("../utils.js");
 const { Mixed } = Schema.Types;
 
 const Ranking = new Schema({
-  user: {type: String, index: true},
+  id: {type: String, index: true},
   type: {type: String, index: true},
   points: {type: Number, index: true},
   data: Mixed
