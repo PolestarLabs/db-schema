@@ -71,7 +71,7 @@ const UserSchema = new mongoose.Schema({
     achievements: Array,
 
     // FINANCES
-    SPH: { type: Number, default: 0 },
+    SPH: { type: Number, default: 0 ,index: true},
     RBN: { type: Number, default: 500, index: true },
     JDE: { type: Number, default: 2500, index: true },
     coins: { type: Number, default: 0 },
