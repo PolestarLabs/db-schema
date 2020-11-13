@@ -13,6 +13,7 @@ const Schemas = {
 	channelDB,
 	svMetaDB,
 	localranks: require("./schemas/localranks.js"),
+	rankings: require("./schemas/rankings.js"),
 	responses: require("./schemas/responses.js"),
 	miscDB, 
 		buyables: miscDB.buyables,
