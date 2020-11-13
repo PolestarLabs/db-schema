@@ -9,6 +9,7 @@ const Ranking = new Schema({
   id: {type: String, index: true},
   type: {type: String, index: true},
   points: {type: Number, index: true},
+  timestamp: {type: Number},
   data: Mixed
 }, { strict: false });
 
