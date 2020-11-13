@@ -5,7 +5,7 @@ const utils = require("../utils.js");
 
 /* AIRPORTS */
 const airports = new Schema({
-  id: { type: String, required: true, index: true },
+  id: { type: String, required: true, index: {unique:true} },
   name: String,
   tier: Number,
   passengers: Number,
@@ -15,7 +15,7 @@ const AIRPORT = mongoose.model("Airports", airports, "Airports")
 
 /* AIRLINES */
 const airline = new Schema({
-  id: { type: String, required: true, index: true },
+  id: { type: String, required: true, index: {unique:true} },
   user: String,
   airlineName: String,
 })
@@ -92,4 +92,4 @@ AIRPORT.new = async (id, name, passengers, tier, slotAmount) => {
   return airport.save();
 }
 
-module.exports = { AIRLINES, AIRLINESLOTS, AIRPORT };
+module.exports = { AIRLINES, SLOTS: AIRLINESLOTS, AIRPORT };
