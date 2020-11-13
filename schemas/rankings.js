@@ -12,7 +12,7 @@ const Ranking = new Schema({
   data: Mixed
 }, { strict: false });
 
-Ranking.index({ type: 1, user: -1}, { unique: true });
+Ranking.index({ type: 1, id: -1}, { unique: true });
 
 const RANKINGS = mongoose.model("Rankings", Ranking, "Rankings");
 
