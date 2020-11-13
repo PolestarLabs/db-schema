@@ -39,7 +39,7 @@ const Schemas = {
 	mutes: require("./schemas/mutes.js"),
 	temproles: require("./schemas/temproles.js"),
 	promocodes: require("./schemas/promocodes.js"),
-
+  airlines: require("./schemas/airlines.js"),
 	users: userDB,
 	servers: serverDB,
 	guilds: serverDB,
