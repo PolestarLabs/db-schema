@@ -31,7 +31,7 @@ module.exports = {
           if (!data && !!this.cat && PLX[this.cat].size) return this.new(PLX[this.cat].find((u) => u.id === query.id)).then(resolve);
           if (data === null) {
             if(PLX)
-              return resolve( this.new(PLX.users.find(u=>u.id === query.id)) );
+               this.new(PLX.users.find(u=>u.id === query.id)).then(resolve);
             else
               return resolve(null);
           }
