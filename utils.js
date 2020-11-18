@@ -31,12 +31,15 @@ module.exports = {
           if (!data && !!this.cat && PLX[this.cat].size) return this.new(PLX[this.cat].find((u) => u.id === query.id)).then(resolve);
           if (data === null) {
             if(PLX)
-               this.new(PLX.users.find(u=>u.id === query.id)).then(resolve);
+               this.new(PLX.users.find(u=>u.id === query.id)).then(res=>{
+                 console.log(res);
+                 resolve(res)
+               });
             else
               return resolve(null);
           }
         }catch(err){
-            
+            console.error(err)
         }
         return resolve(data);
       });
