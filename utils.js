@@ -21,32 +21,20 @@ module.exports = {
   },
 
   dbGetter(query, project) {
-    return new Promise(async resolve => {
+    return new Promise((resolve) => {
       if (["string", "number"].includes(typeof query)) {
         query = { id: query.toString() };
       }
       if (!project) project = { _id: 0 };
-      data = await this.findOne(query, project).lean();
-      try{
-        if (!data && !!this.cat && PLX[this.cat].size) {
-          console.log(this.cat,"thiscat")
-          let newUser = this.new(PLX[this.cat].find((u) => u.id === query.id));
-          return resolve (newUser); 
-        };
-        if (data === null) {
-          if(PLX){
-            let newUser = this.new(PLX.users.find(u=>u.id === query.id))
-            console.log("New User".green,typeof newUser);
-            return resolve(newUser);
-          }
-          else
-            return resolve(null);
+      return this.findOne(query, project).lean().then((data) => {
+        try{
+          if (!data && !!this.cat && PLX[this.cat].size) return this.new(PLX[this.cat].find((u) => u.id === query.id)).then(resolve);
+          if (data === null) return resolve(null);// return resolve( this.new(PLX.users.find(u=>u.id === query.id)) );
+        }catch(err){
+            
         }
-      }catch(err){
-          console.error(err,' User creation error '.bgRed)
-      }
-      return resolve(data);
-      
+        return resolve(data);
+      });
     });
   },
 
@@ -56,20 +44,10 @@ module.exports = {
         query = { id: query.toString() };
       }
       if (!project) project = { _id: 0 };
-      return this.findOne(query, project).then((data) => {
-        try{
-          if (!data && !!this.cat && PLX[this.cat] ) return this.new(PLX[this.cat].find((u) => u.id === query.id)).then(resolve);
-          if (data === null) {
-            if(PLX)
-              return resolve( this.new(PLX.users.find(u=>u.id === query.id)) );
-            else
-              return resolve(null);
-          }
-        }catch(err){
-          
-        }
-        return resolve(data);
-      }).catch(e=>null);
+      const data = await this.findOne(query, project).lean().exec();
+
+      if (!data && !!this.cat) return resolve(await this.new(PLX[this.cat].find((u) => u.id === query.id)));
+      if (data === null)  return resolve( this.new(PLX.users.find(u=>u.id === query.id||query)) );
     });
   },
 }
