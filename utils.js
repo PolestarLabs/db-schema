@@ -39,7 +39,7 @@ module.exports = {
   },
 
   dbGetterFull(query, project) {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
       if (["string", "number"].includes(typeof query)) {
         query = { id: query.toString() };
       }
