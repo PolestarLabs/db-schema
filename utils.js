@@ -21,28 +21,28 @@ module.exports = {
   },
 
   dbGetter(query, project) {
-    return new Promise((resolve) => {
+    return new Promise(async resolve => {
       if (["string", "number"].includes(typeof query)) {
         query = { id: query.toString() };
       }
       if (!project) project = { _id: 0 };
-      return this.findOne(query, project).lean().then((data) => {
-        try{
-          if (!data && !!this.cat && PLX[this.cat].size) return this.new(PLX[this.cat].find((u) => u.id === query.id)).then(resolve);
-          if (data === null) {
-            if(PLX)
-               this.new(PLX.users.find(u=>u.id === query.id)).then(res=>{
-                 console.log(res);
-                 resolve(res)
-               });
-            else
-              return resolve(null);
+      data = await this.findOne(query, project).lean();
+      try{
+        if (!data && !!this.cat && PLX[this.cat].size) return this.new(PLX[this.cat].find((u) => u.id === query.id)).then(resolve);
+        if (data === null) {
+          if(PLX){
+            let newUser = this.new(PLX.users.find(u=>u.id === query.id))
+            console.log("New User".green,typeof newUser);
+            return resolve(newUser);
           }
-        }catch(err){
-            console.error(err)
+          else
+            return resolve(null);
         }
-        return resolve(data);
-      });
+      }catch(err){
+          console.error(err,' User creation error '.bgRed)
+      }
+      return resolve(data);
+      
     });
   },
 
