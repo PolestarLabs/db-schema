@@ -60,7 +60,7 @@ const UserSchema = new mongoose.Schema({
     repdaily: { type: Number, default: 0 },
 
     favcolor: { type: String, default: "#eb497b" },
-    inventory: { type: Array, default: ["lootbox_dev"] },
+    inventory: { type: Array, default: [{"lootbox_dev":1}] },
     bgID: { type: String, default: "5zhr3HWlQB4OmyCBFyHbFuoIhxrZY6l6" },
     sticker: String,
     bgInventory: { type: Array, default: ["5zhr3HWlQB4OmyCBFyHbFuoIhxrZY6l6"] },

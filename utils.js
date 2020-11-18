@@ -29,7 +29,12 @@ module.exports = {
       return this.findOne(query, project).lean().then((data) => {
         try{
           if (!data && !!this.cat && PLX[this.cat].size) return this.new(PLX[this.cat].find((u) => u.id === query.id)).then(resolve);
-          if (data === null) return resolve(null);// return resolve( this.new(PLX.users.find(u=>u.id === query.id)) );
+          if (data === null) {
+            if(PLX)
+              return resolve( this.new(PLX.users.find(u=>u.id === query.id)) );
+            else
+              return resolve(null);
+          }
         }catch(err){
             
         }
@@ -47,7 +52,12 @@ module.exports = {
       return this.findOne(query, project).then((data) => {
         try{
           if (!data && !!this.cat && PLX[this.cat] ) return this.new(PLX[this.cat].find((u) => u.id === query.id)).then(resolve);
-          if (data === null) return resolve(null);// return resolve( this.new(PLX.users.find(u=>u.id === query.id)) );
+          if (data === null) {
+            if(PLX)
+              return resolve( this.new(PLX.users.find(u=>u.id === query.id)) );
+            else
+              return resolve(null);
+          }
         }catch(err){
           
         }
