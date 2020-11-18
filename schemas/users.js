@@ -338,8 +338,7 @@ MODEL.get = function (query, project, avoidNew) {
     if (!typeof project) project = { _id: 0 };
     const data = await this.findOne(query, project).lean().exec();
 
-    if (!data && !!this.cat) return resolve(await this.new(PLX[this.cat].find((u) => u.id === query.id)));
-    if (data === null)  return resolve( this.new(PLX.users.find(u=>u.id === query.id||query)) );
+    if (data === null)  return resolve( this.new( await PLX.resolveUser(query.id||query) ) );
 
     return resolve(data);
   });
