@@ -102,6 +102,7 @@ const RelationShipModel = new Schema({
   id: String,
   users: Array,
   ring: String,
+  ringCollection:Array,
   initiative: String,
   since: Number,
   lovepoints: Number,
