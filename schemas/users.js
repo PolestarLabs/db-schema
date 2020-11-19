@@ -1,5 +1,3 @@
-const USER_QUEUE = [];
-
 const mongoose = require("mongoose");
 const utils = require("../utils.js");
 
@@ -304,8 +302,6 @@ MODEL.updateMeta = (U) => new Promise(async (resolve) => MODEL.updateOne({ id: U
 
 MODEL.new = (userDATA) => {
   if (!userDATA) return;
-  if (USER_QUEUE.includes(userDATA.id)) return;
-  USER_QUEUE.push(userDATA.id);
 
   return new Promise((resolve) => {
     MODEL.findOne({ id: userDATA.id }, (err, newUser) => {
@@ -338,7 +334,7 @@ MODEL.get = function (query, project, avoidNew) {
     if (!typeof project) project = { _id: 0 };
     const data = await this.findOne(query, project).lean().exec();
 
-    if (data === null)  return resolve( this.new( await PLX.resolveUser(query.id||query) ) );
+    if (data === null)  return resolve( this.new( await PLX.resolveUser?.(query.id||query) ) );
 
     return resolve(data);
   });
