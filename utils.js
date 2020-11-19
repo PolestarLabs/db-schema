@@ -38,7 +38,7 @@ module.exports = {
     });
   },
 
-  dbGetterFull(query, project) {
+  dbGetterFull(query, project, avoidNew) {
     return new Promise(async (resolve) => {
       if (["string", "number"].includes(typeof query)) {
         query = { id: query.toString() };
@@ -47,8 +47,11 @@ module.exports = {
 
       const data = await this.findOne(query, project);
 
-      if (!data && !!this.cat) return resolve( this.new(PLX[this.cat].find((u) => u.id === query.id)));
-      if (data === null)  return resolve( this.new(PLX.users.find(u=>u.id === query.id||query)) );
+      if (avoidNew){
+        if (!data && !!this.cat) return resolve( this.new(PLX[this.cat].find((u) => u.id === query.id)));
+        if (data === null)  return resolve( this.new(PLX.users.find(u=>u.id === query.id||query)) );
+      }
+      return resolve(data);
     });
   },
 }
