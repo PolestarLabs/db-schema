@@ -48,8 +48,8 @@ module.exports = {
       const data = await this.findOne(query, project);
 
       if (avoidNew){
-        if (!data && !!this.cat) return resolve( this.new(PLX[this.cat].find((u) => u.id === query.id)));
-        if (data === null)  return resolve( this.new(PLX.users.find(u=>u.id === query.id||query)) );
+        if (!data && !!this.cat) return resolve( await this.new(PLX[this.cat].find((u) => u.id === query.id)));
+        if (data === null)  return resolve( await this.new(PLX.users.find(u=>u.id === query.id||query)) );
       }
       return resolve(data);
     });
