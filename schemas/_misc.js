@@ -114,6 +114,7 @@ const GiftItem = new Schema({
   id: String,
   creator: String,
   holder: String,
+  previous: Array, 
   type: String, // Cosmetic | Item
   querystring: Mixed,
   icon: { type: String, default: "wrap" },
