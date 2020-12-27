@@ -6,10 +6,12 @@ const utils = require("../utils.js");
 const { Mixed } = Schema.Types;
 
 const promo = new Schema({
-
   code: { type: String, required: true, index: { unique: true } },
-  used: Boolean,
-  activated_by: String,
+  locked: Boolean,
+  consumed: Boolean,
+  redeemedBy:  Mixed,
+  maxUses: Number,
+  uses: Number,
   prize: Mixed,
 });
 
