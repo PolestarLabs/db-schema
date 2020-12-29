@@ -28,7 +28,8 @@ AUDIT.new = (payload) => {
     if (!payload.transactionId) payload.transactionId = (  (currency || type) + (~~(Date.now()/1000)).toString(32) + crypto.randomBytes(3).toString('hex')).toUpperCase()
     if (!payload.from && !!payload.to) payload.from = PLX?.user?.id || "UNKNOWN";
     if (!payload.to && !!payload.from) payload.to   = PLX?.user?.id || "UNKNOWN";
-    payload.timestamp ??= Date.now();
+    //payload.timestamp ??= Date.now();
+    payload.timestamp = payload.timestamp || Date.now();
 
     return new Promise((resolve,reject) => {        
         newAudit.save((err) => {
