@@ -10,8 +10,28 @@ const airports = new Schema({
   tier: Number,
   passengers: Number,
   slotAmount: Number,
-  slotPrice: Number
+  slotPrice: Number,
+  location: {
+    type: { type: String, enum: ['Point'], required: true },
+    coordinates: { type: [Number], required: true }, // [LON (-90/90) ,LAT (-180/180)]
+    index: { type: '2dsphere', sparse: true}
+  }
 });
+
+airports.methods.withinRange = async function withinRange(kilometers) {
+  return this.constructor.find({
+    location:{
+      $near:{
+        $geometry:{
+          type:"Point",
+          coordinates: [ this.location.coordinates[0], this.location.coordinates[1] ]
+        },
+        $maxDistance: kilometers * 1000
+      }
+    }
+  })
+}
+
 const AIRPORT = mongoose.model("Airports", airports, "Airports");
 
 /* AIRLINES */
@@ -46,12 +66,16 @@ const airplane = new Schema({
   humanName: { type: String, required: true },
   price: { type: Number, required: true },
   passengerCap: { type: Number, required: true },
-  maintenanceCost: { type: Number, required: true }
+  maintenanceCost: { type: Number, required: true },
+  make: String,
+  tier: Number,
+  range: { type: Number, required: true }
 });
 const AIRPLANES = mongoose.model("Airplanes", airplane, "Airplanes");
 
 AIRPORT.set = utils.dbSetter;
 AIRPORT.get = utils.dbGetter;
+AIRPORT.getFull = utils.dbGetterFull;
 AIRLINES.set = utils.dbSetter;
 AIRLINES.get = utils.dbGetter;
 ROUTES.set = utils.dbSetter;
@@ -62,6 +86,7 @@ SLOTS.set = utils.dbSetter;
 SLOTS.get = utils.dbGetter;
 
 /* ---------------- METHODS ----------------- */
+
 SLOTS.new = async (id, airport, time) => { /* if time is 0 = pay-as-you-go */
   const airlineCheck = await AIRLINES.findOne({ id });
   if (!airlineCheck) return Promise.reject("Invalid airline ID.");
