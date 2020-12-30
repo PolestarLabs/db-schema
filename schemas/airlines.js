@@ -9,55 +9,132 @@ const airports = new Schema({
   name: String,
   tier: Number,
   passengers: Number,
-  slotAmount: Number
-})
-const AIRPORT = mongoose.model("Airports", airports, "Airports")
+  slotAmount: Number,
+  slotPrice: Number
+});
+const AIRPORT = mongoose.model("Airports", airports, "Airports");
 
 /* AIRLINES */
 const airline = new Schema({
-  id: { type: String, required: true, index: {unique:true} },
+  id: { type: String, required: true, index: { unique: true } },
+  acquiredAirplanes: { type: [{ id: String, assigned: Boolean }], default: [] },
   user: String,
-  airlineName: String,
-})
-const AIRLINES = mongoose.model("UserAirlineData", airline, "UserAirlineData")
+  airlineName: String
+});
+const AIRLINES = mongoose.model("UserAirlineData", airline, "UserAirlineData");
 
-/* AIRPORT SLOTS */
-const airplaneSlot = new Schema({
+/* SLOTS (they're a separate model because it'd be sad if everything was inside of AIRLINES) */
+const slots = new Schema({
+  airline: { type: String, required: true, index: true },
+  airport: { type: String, required: true, index: true },
+  expiresIn: Number
+});
+const SLOTS = mongoose.model("UserBoughtAirportSlots", slots, "UserBoughtAirportSlots");
+
+/* ROUTES */
+const routes = new Schema({
+  startAirport: { type: String, required: true, index: true },
+  endAirport: { type: String, required: true, index: true },
+  airline: { type: String, required: true, index: true },
+  airplane: { type: String, required: true },
+  ticketPrice: { type: Number, required: true }
+});
+const ROUTES = mongoose.model("AirlineRoutes", routes, "AirlineRoutes");
+
+const airplane = new Schema({
   id: { type: String, required: true, index: true },
-  expires: { type: Number, required: true, index: true },
-  airport: String
-})
-const AIRLINESLOTS = mongoose.model("BoughtAirlineSlots", airplaneSlot, "BoughtAirplaneSlots")
+  humanName: { type: String, required: true },
+  price: { type: Number, required: true },
+  passengerCap: { type: Number, required: true },
+  maintenanceCost: { type: Number, required: true }
+});
+const AIRPLANES = mongoose.model("Airplanes", airplane, "Airplanes");
 
 AIRPORT.set = utils.dbSetter;
 AIRPORT.get = utils.dbGetter;
 AIRLINES.set = utils.dbSetter;
 AIRLINES.get = utils.dbGetter;
-AIRLINESLOTS.set = utils.dbSetter;
-AIRLINESLOTS.get = utils.dbGetter;
+ROUTES.set = utils.dbSetter;
+ROUTES.get = utils.dbGetter;
+AIRPLANES.set = utils.dbSetter;
+AIRPLANES.get = utils.dbGetter;
+SLOTS.set = utils.dbSetter;
+SLOTS.get = utils.dbGetter;
 
 /* ---------------- METHODS ----------------- */
-AIRLINESLOTS.new = async (airport, id) => {
+SLOTS.new = async (id, airport, time) => { /* if time is 0 = pay-as-you-go */
   const airlineCheck = await AIRLINES.findOne({ id });
   if (!airlineCheck) return Promise.reject("Invalid airline ID.");
   
   const airportd = await AIRPORT.findOne({ id: airport });
   if (!airportd) return Promise.reject("Invalid airport ID.");
   
-  const slotCheck = await AIRLINESLOTS.findOne({ id, airport });
+  const slotCheck = await SLOTS.findOne({ airport, airline: id });
   if (slotCheck) return Promise.reject("User already bought this slot.");
   
-  const usedSlots = await AIRLINESLOTS.find({ airport });
+  const usedSlots = await SLOTS.find({ airport }).lean();
   if (usedSlots.length >= airportd.slotAmount) return Promise.reject("Airport hit max slot capacity!");
   
-  const slot = new AIRLINESLOTS({
-    id,
+  const slot = new SLOTS({
+    airline: id,
     airport,
-    expires: Date.now() + 6.048e+8 // set the expiration date as 7 days from now 
+    expiresIn: time
+  });
+  return slot.save();
+};
+
+AIRPLANES.buy = async (airline, id) => {
+  const a = await AIRLINES.findOne({ id: airline });
+  if (!a) return Promise.reject("Invalid airline ID!");
+
+  a.acquiredAirplanes.push({ id, assigned: false });
+  return a.save();
+};
+
+ROUTES.new = async (sa, ea, airline, airplane, price) => {
+  const sac = await SLOTS.findOne({ airport: sa, airline });
+  if (!sac) return Promise.reject(`User does not own a slot at "${sa}".`);
+  
+  const eac = await SLOTS.findOne({ airport: ea, airline });
+  if (!eac) return Promise.reject(`User does not own a slot at "${ea}".`);
+  
+  const ac = await AIRLINES.findOne({ id: airline });
+  if (!ac.acquiredAirplanes.some(a => a.id === airplane && a.assigned === false)) return Promise.reject("User doesn't own the specified airplane, or it's already being used somewhere else");
+  
+  const rc = await ROUTES.findOne({ startAirport: sa, endAirport: ea, airline });
+  if (rc) return Promise.reject("User always flies this route!");
+  
+  const airplaneIndex = ac.acquiredAirplanes.findIndex(a => a.id === airplane);
+  ac.acquiredAirplanes[airplaneIndex] = { id: ac.acquiredAirplanes[airplaneIndex].id, assigned: true };
+  ac.save();
+  
+  const r = new ROUTES({
+    startAirport: sa,
+    endAirport: ea,
+    airline,
+    airplane,
+    ticketPrice: price
   });
   
-  return slot.save();
-}
+  return r.save();
+};
+
+ROUTES.check = async ({ id, airline, airplane, endAirport, startAirport }) => {
+  const sac = await SLOTS.findOne({ airport: startAirport, airline });
+  if (!sac) return ROUTES.shutdown({ id, airline });
+  
+  const eac = await SLOTS.findOne({ airport: endAirport, airline });
+  if (!eac) return ROUTES.shutdown({ id, airline });
+
+  const ac = await AIRLINES.findOne({ id: airline });
+  if (!ac.acquiredAirplanes.some(a => a === airplane)) return ROUTES.shutdown({ id, airline });
+};
+
+ROUTES.shutdown = async ({ id, airline }) => {
+  await ROUTES.deleteOne({ id, airline });
+  // const { user } = AIRLINES.findOne({ id: airline })
+  // TODO: Notify user of route shutdown
+};
 
 AIRLINES.new = async (user, id, airlineName) => {
   const airlineCheck = await AIRLINES.findOne({ id });
@@ -69,27 +146,6 @@ AIRLINES.new = async (user, id, airlineName) => {
   });
   
   return airline.save();
-}
+};
 
-AIRLINESLOTS.expire = (S) => {
-  if (typeof S === "number") {
-    return AIRLINESLOTS.deleteMany({ expires: { $lte: S } });
-  }
-  return AIRLINESLOTS.deleteOne({ id: S.id, airport: S.airport });
-}
-
-AIRPORT.new = async (id, name, passengers, tier, slotAmount) => {
-  const airportCheck = await AIRPORT.findOne({ id });
-  if (airportCheck) return Promise.reject("An airport already exists with the same ID.");
-  const airport = new AIRPORT({
-    id,
-    name,
-    tier,
-    passengers,
-    slotAmount
-  });
-  
-  return airport.save();
-}
-
-module.exports = { AIRLINES, SLOTS: AIRLINESLOTS, AIRPORT };
+module.exports = { AIRLINES, ROUTES, AIRPORT, AIRPLANES, SLOTS };
