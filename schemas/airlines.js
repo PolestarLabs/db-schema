@@ -144,21 +144,26 @@ ROUTES.new = async (sa, ea, airline, airplane, price) => {
   return r.save();
 };
 
-ROUTES.check = async ({ id, airline, airplane, endAirport, startAirport }) => {
-  const sac = await SLOTS.findOne({ airport: startAirport, airline });
-  if (!sac) return ROUTES.shutdown({ id, airline });
+ROUTES.check = async (a) => {
+  const sac = await SLOTS.findOne({ airport: a.startAirport, airline: a.airline });
+  if (!sac) return ROUTES.shutdown(a);
   
-  const eac = await SLOTS.findOne({ airport: endAirport, airline });
-  if (!eac) return ROUTES.shutdown({ id, airline });
+  const eac = await SLOTS.findOne({ airport: a.endAirport, airline: a.airline });
+  if (!eac) return ROUTES.shutdown(a);
 
-  const ac = await AIRLINES.findOne({ id: airline });
-  if (!ac.acquiredAirplanes.some(a => a === airplane)) return ROUTES.shutdown({ id, airline });
+  const ac = await AIRLINES.findOne({ id: a.airline });
+  if (!ac.acquiredAirplanes.some(b => b.id === a.airplane && b.assigned)) return ROUTES.shutdown(a);
+
+  return true;
 };
 
-ROUTES.shutdown = async ({ id, airline }) => {
-  await ROUTES.deleteOne({ id, airline });
-  // const { user } = AIRLINES.findOne({ id: airline })
-  // TODO: Notify user of route shutdown
+ROUTES.shutdown = async ({ _id, airplane, airline }) => {
+  await ROUTES.deleteOne({ _id });
+  const ac = await AIRLINES.findOne({ id: airline });
+  
+  const airplaneIndex = ac.acquiredAirplanes.findIndex(a => a.id === airplane && a.assigned);
+  ac.acquiredAirplanes[airplaneIndex] = { id: ac.acquiredAirplanes[airplaneIndex].id, assigned: false };
+  return ac.save();
 };
 
 AIRLINES.new = async (user, id, airlineName) => {
