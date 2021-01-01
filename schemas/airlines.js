@@ -14,7 +14,6 @@ const airports = new Schema({
   location: {
     type: { type: String, enum: ['Point'], required: true },
     coordinates: { type: [Number], required: true }, // [LON (-90/90) ,LAT (-180/180)]
-    index: { type: '2dsphere', sparse: true}
   }
 });
 
