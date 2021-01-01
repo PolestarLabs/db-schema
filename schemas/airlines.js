@@ -16,6 +16,7 @@ const airports = new Schema({
     coordinates: { type: [Number], required: true }, // [LON (-90/90) ,LAT (-180/180)]
   }
 });
+// NOTE This Schema requires a 2dsphere index preconfigured in the database to work 
 
 airports.methods.withinRange = async function withinRange(kilometers) {
   return this.constructor.find({
