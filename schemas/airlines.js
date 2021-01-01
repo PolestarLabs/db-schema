@@ -124,12 +124,12 @@ ROUTES.new = async (sa, ea, airline, airplane, price) => {
   if (!eac) return Promise.reject(`User does not own a slot at "${ea}".`);
   
   const ac = await AIRLINES.findOne({ id: airline });
-  if (!ac.acquiredAirplanes.some(a => a.id === airplane && a.assigned === false)) return Promise.reject("User doesn't own the specified airplane, or it's already being used somewhere else");
+  if (!ac.acquiredAirplanes.some(a => a.id === airplane && !a.assigned)) return Promise.reject("User doesn't own the specified airplane, or it's already being used somewhere else");
   
   const rc = await ROUTES.findOne({ startAirport: sa, endAirport: ea, airline });
   if (rc) return Promise.reject("User always flies this route!");
   
-  const airplaneIndex = ac.acquiredAirplanes.findIndex(a => a.id === airplane);
+  const airplaneIndex = ac.acquiredAirplanes.findIndex(a => a.id === airplane && !a.assigned);
   ac.acquiredAirplanes[airplaneIndex] = { id: ac.acquiredAirplanes[airplaneIndex].id, assigned: true };
   ac.save();
   
