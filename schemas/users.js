@@ -228,19 +228,10 @@ UserSchema.methods.upCommend = function upCommend(USER, amt = 1) {
   const miscDB = require("./_misc.js");
   return new Promise(async (resolve) => {
     await Promise.all([
-      miscDB.commends.new(this),
+      miscDB.commends.add(this.id, USER.id, amt)
       miscDB.commends.new(USER),
     ]);
-    await Promise.all([
-      miscDB.commends.updateOne({ id: this.id, "whoIn.id": { $ne: USER.id } }, { $addToSet: { whoIn: { id: USER.id } } }),
-      miscDB.commends.updateOne({ id: USER.id, "whoOut.id": { $ne: this.id } }, { $addToSet: { whoOut: { id: this.id } } }),
-    ]);
-    await Promise.all([
-      miscDB.commends.updateOne({ id: this.id, "whoIn.id": USER.id }, { $inc: { "whoIn.$.count": amt } }),
-      miscDB.commends.updateOne({ id: USER.id, "whoOut.id": this.id }, { $inc: { "whoOut.$.count": amt } }),
-    ]);
-
-    const res = await miscDB.commends.get(this.id);
+    const res = await miscDB.commends.parseFull(this.id);
     resolve(res);
   });
 };
