@@ -245,7 +245,13 @@ commends.parseFull  = async function(userId){
   return {
     id: userId,
     whoIn: _in.map(comm=> ({id:comm.from,count:comm.count}) ),
-    whoOut: _out.map(comm=> ({id:comm.to,count:comm.count}) )
+    whoOut: _out.map(comm=> ({id:comm.to,count:comm.count}) ),
+    get totalIn(){
+      return this.whoIn?.reduce( (a,b)=> a + b.count, 0 );
+    },
+    get totalOut(){
+      return this.whoOut?.reduce( (a,b)=> a + b.count, 0 );
+    }
   }
 }
 
