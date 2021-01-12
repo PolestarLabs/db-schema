@@ -32,9 +32,10 @@ const Buyable = new Schema({
 });
 
 const Commends = new Schema({
-  id: { type: String, required: true, index: { unique: true } },
-  whoIn: Array,
-  whoOut: Array,
+  //NOTE: COMPOUND INDEX MUST BE MANUALLY CREATED FOR FROM/TO
+  from: { type: String, required: true, index: true},
+  to: { type: String, required: true, index: true},
+  count: { type: Number, required: true, index: true},
 });
 
 const Globals = new Schema({
@@ -224,26 +225,29 @@ buyables.get = utils.dbGetter;
 const commends = mongoose.model("commends", Commends, "commends");
 commends.set = utils.dbSetter;
 commends.get = utils.dbGetter;
-commends.new = (payload) => {
-  commends.findOne({
-    id: payload.id,
-  }, (err, newUser) => {
-    if (err) {
-      console.error(err);
-    }
-    if (newUser) {
-      // Nothing
-    } else {
-      const cmmd = new commends({
-        id: payload.id,
-      });
-      cmmd.save((err) => {
-        if (err) return console.error(err);
-        console.log("[NEW COMMEND]".blue);
-      });
-    }
-  });
-};
+
+commends.add = function(idFrom,idTo){
+  return new Promise( async (resolve,reject) => {
+    let currentCommend = await commends.findOne({from: idFrom, to: idTo}).catch(reject);
+    if (!currentCommend) return (new commends({from: idFrom, to: idTo, count: 1})).save(err=> err?reject(err):resolve(1));
+    return commends.updateOne({from: idFrom, to: idTo},{$inc: {count:1}}).then(res=> resolve(currentCommend.count + 1)).catch(reject);
+  })
+}
+
+commends.parseFull  = async function(userId){
+  // LEGACY FORMAT
+  // { id: Target.id, whoIn: [], whoOut: [] };
+
+  userId = userId.id || userId;
+
+  let [_out,_in] = await Promise.all([ commends.find({from:userId}), commends.find({to:userId})]);
+
+  return {
+    id: userId,
+    whoIn: _in.map(comm=> ({id:comm.from,count:comm.count}) ),
+    whoOut: _out.map(comm=> ({id:comm.to,count:comm.count}) )
+  }
+}
 
 module.exports = {
   gift, paidroles, usercols, global, fanart, buyables, commends, reactRoles, marketplace, relationships, alert, feed, control,
