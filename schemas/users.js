@@ -228,7 +228,7 @@ UserSchema.methods.upCommend = function upCommend(USER, amt = 1) {
   const miscDB = require("./_misc.js");
   return new Promise(async (resolve) => {
     await Promise.all([
-      miscDB.commends.add(this.id, USER.id, amt)
+      miscDB.commends.add(this.id, USER.id, amt),
       miscDB.commends.new(USER),
     ]);
     const res = await miscDB.commends.parseFull(this.id);
