@@ -201,7 +201,7 @@ UserSchema.methods.modifyItems = async function modifyItems(items,debug) {
     })
   };
 
-  let unowned_items =  this.modules.inventory.filter((itm) => !(items.map(i=>i.id).includes(itm.id)) );
+  let unowned_items =  items.filter((itm) => !(this.modules.inventory.map(i=>i.id).includes(itm.id)) );
   if(unowned_items.length){
     await this.constructor.updateOne({id:this.id},{
       $addToSet:{
