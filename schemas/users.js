@@ -195,9 +195,9 @@ UserSchema.methods.modifyItems = async function modifyItems(items,debug) {
   for (i = 0; i < items.length; i++){
     arrayFilters.push({[`i${i}`]: items[i].id });
     Object.keys(items[i]).forEach(key=>{
-      if (key !== "id"){
+      //if (key !== "id"){
         increments[`modules.inventory.$[i${i}].${key}`] = items[i][key];
-      }
+      //}
     })
   };
 
