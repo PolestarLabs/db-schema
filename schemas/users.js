@@ -212,7 +212,7 @@ UserSchema.methods.modifyItems = async function modifyItems(items,debug) {
     });
   }
 
-  if(debug) return [ { id: this.id },    {$inc: increments},    {arrayFilters}];
+  if(debug) return [unowned_items, { id: this.id },    {$inc: increments},    {arrayFilters}];
 
   const res = await this.constructor.updateOne(
     { id: this.id },
