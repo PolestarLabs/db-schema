@@ -58,7 +58,7 @@ const UserSchema = new mongoose.Schema({
     repdaily: { type: Number, default: 0 },
 
     favcolor: { type: String, default: "#eb497b" },
-    inventory: { type: Array, default: [{"lootbox_dev":1}] },
+    inventory: { type: Array, default: [{id:"lootbox_dev", count:1}] },
     bgID: { type: String, default: "5zhr3HWlQB4OmyCBFyHbFuoIhxrZY6l6" },
     sticker: String,
     bgInventory: { type: Array, default: ["5zhr3HWlQB4OmyCBFyHbFuoIhxrZY6l6"] },
@@ -187,7 +187,7 @@ UserSchema.methods.addItem = function(item,amt,crafted){
  */
 
 
-UserSchema.methods.modifyItems = async function modifyItems(items) {
+UserSchema.methods.modifyItems = async function modifyItems(items,debug) {
 
   const arrayFilters = [];
   const increments = {};
@@ -211,6 +211,8 @@ UserSchema.methods.modifyItems = async function modifyItems(items) {
       }
     });
   }
+
+  if(debug) return [ { id: this.id },    {$inc: increments},    {arrayFilters}];
 
   const res = await this.constructor.updateOne(
     { id: this.id },
