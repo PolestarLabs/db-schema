@@ -19,9 +19,21 @@ const Achievement = new Schema({
 
 });
 
-const MODEL = mongoose.model("achievements", Achievement, "achievements");
+const Progression = new Schema({
 
-MODEL.award = (user, achiev) => {
+  user: String,
+  achievement: String,
+  type: {type: String}, // achievement | quest
+  tracker: Number,
+  completed: Boolean,
+  awarded: Boolean,
+  
+});
+
+const ACHIEVEMENTS = mongoose.model("achievements", Achievement, "achievements");
+const PROGRESSION = mongoose.model("Progression", Progression, "Progression");
+
+ACHIEVEMENTS.award = (user, achiev) => {
   const userDB = require("./users.js");
   return new Promise(async (resolve) => {
     await userDB
@@ -29,7 +41,12 @@ MODEL.award = (user, achiev) => {
   });
 };
 
-MODEL.set = utils.dbSetter;
-MODEL.get = utils.dbGetter;
+ACHIEVEMENTS.set = utils.dbSetter;
+ACHIEVEMENTS.get = utils.dbGetter;
 
-module.exports = MODEL;
+PROGRESSION.set = utils.dbSetter;
+PROGRESSION.get = utils.dbGetter;
+
+
+
+module.exports = {ACHIEVEMENTS,PROGRESSION};
