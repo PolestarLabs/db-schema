@@ -144,6 +144,9 @@ const UserSchema = new mongoose.Schema({
   donator: String,
   donatorActive: String,
   limits: Mixed,
+  quests: [
+    {id:String, completed: Boolean, progress: Number, target: Number}
+  ]
 
 }, { strict: false });
 
