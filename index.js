@@ -35,7 +35,7 @@ const Schemas = {
 	collectibles: require("./schemas/collectibles.js"),
 	items: require("./schemas/items.js"),
 	achievements: require("./schemas/achievements.js").ACHIEVEMENTS,
-	progression: require("./schemas/achievements.js").PROGRESSION,
+	quests: require("./schemas/achievements.js").QUESTS,
 	advLocations: (require("./schemas/adventure.js")).LOCATIONS,
 	advJourneys: (require("./schemas/adventure.js")).JOURNEYS,
 	mutes: require("./schemas/mutes.js"),
