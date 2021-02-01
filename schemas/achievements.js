@@ -21,7 +21,7 @@ const Achievement = new Schema({
 
 const Quests = new Schema({
 
-  id: { type: String, required: true, index: { unique: true } },
+  id: { type: Number, required: true, index: { unique: true } },
   name: String,
   flavor_text: String,
   instruction: String,
