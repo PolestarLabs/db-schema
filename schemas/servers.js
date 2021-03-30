@@ -15,6 +15,7 @@ const ServerSchema = new mongoose.Schema({
   event: Mixed,
   eventReg: String,
   partner: { type: Boolean, default: false },
+  progression: Mixed,
   partnerDetails: Mixed,
   utilityChannels: Mixed,
   logging: { type: Boolean, default: false },
@@ -60,7 +61,7 @@ const ServerSchema = new mongoose.Schema({
     pondSize: { type: Number, min: 1 },
     background: String,
     bgInventory: Array,
-    UPFACTOR: { type: Number, default: 0.1 },
+    UPFACTOR: { type: Number, default: 0.1 }, // deprecated
     statistics: Mixed,
     putometro_last: { type: Number },
     putometro_max: { type: Number },
