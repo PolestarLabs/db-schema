@@ -326,7 +326,7 @@ MODEL.get = function (query, project, avoidNew) {
     }
     if (!typeof project) project = { _id: 0 };
     const data = await this.findOne(query, project).lean();
-    if (data === null)  return resolve( this.new( await PLX.resolveUser?.(query.id||query) ) );
+    if (data === null && (query.id || typeof query === 'string') )  return resolve( this.new( await PLX.resolveUser?.(query.id||query) ) );
 
     return resolve(data);
   });
