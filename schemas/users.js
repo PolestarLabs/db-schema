@@ -147,7 +147,7 @@ const UserSchema = new mongoose.Schema({
   quests: [
     {id:Number, tracker: String, completed: Boolean, progress: Number, target: Number}
   ],
-  timezone: { type: String, default: "UTC" }
+  timezone: { type: String, default: "" }
 }, { strict: false });
 
 UserSchema.pre(/^update/, function () {
