@@ -145,15 +145,15 @@ const Schemas = {
 
 };
 
-module.exports = async function ({hook,	url, options}) {
+module.exports = async function ({hook,	url, options},extras) {
 	return new Promise(async resolve => {
 
 
-		if (options.redis){
+		if (extras.redis){
 			RedisCache(
-				options.redis.host,
-				options.redis.port,
-				options.redis.options
+				extras.redis.host,
+				extras.redis.port,
+				extras.redis.options
 			)
 		}
 
