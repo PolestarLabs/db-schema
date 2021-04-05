@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const RedisCache = require("./redisClient.js");
 
 const miscDB = require("./schemas/_misc.js");
 const serverDB = require("./schemas/servers.js");
@@ -146,6 +147,15 @@ const Schemas = {
 
 module.exports = async function ({hook,	url, options}) {
 	return new Promise(async resolve => {
+
+
+		if (options.redis){
+			RedisCache(
+				options.redis.host,
+				options.redis.port,
+				options.redis.options
+			)
+		}
 
 		console.info("• ".blue, "Connecting to Database...");
 

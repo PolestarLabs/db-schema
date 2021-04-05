@@ -1,6 +1,6 @@
 {
   "name": "@polestar/database_schema",
-  "version": "0.8.2",
+  "version": "0.9.0",
   "description": "Database Schemas & Functions",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
   },
   "homepage": "https://gitlab.com/PolestarLabs/database_schema#README",
   "dependencies": {
-    "mongoose": "^5.9.20"
+    "mongoose": "^5.9.20",
+    "redis": "^3.1.0"
   }
 }
