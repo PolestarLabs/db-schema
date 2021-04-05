@@ -14,7 +14,7 @@ const init = (host, port, options = {time:600}) => {
     };
 
     const original_update = mongoose.Query.prototype.update;
-    mongoose.Query.protorype.update = async function (...args){
+    mongoose.Query.prototype.update = async function (...args){
         const queryKey = JSON.stringify({...this.getQuery()});
         redisClient.del(queryKey);
         return await original_update.apply(this, ...args);
