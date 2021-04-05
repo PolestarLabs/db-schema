@@ -149,7 +149,7 @@ module.exports = async function ({hook,	url, options},extras) {
 	return new Promise(async resolve => {
 
 
-		if (extras.redis){
+		if (extras?.redis){
 			RedisCache(
 				extras.redis.host,
 				extras.redis.port,
