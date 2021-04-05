@@ -24,7 +24,7 @@ const init = (host, port, options = {time:600}) => {
         console.log((this.op+"----------------").blue + queryKey.slice(0,50).gray )
 
         if ( this.noCache ||  ["update","updateOne","updateMany"].includes(this.op) ) {
-            redisClient.expire(queryKey,.5);
+            redisClient.expire(queryKey,1);
             return await original_exec.apply(this, arguments);
         }
         
