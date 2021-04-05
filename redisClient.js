@@ -27,7 +27,7 @@ const init = (host, port, options = {time:600}) => {
             return await original_exec.apply(this, ...args);
         }
         const queryKey = JSON.stringify({...this.getQuery()});        
-        const cacheValue = await client.get(queryKey);
+        const cacheValue = await redisClient.get(queryKey);
 
         if (cacheValue) {
             const doc = JSON.parse(cacheValue);
