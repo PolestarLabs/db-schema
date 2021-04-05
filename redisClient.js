@@ -1,5 +1,6 @@
 const redis = require("redis");
 const mongoose = require("mongoose");
+const { promisify } = require("bluebird");
 
 const init = (host, port, options = {time:600}) => {
 
@@ -8,44 +9,47 @@ const init = (host, port, options = {time:600}) => {
         retry_strategy: () => 1000,
     });
 
+    redisClient.aget =  promisify(redisClient.get);
+
     mongoose.Query.noCache = function () {
         this.noCache = true;
         return this;
     };
 
-    const original_update = mongoose.Query.prototype.update;
-    mongoose.Query.prototype.update = async function (...args){
-        const queryKey = JSON.stringify({...this.getQuery()});
-        redisClient.del(queryKey);
-        return await original_update.apply(this, ...args);
-    }   
+  
 
     const original_exec = mongoose.Query.prototype.exec;
-    mongoose.Query.prototype.exec = async function (...args) {
+    mongoose.Query.prototype.exec = async function () {
+        const queryKey = this.mongooseCollection.name + JSON.stringify( {...this.getQuery()}   );
+        console.log((this.op+"----------------").blue + queryKey.slice(0,50).gray )
 
-        if (this.noCache) {
-            return await original_exec.apply(this, ...args);
+        if ( this.noCache ||  ["update","updateOne","updateMany"].includes(this.op) ) {
+            redisClient.expire(queryKey,.5);
+            return await original_exec.apply(this, arguments);
         }
-        const queryKey = JSON.stringify({...this.getQuery()});        
-        const cacheValue = await redisClient.get(queryKey);
+        
+        const cacheValue = await redisClient.aget(queryKey);
 
         if (cacheValue) {
             const doc = JSON.parse(cacheValue);
-            console.log("cache redis ok");
-
+            console.log("cache redis ok".green);
+            return doc;
             return Array.isArray(doc) ?
-                doc.map((d) => new this.model(d)) :
-                new this.model(doc);
+                doc.map((d) => this.model(d)) :
+                this.model(doc);
         }
 
         const result = await original_exec.apply(this, arguments);
-        console.log("db res");
-        redisClient.set(queryKey, JSON.stringify(result));
-        redisClient.expire(queryKey, 6000);
-
+        console.log("db res".red, queryKey.slice(0,50));
+        let restring = JSON.stringify(result);
+        console.log(restring?.length)
+        if(!result) return result;
+        redisClient.set(queryKey, restring);
+        //redisClient.expire(queryKey, 0);
+        this.noCache = false;
         return result;
     };
-    
+    PLX.redis=redisClient;
     return redisClient;
 }
 
