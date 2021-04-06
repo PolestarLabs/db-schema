@@ -11,7 +11,7 @@ const init = (host, port, options = {time:600}) => {
 
     redisClient.aget =  promisify(redisClient.get);
 
-    mongoose.Query.noCache = function () {
+    mongoose.Query.prototype.noCache = function () {
         this.noCache = true;
         return this;
     };
