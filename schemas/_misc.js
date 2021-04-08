@@ -85,6 +85,9 @@ const MarketplaceModel = new Schema({
   currency: String,
   author: String,
   timestamp: Number,
+  type: String,
+  lock: Boolean,
+  completed: Boolean,
 }, { strict: false });
 
 const RelationShipModel = new Schema({
