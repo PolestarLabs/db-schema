@@ -64,5 +64,5 @@ declare global {
   export const redis: redis.RedisClient;
 }
 
-declare function init(m: { hook: unknown; url: string; options: mongoose.ConnectOptions}, extras?: { redis: { host: string; port: number; options: unknown } }): Promise<Schemas> // TODO unknown = hook, unknown = redis options
+declare function init(m: { hook: unknown; url: string; options: mongoose.ConnectOptions}, extras?: { redis: { host: string; port: number; options?: unknown } }): Promise<Schemas> // TODO unknown = WebhookDigester, unknown = redis options
 export = init;
