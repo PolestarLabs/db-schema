@@ -196,10 +196,9 @@ MarketplaceModel.new = (payload) => {
   const aud = new MarketplaceModel(payload);
   aud.save((err) => {
     if (err) return console.error(err);
-
     console.log("[NEW MARKETPLACE ENTRY]".blue, payload);
   });
-  return payload;
+  return aud;
 };
 
 const relationships = mongoose.model("Relationship", RelationShipModel, "relationships");
