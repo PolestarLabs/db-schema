@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongodb from 'mongodb';
 import redis from 'redis';
 import bluebird from 'bluebird';
 
@@ -42,9 +43,20 @@ interface PaidRoles {
 }
 interface PaidRolesSchema extends mongoose.Document<PaidRoles> {}
 
+interface Globals {
+  id: number;
+  data: any;
+}
+interface GlobalsSchema extends mongoose.Document<Globals> {}
+interface GlobalsModel extends mongoose.Model<GlobalsSchema> {
+  set(alter: Globals): Promise<mongodb.UpdateWriteOpResult['result']>;
+  get(): Promise<GlobalsSchema | any>;
+}
+
 interface miscDB {
   gift: mongoose.Model<GiftItemSchema> & { set: dbSetter<GiftItemSchema>; get: dbGetter<GiftItemSchema> };
   paidroles: mongoose.Model<PaidRolesSchema> & { set: dbSetter<PaidRolesSchema>; get: dbGetter<PaidRolesSchema> }; // TODO paidroles.new
+  global: GlobalsModel;
 }
 
 interface Schemas {
@@ -52,6 +64,9 @@ interface Schemas {
   miscDB: miscDB;
   paidroles: miscDB['paidroles'];
   gifts: miscDB['gift'];
+  globalDB: miscDB['global'];
+  globals: miscDB['global'];
+  native: miscDB['global']['db'];
 }
 
 declare module 'mongoose' {
