@@ -189,15 +189,17 @@ global.get = async function () {
   }
 };
 
-const marketplace = mongoose.model("marketplace", MarketplaceModel, "marketplace");
-marketplace.set = utils.dbSetter;
-marketplace.get = utils.dbGetter;
-marketplace.new = (payload) => {
-  const aud = new marketplace(payload);
+const MarketplaceModel = mongoose.model("marketplace", MarketplaceModel, "marketplace");
+MarketplaceModel.set = utils.dbSetter;
+MarketplaceModel.get = utils.dbGetter;
+MarketplaceModel.new = (payload) => {
+  const aud = new MarketplaceModel(payload);
   aud.save((err) => {
     if (err) return console.error(err);
+
     console.log("[NEW MARKETPLACE ENTRY]".blue, payload);
   });
+  return payload;
 };
 
 const relationships = mongoose.model("Relationship", RelationShipModel, "relationships");
@@ -259,5 +261,5 @@ commends.parseFull  = async function(userId){
 }
 
 module.exports = {
-  gift, paidroles, usercols, global, fanart, buyables, commends, reactRoles, marketplace, relationships, alert, feed, control,
+  gift, paidroles, usercols, global, fanart, buyables, commends, reactRoles, marketplace: MarketplaceModel, relationships, alert, feed, control,
 };
