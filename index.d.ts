@@ -5,16 +5,16 @@ import bluebird from 'bluebird';
 
 type CustomQuery<T extends mongoose.Document> = string | number | mongoose.FilterQuery<T>;
 
-declare type dbSetter<T extends mongoose.Document, LeanResultType = mongoose.LeanDocumentOrArray> = (
+declare type dbSetter<T extends mongoose.Document> = (
   query: CustomQuery<T>,
   alter: mongoose.UpdateQuery<T>,
   options?: mongoose.QueryOptions | null,
-) => Promise<LeanResultType>;
+) => Promise<mongodb.UpdateWriteOpResult['result']>;
 
-declare type dbGetter<T extends mongoose.Document, LeanResultType = mongoose.LeanDocumentOrArray> = (
+declare type dbGetter<T extends mongoose.Document> = (
   query: CustomQuery<T>,
   project?: any | null,
-) => Promise<LeanResultType>;
+) => Promise<mongoose.LeanDocumentOrArray<T | null>>;
 
 declare type dbGetterFull<T extends mongoose.Document> = (
   query: CustomQuery<T>,
