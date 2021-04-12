@@ -94,12 +94,30 @@ interface FanartModel extends mongoose.Model<FanartSchema> {
   get: dbGetter<FanartSchema>;
 }
 
+interface Buyable {
+  id: string;
+  price_USD: number;
+  price_BRL: number;
+  sendTo: string;
+  name: string;
+  description: string;
+  img: string;
+  filter: string;
+  other: any;
+}
+interface BuyableSchema extends mongoose.Document, Buyable {}
+interface BuyableModel extends mongoose.Model<BuyableSchema> {
+  set: dbSetter<BuyableSchema>;
+  get: dbGetter<BuyableSchema>;
+}
+
 interface miscDB {
   gift: GiftItemModel;
   paidroles: PaidRolesModel;
   usercols: UserCollectionModel;
   global: GlobalsModel;
   fanart: FanartModel;
+  buyables: BuyableModel;
 }
 
 interface Schemas {
