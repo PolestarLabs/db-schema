@@ -8,7 +8,7 @@ type CustomQuery<T extends mongoose.Document> = string | number | mongoose.Filte
 declare type dbSetter<T extends mongoose.Document, LeanResultType = mongoose.LeanDocumentOrArray> = (
   query: CustomQuery<T>,
   alter: mongoose.UpdateQuery<T>,
-  options?: QueryOptions | null,
+  options?: mongoose.QueryOptions | null,
 ) => Promise<LeanResultType>;
 
 declare type dbGetter<T extends mongoose.Document, LeanResultType = mongoose.LeanDocumentOrArray> = (
@@ -92,7 +92,7 @@ interface Schemas {
 }
 
 declare module 'mongoose' {
-  interface Query {
+  interface Query<ResultType, DocType extends mongoose.Document<any, {}>, THelpers = {}> {
     noCache: boolean;
   }
 }
