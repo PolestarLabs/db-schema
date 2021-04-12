@@ -32,7 +32,10 @@ interface GiftItem {
   icon: string;
   message: string;
 }
-interface GiftItemSchema extends mongoose.Document<GiftItem> {}
+interface GiftItemSchema extends mongoose.Document<GiftItem> {
+  set: dbSetter<GiftItemSchema>;
+  get: dbGetter<GiftItemSchema>;
+}
 
 interface PaidRoles {
   server: string;
@@ -41,7 +44,11 @@ interface PaidRoles {
   temp: number;
   unique: any;
 }
-interface PaidRolesSchema extends mongoose.Document<PaidRoles> {}
+interface PaidRolesSchema extends mongoose.Document<PaidRoles> {
+  set: dbSetter<PaidRolesSchema>;
+  get: dbGetter<PaidRolesSchema>;
+  // TODO paidroles.new
+}
 
 interface Globals {
   id: number;
@@ -53,10 +60,21 @@ interface GlobalsModel extends mongoose.Model<GlobalsSchema> {
   get(): Promise<GlobalsSchema | any>;
 }
 
+interface UserCollection {
+  id: string;
+  collections: any;
+}
+interface UserCollectionSchema extends mongoose.Document<UserCollection> {
+  set: dbSetter<UserCollectionSchema>;
+  get: dbGetter<UserCollectionSchema>;
+  new: (payload: UserCollection) => void;
+}
+
 interface miscDB {
-  gift: mongoose.Model<GiftItemSchema> & { set: dbSetter<GiftItemSchema>; get: dbGetter<GiftItemSchema> };
-  paidroles: mongoose.Model<PaidRolesSchema> & { set: dbSetter<PaidRolesSchema>; get: dbGetter<PaidRolesSchema> }; // TODO paidroles.new
+  gift: mongoose.Model<GiftItemSchema>;
+  paidroles: mongoose.Model<PaidRolesSchema>;
   global: GlobalsModel;
+  usercols: mongoose.Model<UserCollectionSchema>;
 }
 
 interface Schemas {
@@ -67,6 +85,7 @@ interface Schemas {
   globalDB: miscDB['global'];
   globals: miscDB['global'];
   native: miscDB['global']['db'];
+  usercols: miscDB['usercols'];
 }
 
 declare module 'mongoose' {
