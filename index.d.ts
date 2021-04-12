@@ -3,6 +3,8 @@ import mongodb from 'mongodb';
 import redis from 'redis';
 import bluebird from 'bluebird';
 
+// Utils
+
 type CustomQuery<T extends mongoose.Document> = string | number | mongoose.FilterQuery<T>;
 
 declare type dbSetter<T extends mongoose.Document> = (
@@ -21,6 +23,7 @@ declare type dbGetterFull<T extends mongoose.Document> = (
   project?: any | null,
   avoidNew?: boolean,
 ) => Promise<T>;
+
 
 interface GiftItem {
   id: string;
@@ -73,11 +76,30 @@ interface UserCollectionModel extends mongoose.Model<UserCollectionSchema> {
   new: (payload: UserCollection) => void;
 }
 
+interface Fanart {
+  id: string;
+  src: string;
+  thumb: string;
+  title: string;
+  description: string;
+  date: Date;
+  author: string;
+  author_ID: string;
+  publish: boolean;
+  extras: any;
+}
+interface FanartSchema extends mongoose.Document<Fanart> {}
+interface FanartModel extends mongoose.Model<FanartSchema> {
+  set: dbSetter<FanartSchema>;
+  get: dbGetter<FanartSchema>;
+}
+
 interface miscDB {
   gift: GiftItemModel;
   paidroles: PaidRolesModel;
-  global: GlobalsModel;
   usercols: UserCollectionModel;
+  global: GlobalsModel;
+  fanart: FanartModel;
 }
 
 interface Schemas {
