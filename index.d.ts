@@ -35,7 +35,7 @@ interface GiftItem {
   icon: string;
   message: string;
 }
-interface GiftItemSchema extends mongoose.Document<GiftItem> {}
+interface GiftItemSchema extends mongoose.Document, GiftItem {}
 interface GiftItemModel extends mongoose.Model<GiftItemSchema> {
   set: dbSetter<GiftItemSchema>;
   get: dbGetter<GiftItemSchema>;
@@ -48,7 +48,7 @@ interface PaidRoles {
   temp: number;
   unique: any;
 }
-interface PaidRolesSchema extends mongoose.Document<PaidRoles> {}
+interface PaidRolesSchema extends mongoose.Document, PaidRoles {}
 interface PaidRolesModel extends mongoose.Model<PaidRolesSchema> {
   set: dbSetter<PaidRolesSchema>;
   get: dbGetter<PaidRolesSchema>;
@@ -59,7 +59,7 @@ interface Globals {
   id: number;
   data: any;
 }
-interface GlobalsSchema extends mongoose.Document<Globals> {}
+interface GlobalsSchema extends mongoose.Document, Globals {}
 interface GlobalsModel extends mongoose.Model<GlobalsSchema> {
   set(alter: Globals): Promise<mongodb.UpdateWriteOpResult['result']>;
   get(): Promise<GlobalsSchema | any>;
@@ -69,7 +69,7 @@ interface UserCollection {
   id: string;
   collections: any;
 }
-interface UserCollectionSchema extends mongoose.Document<UserCollection> {}
+interface UserCollectionSchema extends mongoose.Document, UserCollection {}
 interface UserCollectionModel extends mongoose.Model<UserCollectionSchema> {
   set: dbSetter<UserCollectionSchema>;
   get: dbGetter<UserCollectionSchema>;
@@ -88,7 +88,7 @@ interface Fanart {
   publish: boolean;
   extras: any;
 }
-interface FanartSchema extends mongoose.Document<Fanart> {}
+interface FanartSchema extends mongoose.Document, Fanart {}
 interface FanartModel extends mongoose.Model<FanartSchema> {
   set: dbSetter<FanartSchema>;
   get: dbGetter<FanartSchema>;
