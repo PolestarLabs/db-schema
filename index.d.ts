@@ -13,10 +13,10 @@ declare type dbSetter<T extends mongoose.Document> = (
   options?: mongoose.QueryOptions | null,
 ) => Promise<mongodb.UpdateWriteOpResult['result']>;
 
-declare type dbGetter<T extends mongoose.Document> = (
+declare type dbGetter<T extends mongoose.Document, R> = (
   query: CustomQuery<T>,
   project?: any | null,
-) => Promise<mongoose.LeanDocumentOrArray<T | null>>;
+) => Promise<mongoose.LeanDocumentOrArray<R | null>>;
 
 declare type dbGetterFull<T extends mongoose.Document> = (
   query: CustomQuery<T>,
@@ -38,7 +38,7 @@ interface GiftItem {
 interface GiftItemSchema extends mongoose.Document, GiftItem {}
 interface GiftItemModel extends mongoose.Model<GiftItemSchema> {
   set: dbSetter<GiftItemSchema>;
-  get: dbGetter<GiftItemSchema>;
+  get: dbGetter<GiftItemSchema, GiftItem>;
 }
 
 interface PaidRoles {
@@ -51,7 +51,7 @@ interface PaidRoles {
 interface PaidRolesSchema extends mongoose.Document, PaidRoles {}
 interface PaidRolesModel extends mongoose.Model<PaidRolesSchema> {
   set: dbSetter<PaidRolesSchema>;
-  get: dbGetter<PaidRolesSchema>;
+  get: dbGetter<PaidRolesSchema, PaidRoles>;
   // TODO paidroles.new
 }
 
@@ -72,7 +72,7 @@ interface UserCollection {
 interface UserCollectionSchema extends mongoose.Document, UserCollection {}
 interface UserCollectionModel extends mongoose.Model<UserCollectionSchema> {
   set: dbSetter<UserCollectionSchema>;
-  get: dbGetter<UserCollectionSchema>;
+  get: dbGetter<UserCollectionSchema, UserCollection>;
   new: (payload: UserCollection) => void;
 }
 
@@ -91,7 +91,7 @@ interface Fanart {
 interface FanartSchema extends mongoose.Document, Fanart {}
 interface FanartModel extends mongoose.Model<FanartSchema> {
   set: dbSetter<FanartSchema>;
-  get: dbGetter<FanartSchema>;
+  get: dbGetter<FanartSchema, Fanart>;
 }
 
 interface Buyable {
@@ -108,7 +108,7 @@ interface Buyable {
 interface BuyableSchema extends mongoose.Document, Buyable {}
 interface BuyableModel extends mongoose.Model<BuyableSchema> {
   set: dbSetter<BuyableSchema>;
-  get: dbGetter<BuyableSchema>;
+  get: dbGetter<BuyableSchema, Buyable>;
 }
 
 interface miscDB {
