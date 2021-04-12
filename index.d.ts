@@ -32,7 +32,8 @@ interface GiftItem {
   icon: string;
   message: string;
 }
-interface GiftItemSchema extends mongoose.Document<GiftItem> {
+interface GiftItemSchema extends mongoose.Document<GiftItem> {}
+interface GiftItemModel extends mongoose.Model<GiftItemSchema> {
   set: dbSetter<GiftItemSchema>;
   get: dbGetter<GiftItemSchema>;
 }
@@ -44,7 +45,8 @@ interface PaidRoles {
   temp: number;
   unique: any;
 }
-interface PaidRolesSchema extends mongoose.Document<PaidRoles> {
+interface PaidRolesSchema extends mongoose.Document<PaidRoles> {}
+interface PaidRolesModel extends mongoose.Model<PaidRolesSchema> {
   set: dbSetter<PaidRolesSchema>;
   get: dbGetter<PaidRolesSchema>;
   // TODO paidroles.new
@@ -64,17 +66,18 @@ interface UserCollection {
   id: string;
   collections: any;
 }
-interface UserCollectionSchema extends mongoose.Document<UserCollection> {
+interface UserCollectionSchema extends mongoose.Document<UserCollection> {}
+interface UserCollectionModel extends mongoose.Model<UserCollectionSchema> {
   set: dbSetter<UserCollectionSchema>;
   get: dbGetter<UserCollectionSchema>;
   new: (payload: UserCollection) => void;
 }
 
 interface miscDB {
-  gift: mongoose.Model<GiftItemSchema>;
-  paidroles: mongoose.Model<PaidRolesSchema>;
+  gift: GiftItemModel;
+  paidroles: PaidRolesModel;
   global: GlobalsModel;
-  usercols: mongoose.Model<UserCollectionSchema>;
+  usercols: UserCollectionModel;
 }
 
 interface Schemas {
