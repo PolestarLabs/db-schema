@@ -132,6 +132,22 @@ interface CommendsModel extends mongoose.Model<CommendsSchema> {
   parseFull: (userId: string | Member | User) => Promise<CommendsParsed>;
 }
 
+interface ReactionRole {
+  role: string;
+  emoji: string;
+}
+interface ReactionRoles {
+  channel: string;
+  message: string;
+  server: string;
+  rolemoji: ReactionRole[];
+}
+interface ReactionRolesSchema extends mongoose.Document, ReactionRoles {}
+interface ReactionRolesModel extends mongoose.Model<ReactionRolesSchema> {
+  set: dbSetter<ReactionRolesSchema>;
+  get: dbGetter<ReactionRolesSchema>;
+}
+
 interface miscDB {
   gift: GiftItemModel;
   paidroles: PaidRolesModel;
@@ -140,6 +156,7 @@ interface miscDB {
   fanart: FanartModel;
   buyables: BuyableModel;
   commends: CommendsModel;
+  reactRoles: ReactionRolesModel;
 }
 
 interface Schemas {
