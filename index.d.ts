@@ -1,3 +1,4 @@
+import { User, Member } from 'eris';
 import mongoose from 'mongoose';
 import mongodb from 'mongodb';
 import redis from 'redis';
@@ -111,6 +112,26 @@ interface BuyableModel extends mongoose.Model<BuyableSchema> {
   get: dbGetter<BuyableSchema, Buyable>;
 }
 
+interface CommendsParsed {
+  id: string;
+  whoIn: { id: string; count: number };
+  whoOut: { id: string; count: number };
+  readonly totalIn: number;
+  readonly totalOut: number;
+}
+interface Commends {
+  from: string;
+  to: string;
+  count: number;
+}
+interface CommendsSchema extends mongoose.Document, Commends {}
+interface CommendsModel extends mongoose.Model<CommendsSchema> {
+  set: dbSetter<CommendsSchema>;
+  get: dbGetter<CommendsSchema>;
+  add: (idFrom: string, idTo: string) => Promise<number>;
+  parseFull: (userId: string | Member | User) => Promise<CommendsParsed>;
+}
+
 interface miscDB {
   gift: GiftItemModel;
   paidroles: PaidRolesModel;
@@ -118,6 +139,7 @@ interface miscDB {
   global: GlobalsModel;
   fanart: FanartModel;
   buyables: BuyableModel;
+  commends: CommendsModel;
 }
 
 interface Schemas {

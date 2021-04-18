@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@types/redis": "^2.8.28",
+    "eris": "^0.15.0",
     "typescript": "^4.2.3"
   }
 }
