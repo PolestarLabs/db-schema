@@ -148,6 +148,22 @@ interface ReactionRolesModel extends mongoose.Model<ReactionRolesSchema> {
   get: dbGetter<ReactionRolesSchema>;
 }
 
+interface Marketplace {
+  id: string;
+  item_id: string;
+  item_type: string;
+  price: number;
+  currency: string;
+  author: string;
+  timestamp: number;
+}
+interface MarketplaceSchema extends mongoose.Document, Marketplace {}
+interface MarketplaceModel extends mongoose.Model<MarketplaceModel> {
+  set: dbSetter<MarketplaceSchema>;
+  get: dbGetter<MarketplaceSchema>;
+  new: (payload: Marketplace) => void;
+}
+
 interface miscDB {
   gift: GiftItemModel;
   paidroles: PaidRolesModel;
@@ -157,6 +173,7 @@ interface miscDB {
   buyables: BuyableModel;
   commends: CommendsModel;
   reactRoles: ReactionRolesModel;
+  marketplace: MarketplaceModel;
 }
 
 interface Schemas {
