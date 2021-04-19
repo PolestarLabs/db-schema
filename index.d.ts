@@ -198,6 +198,23 @@ interface AlertsModel extends mongoose.Model<AlertsSchema> {
   get: dbGetter<AlertsSchema>;
 }
 
+interface Feed<T extends 'rss' | 'twitch' | 'youtube' | 'reminder'> {
+  server: string;
+  type: 'rss' | 'twitch' | 'youtube';
+  url: string;
+  last: any;
+  channel: string | 'dm';
+  thumb: string;
+  name: string;
+  expires: number;
+  repeat: number;
+}
+interface FeedSchema extends mongoose.Document, Feed {}
+interface FeedModel extends mongoose.Model<FeedSchema> {
+  set: dbSetter<FeedSchema>;
+  get: dbGetter<FeedSchema>;
+}
+
 interface miscDB {
   gift: GiftItemModel;
   paidroles: PaidRolesModel;
@@ -210,6 +227,7 @@ interface miscDB {
   marketplace: MarketplaceModel;
   relationships: RelationshipModel;
   alert: AlertsModel;
+  feed: FeedModel;
 }
 
 interface Schemas {
