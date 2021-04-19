@@ -79,7 +79,7 @@ const FanartModel = new Schema({
 
 const MarketplaceModel = new Schema({
   id: String,
-  item_id: String,
+  item_id: {type: String , ref: "Item"},
   item_type: String,
   price: Number,
   currency: String,
@@ -90,18 +90,32 @@ const MarketplaceModel = new Schema({
   completed: Boolean,
 }, { strict: false });
 
+MarketplaceModel.virtual("authorData",{
+  ref: 'User',
+  localField: 'author',
+  foreignField: 'id',
+  justOne: true
+})
+MarketplaceModel.virtual("itemData",{
+  ref: 'Item',
+  localField: 'item_id',
+  foreignField: '_id',
+  justOne: true
+})
+
+
 const RelationShipModel = new Schema({
   id: String,
-  users: [{type:String, ref:'User'}],
-  ring: {type:String, ref:'Item'},
-  ringCollection: [{type:String, ref: 'Item'}],
-  initiative: {type:String, ref:'User'},
+  users: [{type:String }],
+  ring: {type:String },
+  ringCollection: [{type:String }],
+  initiative: {type:String },
   since: Schema.Types.int64,
   lovepoints: Number,
   type: String, // MARRIAGE / PARENTS / CHILDREN
 
 }, { strict: false });
-RelationShipModel.virtual()
+
 
 
 const GiftItem = new Schema({
