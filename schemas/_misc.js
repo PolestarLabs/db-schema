@@ -101,6 +101,8 @@ const RelationShipModel = new Schema({
   type: String, // MARRIAGE / PARENTS / CHILDREN
 
 }, { strict: false });
+RelationShipModel.virtual()
+
 
 const GiftItem = new Schema({
   id: String,
