@@ -231,6 +231,18 @@ interface FeedModel extends mongoose.Model<FeedSchema> {
   get: dbGetter<FeedSchema, Feed>;
 }
 
+interface Control {
+  id: string;
+  data: any;
+}
+interface ControlSchema extends mongoose.Document, Control {
+  id: string;
+}
+interface ControlModel extends mongoose.Model<ControlSchema> {
+  set: dbSetter<ControlSchema>;
+  get: dbGetter<ControlSchema, Control>;
+}
+
 interface miscDB {
   gift: GiftItemModel;
   paidroles: PaidRolesModel;
@@ -244,6 +256,7 @@ interface miscDB {
   relationships: RelationshipModel;
   alert: AlertsModel;
   feed: FeedModel;
+  control: ControlModel;
 }
 
 interface Schemas {
