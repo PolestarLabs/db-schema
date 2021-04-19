@@ -92,11 +92,11 @@ const MarketplaceModel = new Schema({
 
 const RelationShipModel = new Schema({
   id: String,
-  users: Array,
-  ring: String,
-  ringCollection:Array,
-  initiative: String,
-  since: Number,
+  users: [{type:String, ref:'User'}],
+  ring: {type:String, ref:'Item'},
+  ringCollection: [{type:String, ref: 'Item'}],
+  initiative: {type:String, ref:'User'},
+  since: Schema.Types.int64,
   lovepoints: Number,
   type: String, // MARRIAGE / PARENTS / CHILDREN
 
