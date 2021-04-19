@@ -3,6 +3,7 @@
   "version": "0.9.5",
   "description": "Database Schemas & Functions",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
