@@ -90,17 +90,22 @@ const MarketplaceModel = new Schema({
   completed: Boolean,
 }, { strict: false });
 
+
+
+
 const RelationShipModel = new Schema({
   id: String,
-  users: Array,
-  ring: String,
-  ringCollection:Array,
-  initiative: String,
+  users: [{type:String }],
+  ring: {type:String },
+  ringCollection: [{type:String }],
+  initiative: {type:String },
   since: Number,
   lovepoints: Number,
   type: String, // MARRIAGE / PARENTS / CHILDREN
 
 }, { strict: false });
+
+
 
 const GiftItem = new Schema({
   id: String,
