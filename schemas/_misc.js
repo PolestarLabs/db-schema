@@ -79,7 +79,7 @@ const FanartModel = new Schema({
 
 const MarketplaceModel = new Schema({
   id: String,
-  item_id: {type: String , ref: "Item"},
+  item_id: String,
   item_type: String,
   price: Number,
   currency: String,
@@ -89,19 +89,6 @@ const MarketplaceModel = new Schema({
   lock: Boolean,
   completed: Boolean,
 }, { strict: false });
-
-MarketplaceModel.virtual("authorData",{
-  ref: 'User',
-  localField: 'author',
-  foreignField: 'id',
-  justOne: true
-})
-MarketplaceModel.virtual("itemData",{
-  ref: 'Item',
-  localField: 'item_id',
-  foreignField: '_id',
-  justOne: true
-})
 
 
 const RelationShipModel = new Schema({
