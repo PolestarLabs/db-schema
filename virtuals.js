@@ -1,32 +1,33 @@
 const Schemas = require("./schemas.js");
 
-const MarketplaceSchema = Schemas.marketplace.schema;
-const UserSchema = Schemas.users.schema;
-const ItemSchema = Schemas.items.schema;
-const CosmeticsSchema = Schemas.cosmetics.schema;
+const Marketplace = Schemas.marketplace.schema;
+const Users = Schemas.users.schema;
+const Items = Schemas.items.schema;
+const Cosmetics = Schemas.cosmetics.schema;
+const Relationships = Schemas.relationships.schema;
 
-MarketplaceSchema.virtual("authorData",{
+Marketplace.virtual("authorData",{
     ref: 'UserDB',
     localField: 'author',
     foreignField: 'id',
     justOne: true
 });
 
-MarketplaceSchema.virtual("moreFromAuthor",{
+Marketplace.virtual("moreFromAuthor",{
     ref: 'marketplace',
     localField: 'author',
     foreignField: 'author',
     justOne: false
 });
 
-MarketplaceSchema.virtual("moreLikeThis",{
+Marketplace.virtual("moreLikeThis",{
     ref: 'marketplace',
     localField: 'item_id',
     foreignField: 'item_id',
     justOne: false
 });
 
-MarketplaceSchema.virtual("itemData",{
+Marketplace.virtual("itemData",{
     ref: function () {
         return ['background','medal','flair','sticker','shade'].includes(this.item_type)
             ? "Cosmetic"
@@ -37,22 +38,52 @@ MarketplaceSchema.virtual("itemData",{
     justOne: true
 });
 
-UserSchema.virtual("itemsData",{
+
+// USER
+
+Users.virtual("itemsData",{
     ref: 'Item',
     localField: 'modules.inventory.id',
     foreignField: 'id',
     justOne: false
 });
 
+Users.virtual("fanarts",{
+    ref: 'fanart',
+    localField: 'id',
+    foreignField: 'author_ID',
+    justOne: false
+});
 
-ItemSchema.virtual("stickers",{
+Users.virtual("collections",{
+    ref: 'UserCollection',
+    localField: 'id',
+    foreignField: 'id',
+    select: "collections",
+    justOne: true
+});
+
+// RELATIONSHIPS
+
+Relationships.virtual("usersData",{
+    ref: 'UserDB',
+    localField: 'users',
+    foreignField: 'id',
+    justOne: false
+});
+
+
+
+// ITEM
+
+Items.virtual("stickers",{
     ref: 'Cosmetic',
     localField: 'icon',
     foreignField: 'id',
     justOne: false
 });
 
-CosmeticsSchema.virtual("packData",{
+Cosmetics.virtual("packData",{
     ref: 'Item',
     localField: 'series_id',
     foreignField: 'icon',
