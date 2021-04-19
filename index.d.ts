@@ -1,3 +1,5 @@
+// @ts-check
+
 import { User, Member } from 'eris';
 import mongoose from 'mongoose';
 import mongodb from 'mongodb';
@@ -36,7 +38,9 @@ interface GiftItem {
   icon: string;
   message: string;
 }
-interface GiftItemSchema extends mongoose.Document, GiftItem {}
+interface GiftItemSchema extends mongoose.Document, GiftItem {
+  id: string;
+}
 interface GiftItemModel extends mongoose.Model<GiftItemSchema> {
   set: dbSetter<GiftItemSchema>;
   get: dbGetter<GiftItemSchema, GiftItem>;
@@ -60,7 +64,9 @@ interface Globals {
   id: number;
   data: any;
 }
-interface GlobalsSchema extends mongoose.Document, Globals {}
+interface GlobalsSchema extends mongoose.Document, Globals {
+  id: number;
+}
 interface GlobalsModel extends mongoose.Model<GlobalsSchema> {
   set(alter: Globals): Promise<mongodb.UpdateWriteOpResult['result']>;
   get(): Promise<GlobalsSchema | any>;
@@ -70,7 +76,9 @@ interface UserCollection {
   id: string;
   collections: any;
 }
-interface UserCollectionSchema extends mongoose.Document, UserCollection {}
+interface UserCollectionSchema extends mongoose.Document, UserCollection {
+  id: string;
+}
 interface UserCollectionModel extends mongoose.Model<UserCollectionSchema> {
   set: dbSetter<UserCollectionSchema>;
   get: dbGetter<UserCollectionSchema, UserCollection>;
@@ -89,7 +97,9 @@ interface Fanart {
   publish: boolean;
   extras: any;
 }
-interface FanartSchema extends mongoose.Document, Fanart {}
+interface FanartSchema extends mongoose.Document, Fanart {
+  id: string;
+}
 interface FanartModel extends mongoose.Model<FanartSchema> {
   set: dbSetter<FanartSchema>;
   get: dbGetter<FanartSchema, Fanart>;
@@ -106,7 +116,9 @@ interface Buyable {
   filter: string;
   other: any;
 }
-interface BuyableSchema extends mongoose.Document, Buyable {}
+interface BuyableSchema extends mongoose.Document, Buyable {
+  id: string;
+}
 interface BuyableModel extends mongoose.Model<BuyableSchema> {
   set: dbSetter<BuyableSchema>;
   get: dbGetter<BuyableSchema, Buyable>;
@@ -127,7 +139,7 @@ interface Commends {
 interface CommendsSchema extends mongoose.Document, Commends {}
 interface CommendsModel extends mongoose.Model<CommendsSchema> {
   set: dbSetter<CommendsSchema>;
-  get: dbGetter<CommendsSchema>;
+  get: dbGetter<CommendsSchema, Commends>;
   add: (idFrom: string, idTo: string) => Promise<number>;
   parseFull: (userId: string | Member | User) => Promise<CommendsParsed>;
 }
@@ -145,7 +157,7 @@ interface ReactionRoles {
 interface ReactionRolesSchema extends mongoose.Document, ReactionRoles {}
 interface ReactionRolesModel extends mongoose.Model<ReactionRolesSchema> {
   set: dbSetter<ReactionRolesSchema>;
-  get: dbGetter<ReactionRolesSchema>;
+  get: dbGetter<ReactionRolesSchema, ReactionRoles>;
 }
 
 interface Marketplace {
@@ -157,10 +169,12 @@ interface Marketplace {
   author: string;
   timestamp: number;
 }
-interface MarketplaceSchema extends mongoose.Document, Marketplace {}
-interface MarketplaceModel extends mongoose.Model<MarketplaceModel> {
+interface MarketplaceSchema extends mongoose.Document, Marketplace {
+  id: string;
+}
+interface MarketplaceModel extends mongoose.Model<MarketplaceSchema> {
   set: dbSetter<MarketplaceSchema>;
-  get: dbGetter<MarketplaceSchema>;
+  get: dbGetter<MarketplaceSchema, Marketplace>;
   new: (payload: Marketplace) => void;
 }
 
@@ -174,10 +188,12 @@ interface Relationship {
   lovepoints: number;
   type: 'marriage' | 'parents' | 'children';
 }
-interface RelationshipSchema extends mongoose.Document, Relationship {}
+interface RelationshipSchema extends mongoose.Document, Relationship {
+  id: string;
+} // @ts-ignore
 interface RelationshipModel extends mongoose.Model<RelationshipSchema> {
   set: dbSetter<RelationshipSchema>;
-  get: dbGetter<RelationshipSchema>;
+  get: dbGetter<RelationshipSchema, Relationship>;
   create: (type: 'marriage' | 'parents' | 'children', users: [string, string], initiative: string, ring: 'jade' | 'sapphire' | 'stardust' | 'rubine', date?: number) => Promise<RelationshipSchema>;
 }
 
@@ -195,24 +211,24 @@ interface Alerts {
 interface AlertsSchema extends mongoose.Document, Alerts {}
 interface AlertsModel extends mongoose.Model<AlertsSchema> {
   set: dbSetter<AlertsSchema>;
-  get: dbGetter<AlertsSchema>;
+  get: dbGetter<AlertsSchema, Alerts>;
 }
 
-interface Feed<T extends 'rss' | 'twitch' | 'youtube' | 'reminder'> {
-  server: string;
-  type: 'rss' | 'twitch' | 'youtube';
+interface Feed<T extends 'rss' | 'twitch' | 'youtube' | 'reminder' = 'rss' | 'twitch' | 'youtube' | 'reminder'> {
+  server: T extends 'reminder' ? undefined : string;
+  type: T;
   url: string;
   last: any;
-  channel: string | 'dm';
-  thumb: string;
+  channel: string;
+  thumb: T extends 'reminder' ? undefined : T extends 'youtube' ? string | null : string;
   name: string;
-  expires: number;
-  repeat: number;
+  expires: T extends 'reminder' ? number : undefined;
+  repeat: T extends 'reminder' ? number : undefined;
 }
 interface FeedSchema extends mongoose.Document, Feed {}
 interface FeedModel extends mongoose.Model<FeedSchema> {
   set: dbSetter<FeedSchema>;
-  get: dbGetter<FeedSchema>;
+  get: dbGetter<FeedSchema, Feed>;
 }
 
 interface miscDB {
