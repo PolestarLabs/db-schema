@@ -181,6 +181,23 @@ interface RelationshipModel extends mongoose.Model<RelationshipSchema> {
   create: (type: 'marriage' | 'parents' | 'children', users: [string, string], initiative: string, ring: 'jade' | 'sapphire' | 'stardust' | 'rubine', date?: number) => Promise<RelationshipSchema>;
 }
 
+interface AlertInfo {
+  time: number;
+  interval: number;
+  text: string;
+}
+interface Alerts {
+  type: 'recurring' | 'onetime';
+  scope: 'server' | 'dm';
+  channel: string;
+  alerts: AlertInfo[];
+}
+interface AlertsSchema extends mongoose.Document, Alerts {}
+interface AlertsModel extends mongoose.Model<AlertsSchema> {
+  set: dbSetter<AlertsSchema>;
+  get: dbGetter<AlertsSchema>;
+}
+
 interface miscDB {
   gift: GiftItemModel;
   paidroles: PaidRolesModel;
@@ -192,6 +209,7 @@ interface miscDB {
   reactRoles: ReactionRolesModel;
   marketplace: MarketplaceModel;
   relationships: RelationshipModel;
+  alert: AlertsModel;
 }
 
 interface Schemas {
