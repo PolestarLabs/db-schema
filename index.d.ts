@@ -164,6 +164,23 @@ interface MarketplaceModel extends mongoose.Model<MarketplaceModel> {
   new: (payload: Marketplace) => void;
 }
 
+interface Relationship {
+  id: string;
+  users: [string, string]; // NOTE this could increase to 3 in the future
+  ring: 'jade' | 'sapphire' | 'stardust' | 'rubine';
+  ringCollection: string[];
+  initiative: string;
+  since: number;
+  lovepoints: number;
+  type: 'marriage' | 'parents' | 'children';
+}
+interface RelationshipSchema extends mongoose.Document, Relationship {}
+interface RelationshipModel extends mongoose.Model<RelationshipSchema> {
+  set: dbSetter<RelationshipSchema>;
+  get: dbGetter<RelationshipSchema>;
+  create: (type: 'marriage' | 'parents' | 'children', users: [string, string], initiative: string, ring: 'jade' | 'sapphire' | 'stardust' | 'rubine', date?: number) => Promise<RelationshipSchema>;
+}
+
 interface miscDB {
   gift: GiftItemModel;
   paidroles: PaidRolesModel;
@@ -174,6 +191,7 @@ interface miscDB {
   commends: CommendsModel;
   reactRoles: ReactionRolesModel;
   marketplace: MarketplaceModel;
+  relationships: RelationshipModel;
 }
 
 interface Schemas {
