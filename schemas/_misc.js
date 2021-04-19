@@ -79,12 +79,7 @@ const FanartModel = new Schema({
 
 const MarketplaceModel = new Schema({
   id: String,
-  item_id: {type: String , refPath: "itemModel"},
-  itemModel: {
-    type: String,
-    required: true,
-    enum: ['Item', 'Cosmetic']
-  },
+  item_id: String,
   item_type: String,
   price: Number,
   currency: String,
