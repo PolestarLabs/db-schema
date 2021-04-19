@@ -79,7 +79,12 @@ const FanartModel = new Schema({
 
 const MarketplaceModel = new Schema({
   id: String,
-  item_id: String,
+  item_id: {type: String , refPath: "itemModel"},
+  itemModel: {
+    type: String,
+    required: true,
+    enum: ['Item', 'Cosmetic']
+  },
   item_type: String,
   price: Number,
   currency: String,
@@ -91,13 +96,15 @@ const MarketplaceModel = new Schema({
 }, { strict: false });
 
 
+
+
 const RelationShipModel = new Schema({
   id: String,
   users: [{type:String }],
   ring: {type:String },
   ringCollection: [{type:String }],
   initiative: {type:String },
-  since: Schema.Types.int64,
+  since: Number,
   lovepoints: Number,
   type: String, // MARRIAGE / PARENTS / CHILDREN
 
