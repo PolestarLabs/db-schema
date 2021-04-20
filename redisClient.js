@@ -32,7 +32,8 @@ const init = (host, port, options = {time:600}) => {
         if (cacheValue) {
             
             const doc = JSON.parse(cacheValue);
-            console.log("cache redis ok".green);
+            console.log("•".green, " Cache hit");
+            doc._cache = true;
             return doc;
             return Array.isArray(doc) ?
                 doc.map((d) => this.model(d)) :
