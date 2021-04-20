@@ -1,10 +1,20 @@
 const mongoose = require("mongoose");
+const RedisCache = require("./redisClient.js");
 
 const Schemas = require('./schemas.js');
 const Virtuals = require('./virtuals.js');
 
-module.exports = async function ({hook,	url, options}) {
+module.exports = async function ({hook,	url, options},extras) {
 	return new Promise(async resolve => {
+
+
+		if (extras?.redis){
+			RedisCache(
+				extras.redis.host,
+				extras.redis.port,
+				extras.redis.options
+			)
+		}
 
 		console.info("• ".blue, "Connecting to Database...");
 
