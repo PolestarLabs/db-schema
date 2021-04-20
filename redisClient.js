@@ -38,10 +38,7 @@ const init = (host, port, options = {time:600}) => {
             const doc = JSON.parse(cacheValue);
             console.log("•".green, "Cache hit", queryKey.slice(0,50).gray );
             doc._cache = true;
-            return doc;
-            //return Array.isArray(doc) ?
-                doc.map((d) => this.model(d)) :
-                this.model(doc);
+            return doc;           
         }
 
         const result = await original_exec.apply(this, arguments);
