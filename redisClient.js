@@ -12,7 +12,7 @@ const init = (host, port, options = {time:600}) => {
     redisClient.aget =  promisify(redisClient.get);
 
     mongoose.Query.prototype.noCache = function () {
-        this.noCache = true;
+        this.ignoreCache = true;
         return this;
     };
 
@@ -23,7 +23,7 @@ const init = (host, port, options = {time:600}) => {
         const queryKey = this.mongooseCollection.name + JSON.stringify( {...this.getQuery()}   );
         console.log((this.op+"----------------").blue + queryKey.slice(0,50).gray )
 
-        if ( this.noCache ||  ["update","updateOne","updateMany"].includes(this.op) ) {
+        if ( this.ignoreCache ||  ["update","updateOne","updateMany"].includes(this.op) ) {
             redisClient.expire(queryKey,1);
             return await original_exec.apply(this, arguments);
         }
@@ -31,6 +31,7 @@ const init = (host, port, options = {time:600}) => {
         const cacheValue = await redisClient.aget(queryKey);
 
         if (cacheValue) {
+            
             const doc = JSON.parse(cacheValue);
             console.log("cache redis ok".green);
             return doc;
@@ -45,8 +46,8 @@ const init = (host, port, options = {time:600}) => {
         console.log(restring?.length)
         if(!result) return result;
         redisClient.set(queryKey, restring);
-        //redisClient.expire(queryKey, 0);
-        this.noCache = false;
+        redisClient.expire(queryKey, 60 * 2);   
+        this.ignoreCache = false;
         return result;
     };
     PLX.redis=redisClient;
