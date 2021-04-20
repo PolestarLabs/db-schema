@@ -38,8 +38,8 @@ const init = (host, port, options = {time:600}) => {
             const doc = JSON.parse(cacheValue);
             console.log("•".green, "Cache hit", queryKey.slice(0,50).gray );
             doc._cache = true;
-            //return doc;
-            return Array.isArray(doc) ?
+            return doc;
+            //return Array.isArray(doc) ?
                 doc.map((d) => this.model(d)) :
                 this.model(doc);
         }
@@ -55,7 +55,7 @@ const init = (host, port, options = {time:600}) => {
         redisClient.expire(queryKey, 60);
         return result;
     };
-    
+
     PLX.redis=redisClient;
     return redisClient;
 }
