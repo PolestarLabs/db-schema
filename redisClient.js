@@ -10,7 +10,6 @@ const init = (host, port, options = {time:600}) => {
     });
 
     redisClient.aget =  promisify(redisClient.get);
-
     mongoose.Query.prototype.noCache = function () {
         this.ignoreCache = true;
         return this;
