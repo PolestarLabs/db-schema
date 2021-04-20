@@ -19,8 +19,13 @@ const init = (host, port, options = {time:600}) => {
 
     const original_exec = mongoose.Query.prototype.exec;
     mongoose.Query.prototype.exec = async function () {
-        const queryKey = this.mongooseCollection.name + JSON.stringify( {...this.getQuery()}   );
-        console.log((this.op+"----------------").blue + queryKey.slice(0,50).gray )
+        let queryFilter = this.getFilter();
+        let filterKeys = Object.keys(queryFilter);
+        
+        let queryKey = `${this.mongooseCollection.name}.${this.op}.${JSON.stringify(queryFilter)}` 
+        if ( filterKeys.length === 1 && filterKeys[0] === 'id' ){
+            queryKey - `${this.mongooseCollection.name}.${this.op}.${queryFilter.id}`
+        }
 
         if ( this.ignoreCache ||  ["update","updateOne","updateMany"].includes(this.op) ) {
             redisClient.expire(queryKey,1);
@@ -29,27 +34,28 @@ const init = (host, port, options = {time:600}) => {
         
         const cacheValue = await redisClient.aget(queryKey);
 
-        if (cacheValue) {
-            
+        if (cacheValue) {            
             const doc = JSON.parse(cacheValue);
-            console.log("•".green, " Cache hit");
+            console.log("•".green, "Cache hit", queryKey.slice(0,50).gray );
             doc._cache = true;
-            return doc;
+            //return doc;
             return Array.isArray(doc) ?
                 doc.map((d) => this.model(d)) :
                 this.model(doc);
         }
 
         const result = await original_exec.apply(this, arguments);
-        console.log("db res".red, queryKey.slice(0,50));
+        console.log("•".red,"Uncached", queryKey.slice(0,50).gray );
         let restring = JSON.stringify(result);
-        console.log(restring?.length)
-        if(!result) return result;
-        redisClient.set(queryKey, restring);
-        redisClient.expire(queryKey, 60 * 2);   
+
         this.ignoreCache = false;
+
+        if(!result) return null;
+        redisClient.set(queryKey, restring);
+        redisClient.expire(queryKey, 60);
         return result;
     };
+    
     PLX.redis=redisClient;
     return redisClient;
 }
