@@ -8,6 +8,7 @@ const init = (host, port, options = {time:600}) => {
         host,port,
         retry_strategy: () => 1000,
     });
+    redisClient.verbose = false;
 
     redisClient.aget =  promisify(redisClient.get);
     mongoose.Query.prototype.noCache = function () {
@@ -41,14 +42,14 @@ const init = (host, port, options = {time:600}) => {
 
         if (cacheValue) {            
             const doc = JSON.parse(cacheValue);
-            console.log("•".green, "Cache hit", queryKey.slice(0,50).gray );
+            if (redisClient.verbose) console.log("•".green, "Cache hit", queryKey.slice(0,50).gray );
             doc._cache = true;
             let mod = this;
             return Array.isArray(doc) ? doc.map(d=> mod.model.hydrate(d) ) : this.model.hydrate(doc);
         }
 
         const result = await original_exec.apply(this, arguments);
-        console.log("•".red,"Uncached", queryKey.slice(0,50).gray );
+        if (redisClient.verbose) console.log("•".red,"Uncached", queryKey.slice(0,50).gray );
         let restring = JSON.stringify(result);
 
         this.ignoreCache = false;
