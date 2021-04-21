@@ -1,10 +1,7 @@
-// @ts-check
-
 import { User, Member } from 'eris';
 import mongoose from 'mongoose';
 import mongodb from 'mongodb';
 import redis from 'redis';
-import bluebird from 'bluebird';
 
 // Utils
 
@@ -259,14 +256,146 @@ interface miscDB {
   control: ControlModel;
 }
 
+interface GreetModule {
+  enabled: boolean;
+  text: string;
+  channel: string;
+  timer: number;
+}
+type RoleNameIDPair = [string, string];
+interface ServerModule {
+  BUSTER: any;
+  shitpostFeed: any;
+  GREET: GreetModule;
+  FWELL: GreetModule;
+  LVUP: boolean;
+  LVUP_local: boolean;
+  autoRoleStack: boolean;
+  DROPS: boolean;
+  ANNOUNCE: boolean;
+  PREFIX: string;
+  LANGUAGE: string;
+  MODROLE: string;
+  DISABLED: string[];
+  /** @deprecated */
+  MUTEDUSERS: unknown[];
+  MUTEROLE: string;
+  SELFROLES: RoleNameIDPair[];
+  AUTOROLES: RoleNameIDPair[];
+  ROLEMARKET: RoleNameIDPair[]; // TODO double check
+  REACTIONS: any;
+  ACTLOG: string;
+  MODLOG: string;
+  ADVLOG: string;
+  LOGCHANNEL: string;
+  customMedals: any;
+  legendaryFish: string;
+  pondSize: number;
+  background: string;
+  bgInventory: unknown[]; // TODO find out
+  /** @deprecated */
+  UPFACTOR: number;
+  statistics: any;
+  putometro_last: number;
+  putometro_max: number;
+}
+interface LogsActions {
+  userJoin: boolean;
+  userLeave: boolean;
+  messDel: boolean;
+  messEdit: boolean;
+}
+interface LogsModeration {
+  usrBan: boolean;
+  usrKick: boolean;
+  usrMute: boolean;
+  usrUnmute: boolean;
+}
+interface LogsAdvanced {
+  newChan: boolean;
+  newRole: boolean;
+  permsEdit: boolean;
+  revokeBan: boolean;
+  uptRole: boolean;
+  delChan: boolean;
+  usrNick: boolean;
+  usrPhoto: boolean;
+  usrRoles: boolean;
+}
+interface ServerLogs {
+  act: LogsActions;
+  mod: LogsModeration;
+  adv: LogsAdvanced;
+}
+interface Server {
+  id: string;
+  name: string;
+  globalhandle: string;
+  globalPrefix: boolean;
+  respondDisabled: boolean;
+  event: any;
+  eventReg: string;
+  partner: boolean;
+  progression: any;
+  partnerDetails: any;
+  utilityChannels: any;
+  logging: boolean;
+  imgwelcome: boolean;
+  splitLogs: boolean;
+  switches: any;
+  modules: ServerModule;
+  logs: ServerLogs;
+  channels: any;
+  lastUpdated: Date; // NOTE Told flicky he can just enable the `timestamps` option for the schema
+}
+interface ServerSchema extends mongoose.Document, Server {
+  id: string;
+}
+interface ServerModel extends mongoose.Model<ServerSchema> {
+  updateMeta: ServerMetadataModel['updateMeta'];
+  meta: ServerMetadataModel['get'];
+  new: (svData: Server) => void;
+  cat: 'guilds';
+  set: dbSetter<ServerSchema>;
+  get: dbGetter<ServerSchema, Server>;
+}
+
+interface ServerMetadataChannel {
+  name: string;
+  pos: number;
+  id: string;
+  cat: string;
+  type: Exclude<import('eris').ChannelTypes, 1 | 3>;
+  nsfw: boolean;
+}
+interface ServerMetadata {
+  id: string;
+  name: string;
+  number: string;
+  roles: RoleNameIDPair[];
+  adms: string[];
+  channels: ServerMetadataChannel[];
+  icon: string;
+}
+interface ServerMetadataSchema extends mongoose.Document, ServerMetadata {
+  id: string;
+}
+interface ServerMetadataModel extends mongoose.Model<ServerMetadataSchema> {
+  set: dbSetter<ServerMetadataSchema>;
+  get: dbGetter<ServerMetadataSchema, ServerMetadata>;
+  cat: 'sv_meta';
+  updateMeta: (S: ServerMetadata) => Promise<string | boolean>;
+}
+
 interface Schemas {
   // TODO missing
+  native: miscDB['global']['db'];
+  serverDB: ServerModel;
   miscDB: miscDB;
   paidroles: miscDB['paidroles'];
   gifts: miscDB['gift'];
   globalDB: miscDB['global'];
   globals: miscDB['global'];
-  native: miscDB['global']['db'];
   usercols: miscDB['usercols'];
 }
 
