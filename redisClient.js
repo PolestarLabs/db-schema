@@ -15,8 +15,13 @@ const init = (host, port, options = {time:600}) => {
         return this;
     };
 
-  
-
+    const original_populate = mongoose.Query.prototype.populate;
+    mongoose.Query.prototype.populate = function () {
+        this.ignoreCache = true;
+        this.skipCache = true;
+        return original_populate.apply(this, arguments);
+    };
+    
     const original_exec = mongoose.Query.prototype.exec;
     mongoose.Query.prototype.exec = async function () {
         let queryFilter = this.getFilter();
@@ -28,7 +33,7 @@ const init = (host, port, options = {time:600}) => {
         }
 
         if ( this.ignoreCache ||  ["update","updateOne","updateMany"].includes(this.op) ) {
-            redisClient.expire(queryKey,1);
+            if (!this.skipCache) redisClient.expire(queryKey,1);            
             return await original_exec.apply(this, arguments);
         }
         
@@ -38,7 +43,8 @@ const init = (host, port, options = {time:600}) => {
             const doc = JSON.parse(cacheValue);
             console.log("•".green, "Cache hit", queryKey.slice(0,50).gray );
             doc._cache = true;
-            return doc;           
+            let mod = this;
+            return Array.isArray(doc) ? doc.map(d=> mod.model.hydrate(d) ) : this.model.hydrate(doc);
         }
 
         const result = await original_exec.apply(this, arguments);
