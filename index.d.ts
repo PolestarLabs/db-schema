@@ -1,4 +1,4 @@
-import { User, Member } from 'eris';
+import { User as ErisUser, Member, ChannelTypes } from 'eris';
 import mongoose from 'mongoose';
 import mongodb from 'mongodb';
 import redis from 'redis';
@@ -138,7 +138,7 @@ interface CommendsModel extends mongoose.Model<CommendsSchema> {
   set: dbSetter<CommendsSchema>;
   get: dbGetter<CommendsSchema, Commends>;
   add: (idFrom: string, idTo: string) => Promise<number>;
-  parseFull: (userId: string | Member | User) => Promise<CommendsParsed>;
+  parseFull: (userId: string | Member | ErisUser) => Promise<CommendsParsed>;
 }
 
 interface ReactionRole {
@@ -365,7 +365,7 @@ interface ServerMetadataChannel {
   pos: number;
   id: string;
   cat: string;
-  type: Exclude<import('eris').ChannelTypes, 1 | 3>;
+  type: Exclude<ChannelTypes, 1 | 3>;
   nsfw: boolean;
 }
 interface ServerMetadata {
@@ -387,10 +387,114 @@ interface ServerMetadataModel extends mongoose.Model<ServerMetadataSchema> {
   updateMeta: (S: ServerMetadata) => Promise<string | boolean>;
 }
 
+interface UserModules {
+  powerups: any;
+  lovepoints: number;
+  PERMS: number;
+  level: number;
+  exp: number;
+  persotext: string;
+  tagline: string;
+  rep: number;
+  repdaily: number;
+  favcolor: string;
+  inventory: { id: string; count: number; crafted?: number };
+  bgID: string;
+  sticker: string;
+  bgInventory: string[];
+  skins: any;
+  skinInventory: string[];
+  achievements: { id: string; unlocked: number };
+  SPH: number;
+  RBN: number;
+  JDE: number;
+  coins: number;
+  dyStreakHard: number;
+  daily: number;
+  flairTop: string;
+  flairDown: string;
+  flairsInventory: string[];
+  medals: [string | 0];
+  medalInventory: string[];
+  stickerInventory: string[];
+  stickerCollection: unknown; // TODO
+  fishes: unknown; // TODO
+  fishCollection: unknown; // TODO
+  commend: number;
+  commended: number;
+  fun: { waifu: any; lovers: any; shiprate: any };
+  statistics: any;
+}
+type Donator = 'plastic' | 'aluminium' | 'iron' | 'carbon' | 'lithium' | 'iridium' | 'palladium' | 'zircon' | 'uranium' | 'xastatine' | 'antimatter' | 'neutrino';
+interface Quest {
+  id: number;
+  tracker: string; // TODO `${quest.action}.${quest.type}${quest.condition?"."+quest.condition:""}`
+  completed: boolean;
+  progress: number;
+  target: number;
+}
+interface User {
+  id: string;
+  name: string;
+  personalhandle: string;
+  meta: any;
+  switches: any;
+  progression: any;
+  spdaily: any;
+  rewardsMonth: number;
+  rewardsClaimed: boolean;
+  personal: any;
+  tag: string;
+  hidden: boolean;
+  eventDaily: number;
+  eventGoodie: number;
+  cherries: number;
+  cherrySet: any;
+  lastUpdated: Date;
+  blacklisted: string;
+  married: unknown; // TODO
+  eventData: any;
+  featuredMarriage: string;
+  counters: any;
+  modules: UserModules;
+  partner: boolean;
+  polluxmod: boolean;
+  donator: Donator;
+  donatorActive: string; // TODO legacy?
+  limits: any;
+  quests: Quest[];
+}
+interface Item {
+  id: string;
+  count: number;
+}
+interface UserSchema extends mongoose.Document, User {
+  id: string;
+  addItem: (item: string, amt?: number, crafted?: boolean) => Promise<mongodb.UpdateWriteOpResult['result']>;
+  modifyItems(items: Item[], debug: true): Promise<[Item[], { id: string }, { $inc: number }, { arrayFilters: { [key: string]: string }[] }]>;
+  modifyItems(items: Item[], debug?: boolean): Promise<mongodb.UpdateWriteOpResult['result']>;
+  removeItem: UserSchema['addItem'];
+  upCommend: (USER: ErisUser | Member, amt?: number) => ReturnType<miscDB['commends']['parseFull']>;
+  hasItem: (itemId: string, count?: number) => boolean;
+  amtItem: (itemId: string, search?: string) => number;
+  addXP: (amt?: number) => Promise<mongodb.UpdateWriteOpResult['result']>;
+  incrementAttr: (attr: string, amt?: number, upper?: boolean) => Promise<mongodb.UpdateWriteOpResult['result']>;
+}
+interface UserModel extends mongoose.Model<UserSchema> {
+  updateMeta: (U: ErisUser) => Promise<void>;
+  new: (userData: User) => Promise<UserSchema>;
+  cat: 'users';
+  check: never; // NOTE This will error
+  set: dbSetter<UserSchema>;
+  get: dbGetter<UserSchema, User>;
+  getFull: dbGetterFull<UserSchema>;
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
   serverDB: ServerModel;
+  userDB: UserModel;
   miscDB: miscDB;
   paidroles: miscDB['paidroles'];
   gifts: miscDB['gift'];
