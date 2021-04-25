@@ -63,6 +63,13 @@ Users.virtual("collections",{
     justOne: true
 });
 
+Users.virtual("marriageData",{
+    ref: 'Relationship',
+    localField: 'featuredMarriage',
+    foreignField: '_id',
+    justOne: true
+});
+
 // RELATIONSHIPS
 
 Relationships.virtual("usersData",{
