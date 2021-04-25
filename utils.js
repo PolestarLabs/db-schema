@@ -33,7 +33,7 @@ module.exports = {
         }catch(err){
             
         }
-        return resolve(data);
+        return resolve(data?._doc || data);
       });
     });
   },
