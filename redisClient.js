@@ -56,7 +56,7 @@ const init = (host, port, options = {time:600}) => {
 
         if(!result) return null;
         redisClient.set(queryKey, restring);
-        redisClient.expire(queryKey, 60);
+        redisClient.expire(queryKey, 60 * 60 * 1);
         return result;
     };
 
