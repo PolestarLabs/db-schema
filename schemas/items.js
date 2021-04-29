@@ -42,7 +42,7 @@ module.exports = function ITEM_DB(activeConnection){
 
   }, { strict: false });
 
-  const MODEL = mongoose.model("Item", Item, "items");
+  const MODEL = activeConnection.model("Item", Item, "items");
 
   MODEL.getAll = async function () { return (await MODEL.find({})); };
   MODEL.get = async function (id) {
