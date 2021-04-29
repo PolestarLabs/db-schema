@@ -232,7 +232,7 @@ module.exports = function USER_DB(activeConnection){
   }
 
   UserSchema.methods.upCommend = function upCommend(USER, amt = 1) {
-    const miscDB = require("./_misc.js");
+    const miscDB = require("./_misc.js")(activeConnection);
     return new Promise(async (resolve) => {    
       await miscDB.commends.add(this.id, USER.id, amt);
       const res = await miscDB.commends.parseFull(this.id);

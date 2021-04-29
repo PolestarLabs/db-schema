@@ -107,7 +107,7 @@ module.exports = function MISC_DB(activeConnection){
 
   const MODEL = activeConnection.model("ServerDB", ServerSchema, "serverdb");
 
-  const META = require("./serverMeta.js");
+  const META = require("./serverMeta.js")(activeConnection);
 
   META.updateMeta = function (S) {
     return new Promise(async (resolve) => {
