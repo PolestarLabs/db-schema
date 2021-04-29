@@ -5,19 +5,23 @@ const utils = require("../utils.js");
 
 const { Mixed } = Schema.Types;
 
-const collectibles = new Schema({
-  name: String,
-  id: { type: String, index: { unique: true } },
-  rarity: String,
-  icon: String,
-  emoji: String,
-  attribs: Mixed,
+module.exports = function COLLECT_DB(activeConnection){
 
-});
 
-const MODEL = mongoose.model("collectibles", collectibles, "collectibles");
+  const collectibles = new Schema({
+    name: String,
+    id: { type: String, index: { unique: true } },
+    rarity: String,
+    icon: String,
+    emoji: String,
+    attribs: Mixed,
 
-MODEL.set = utils.dbSetter;
-MODEL.get = utils.dbGetter;
+  });
 
-module.exports = MODEL;
+  const MODEL = activeConnection.model("collectibles", collectibles, "collectibles");
+
+  MODEL.set = utils.dbSetter;
+  MODEL.get = utils.dbGetter;
+
+  return MODEL;
+}
