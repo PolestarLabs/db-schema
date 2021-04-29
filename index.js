@@ -1,10 +1,9 @@
+
 const mongoose = require("mongoose");
 const RedisCache = require("./redisClient.js");
 
-const Schemas = require('./schemas.js');
-const Virtuals = require('./virtuals.js');
-
 module.exports = async function ({hook,	url, options},extras) {
+
 	return new Promise(async resolve => {
 
 
@@ -18,15 +17,18 @@ module.exports = async function ({hook,	url, options},extras) {
 
 		console.info("• ".blue, "Connecting to Database...");
 
-		mongoose.connect(url, options, (err) => {
+		const db = mongoose.createConnection(url, options, (err) => {
 			if (err) return console.error(err, `${"• ".red}Failed to connect to Database!`);
 			return console.log("• ".green, "Connection OK");
 		});
 
+		const Schemas = require('./schemas.js')(db);
+		const Virtuals = require('./virtuals.js')(db);
+
+
 		mongoose.set("useFindAndModify", false);
 		mongoose.set("useCreateIndex", true);
 
-		const db = mongoose.connection;
 		db.on("error", console.error.bind(console, "• ".red + "DB connection error:".red));
 		db.once("open", async () => {
 			console.log("• ".green, "DB connection successful");

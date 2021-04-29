@@ -5,20 +5,24 @@ const utils = require("../utils.js");
 
 const { Mixed } = Schema.Types;
 
-const responses = new Schema({
+module.exports = function RESPO_DB(activeConnection){
 
-  trigger: { type: String, required: true },
-  response: String,
-  server: { type: String, required: true, index: { unique: false } },
-  id: { type: String, required: true, index: { unique: true } },
-  embed: Mixed,
-  type: String, // EMBED, STRING, FILE
 
-});
+  const responses = new Schema({
 
-const MODEL = mongoose.model("responses", responses, "responses");
+    trigger: { type: String, required: true },
+    response: String,
+    server: { type: String, required: true, index: { unique: false } },
+    id: { type: String, required: true, index: { unique: true } },
+    embed: Mixed,
+    type: String, // EMBED, STRING, FILE
 
-MODEL.set = utils.dbSetter;
-MODEL.get = utils.dbGetter;
+  });
 
-module.exports = MODEL;
+  const MODEL = activeConnection.model("responses", responses, "responses");
+
+  MODEL.set = utils.dbSetter;
+  MODEL.get = utils.dbGetter;
+
+  return MODEL;
+}
