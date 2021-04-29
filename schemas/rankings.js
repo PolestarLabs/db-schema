@@ -18,7 +18,7 @@ module.exports = function RANK_DB(activeConnection){
 
   Ranking.index({ type: 1, user: -1});
 
-  const RANKINGS = mongoose.model("Rankings", Ranking, "Rankings");
+  const RANKINGS = activeConnection.model("Rankings", Ranking, "Rankings");
 
   // NO .new() METHOD SINCE .set() UPSERTS
 
