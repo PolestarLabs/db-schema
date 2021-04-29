@@ -5,21 +5,25 @@ const utils = require("../utils.js");
 
 const { Mixed } = Schema.Types;
 
-const Ranking = new Schema({
-  id: {type: String, index: true},
-  type: {type: String, index: true},
-  points: {type: Number, index: true},
-  timestamp: {type: Number},
-  data: Mixed
-}, { strict: false });
+module.exports = function RANK_DB(activeConnection){
 
-Ranking.index({ type: 1, user: -1});
 
-const RANKINGS = mongoose.model("Rankings", Ranking, "Rankings");
+  const Ranking = new Schema({
+    id: {type: String, index: true},
+    type: {type: String, index: true},
+    points: {type: Number, index: true},
+    timestamp: {type: Number},
+    data: Mixed
+  }, { strict: false });
 
-// NO .new() METHOD SINCE .set() UPSERTS
+  Ranking.index({ type: 1, user: -1});
 
-RANKINGS.set = utils.dbSetter;
-RANKINGS.get = utils.dbGetter;
+  const RANKINGS = activeConnection.model("Rankings", Ranking, "Rankings");
 
-module.exports = RANKINGS;
+  // NO .new() METHOD SINCE .set() UPSERTS
+
+  RANKINGS.set = utils.dbSetter;
+  RANKINGS.get = utils.dbGetter;
+
+  return RANKINGS;
+}

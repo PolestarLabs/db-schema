@@ -5,19 +5,23 @@ const utils = require("../utils.js");
 
 const { Mixed } = Schema.Types;
 
-const promo = new Schema({
-  code: { type: String, required: true, index: { unique: true } },
-  locked: Boolean,
-  consumed: Boolean,
-  redeemedBy:  Mixed,
-  maxUses: Number,
-  uses: Number,
-  prize: Mixed,
-});
+module.exports = function PROMO_DB(activeConnection){
 
-const MODEL = mongoose.model("promo-codes", promo, "promo-codes");
+  const promo = new Schema({
+    code: { type: String, required: true, index: { unique: true } },
+    locked: Boolean,
+    consumed: Boolean,
+    redeemedBy:  Mixed,
+    maxUses: Number,
+    uses: Number,
+    prize: Mixed,
+  });
 
-MODEL.set = utils.dbSetter;
-MODEL.get = utils.dbGetter;
+  const MODEL = activeConnection.model("promo-codes", promo, "promo-codes");
 
-module.exports = MODEL;
+  MODEL.set = utils.dbSetter;
+  MODEL.get = utils.dbGetter;
+
+  return MODEL;
+
+}
