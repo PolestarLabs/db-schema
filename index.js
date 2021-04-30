@@ -23,7 +23,7 @@ module.exports = async function ({hook,	url, options},extras) {
 		});
 
 		const Schemas = require('./schemas.js')(db);
-		const Virtuals = require('./virtuals.js')(db);
+		const Virtuals = require('./virtuals.js')(Schemas);
 
 
 		mongoose.set("useFindAndModify", false);

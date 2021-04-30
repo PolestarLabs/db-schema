@@ -1,6 +1,4 @@
-module.exports = function VIRTUALS(activeConnection) {
-    
-  const Schemas = require("./schemas.js")(activeConnection);
+module.exports = function VIRTUALS(Schemas) {
 
   const Marketplace = Schemas.marketplace.schema;
   const Users = Schemas.users.schema;
