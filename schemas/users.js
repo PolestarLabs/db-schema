@@ -143,7 +143,18 @@ module.exports = function USER_DB(activeConnection){
 
     partner: Boolean,
     polluxmod: Boolean,
-    donator: String,
+    donator: String, // LEGACY
+    prime: {
+      tier: {type:String, index: true},
+      lastClaimed: Number,
+      active: Boolean,
+      maxServers: Number,
+      canReallocate: Boolean,
+      custom_background: Boolean,
+      custom_handle: Boolean,
+      custom_shop: Boolean,
+      misc: Mixed,
+    },
     donatorActive: String,
     limits: Mixed,
     quests: [
