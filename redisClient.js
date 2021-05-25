@@ -15,6 +15,11 @@ const init = (host, port, options = {time:600}) => {
         this.ignoreCache = true;
         return this;
     };
+    mongoose.Query.prototype.cache = function () {
+        this.ignoreCache = false;
+        this.ignoreCache = false;
+        return this;
+    };
 
     const original_populate = mongoose.Query.prototype.populate;
     mongoose.Query.prototype.populate = function () {
@@ -40,7 +45,7 @@ const init = (host, port, options = {time:600}) => {
         
         const cacheValue = await redisClient.aget(queryKey);
 
-        if (cacheValue) {            
+        if (this.ignoreCache === false && cacheValue) {            
             const doc = JSON.parse(cacheValue);
             if (redisClient.verbose) console.log("•".green, "Cache hit", queryKey.slice(0,50).gray );
             doc._cache = true;
