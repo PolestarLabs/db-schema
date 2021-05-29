@@ -525,12 +525,36 @@ interface ChannelModel extends mongoose.Model<ChannelSchema> {
   get: dbGetter<ChannelSchema, Channel>;
 }
 
+type IDOrIDObject = string | { id: string };
+interface US {
+  U: IDOrIDObject;
+  S: IDOrIDObject;
+}
+interface LocalRanks {
+  server: string;
+  user: string;
+  level: number;
+  exp: number;
+  thx: number;
+  lastUpdated: Date;
+}
+interface LocalRanksSchema extends mongoose.Document, LocalRanks {}
+interface LocalRanksModel extends mongoose.Model<LocalRanksSchema> {
+  set: dbSetter<LocalRanksSchema>;
+  get: dbGetter<LocalRanksSchema, LocalRanks>;
+  new: (US: US) => void;
+  incrementExp: (US: US, X?: number) => mongoose.Query<mongodb.UpdateWriteOpResult['result'], LocalRanksSchema, {}>;
+  incrementLv: (US: US, X?: number) => mongoose.Query<mongodb.UpdateWriteOpResult['result'], LocalRanksSchema, {}>;
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
   serverDB: ServerModel;
   userDB: UserModel;
   channelDB: ChannelModel;
+  svMetaDB: ServerMetadataModel;
+  localranks: LocalRanksModel;
   miscDB: miscDB;
   paidroles: miscDB['paidroles'];
   gifts: miscDB['gift'];
