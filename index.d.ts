@@ -610,11 +610,21 @@ interface Schemas {
   responses: ResponsesModel;
   audits: AuditModel;
   miscDB: miscDB;
-  paidroles: miscDB['paidroles'];
-  gifts: miscDB['gift'];
+  buyables: miscDB['buyables'];
+  fanart: miscDB['fanart'];
   globalDB: miscDB['global'];
-  globals: miscDB['global'];
+  commends: miscDB['commends'];
+  control: miscDB['control'];
+  marketplace: miscDB['marketplace'];
+  reactRoles: miscDB['reactRoles'];
+  paidroles: miscDB['paidroles'];
+  relationships: miscDB['relationships'];
+  alerts: miscDB['alert'];
+  feed: miscDB['feed'];
   usercols: miscDB['usercols'];
+  gifts: miscDB['gift'];
+
+  globals: miscDB['global'];
 }
 
 declare module 'mongoose' {
