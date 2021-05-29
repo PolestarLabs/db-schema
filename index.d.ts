@@ -490,11 +490,47 @@ interface UserModel extends mongoose.Model<UserSchema> {
   getFull: dbGetterFull<UserSchema>;
 }
 
+interface ChannelModules {
+  BUSTER: any;
+  DROPSLY: number;
+  EXP: boolean;
+  LVUP: boolean;
+  DROPS: boolean;
+  BYPASS: boolean;
+  DISABLED: string[];
+  ENABLED: string[];
+  statistics: any;
+}
+interface Channel {
+  meta: any;
+  snipe: any;
+  name: string;
+  server: string;
+  guild: string;
+  slowmode: boolean;
+  ignored: boolean;
+  settings: any;
+  slowmodeTimer: number;
+  LANGUAGE: string;
+  id: string;
+  modules: ChannelModules;
+}
+interface ChannelSchema extends mongoose.Document, Channel {
+  id: string;
+}
+interface ChannelModel extends mongoose.Model<ChannelSchema> {
+  updateMeta(C: {name: string; topic: string; position: number; nsfw: boolean}): Promise<void>;
+  new: (chanData: any) => void;
+  set: dbSetter<ChannelSchema>;
+  get: dbGetter<ChannelSchema, Channel>;
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
   serverDB: ServerModel;
   userDB: UserModel;
+  channelDB: ChannelModel;
   miscDB: miscDB;
   paidroles: miscDB['paidroles'];
   gifts: miscDB['gift'];
