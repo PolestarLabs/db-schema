@@ -598,6 +598,42 @@ interface AuditModel extends mongoose.Model<AuditSchema> {
   forfeit: (user: string, type: string, currency?: string, amt?: number) => Promise<string>;
 }
 
+interface Cosmetics {
+  id: string;
+  name: string;
+  tags: string;
+  series: string;
+  series_id: string;
+  type: string;
+  icon: string;
+  code: string;
+  rarity: string;
+  price: number;
+  event: string;
+  droppable: boolean;
+  buyable: boolean;
+  howto: string;
+  category: string;
+  items: string[];
+  color: string;
+  for: string;
+  localizer: string;
+  exclusive: string;
+  public: boolean;
+  filter: string;
+  expires: number;
+}
+interface CosmeticsSchema extends mongoose.Document, Cosmetics {
+  id: string;
+}
+interface CosmeticsModel extends mongoose.Model {
+  set: dbSetter<CosmeticsSchema>;
+  get: dbGetter<CosmeticsSchema, Cosmetics>;
+  bgs: (filter?: mongoose.FilterQuery<CosmeticsSchema>) => mongoose.QueryWithHelpers<CosmeticsSchema[], CosmeticsSchema, {}>;
+  medals: (filter?: mongoose.FilterQuery<CosmeticsSchema>) => mongoose.QueryWithHelpers<CosmeticsSchema[], CosmeticsSchema, {}>;
+  stickers: (filter?: mongoose.FilterQuery<CosmeticsSchema>) => mongoose.QueryWithHelpers<CosmeticsSchema[], CosmeticsSchema, {}>;
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
@@ -623,6 +659,7 @@ interface Schemas {
   feed: miscDB['feed'];
   usercols: miscDB['usercols'];
   gifts: miscDB['gift'];
+  cosmetics: CosmeticsModel;
 
   globals: miscDB['global'];
 }
