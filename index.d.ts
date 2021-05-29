@@ -562,6 +562,22 @@ interface RankingModel extends mongoose.Model<RankingSchema> {
   get: dbGetter<RankingSchema, Ranking>;
 }
 
+interface Responses {
+  trigger: string;
+  response: string;
+  server: string;
+  id: string;
+  embed: any;
+  type: 'EMBED' | 'STRING' | 'FILE';
+}
+interface ResponsesSchema extends mongoose.Document, Responses {
+  id: string;
+}
+interface ResponsesModel extends mongoose.Model<ResponsesSchema> {
+  set: dbSetter<ResponsesSchema>;
+  get: dbGetter<ResponsesSchema, Responses>;
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
@@ -571,6 +587,7 @@ interface Schemas {
   svMetaDB: ServerMetadataModel;
   localranks: LocalRanksModel;
   rankings: RankingModel;
+  responses: ResponsesModel;
   miscDB: miscDB;
   paidroles: miscDB['paidroles'];
   gifts: miscDB['gift'];
