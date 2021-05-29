@@ -578,6 +578,26 @@ interface ResponsesModel extends mongoose.Model<ResponsesSchema> {
   get: dbGetter<ResponsesSchema, Responses>;
 }
 
+interface Audit {
+  from: string;
+  to: string;
+  type: string;
+  currency: string;
+  transaction: string;
+  amt: number;
+  timestamp: number;
+  transactionId: string;
+  details: any;
+}
+interface AuditSchema extends mongoose.Document, Audit {}
+interface AuditModel extends mongoose.Model<AuditSchema> {
+  set: dbSetter<AuditSchema>;
+  get: dbGetter<AuditSchema, Audit>;
+  new: (payload: Partial<Audit>) => Promise<string>;
+  receive: (user: string, type: string, currency?: string, amt?: number) => Promise<string>;
+  forfeit: (user: string, type: string, currency?: string, amt?: number) => Promise<string>;
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
@@ -588,6 +608,7 @@ interface Schemas {
   localranks: LocalRanksModel;
   rankings: RankingModel;
   responses: ResponsesModel;
+  audits: AuditModel;
   miscDB: miscDB;
   paidroles: miscDB['paidroles'];
   gifts: miscDB['gift'];
