@@ -626,7 +626,7 @@ interface Cosmetics {
 interface CosmeticsSchema extends mongoose.Document, Cosmetics {
   id: string;
 }
-interface CosmeticsModel extends mongoose.Model {
+interface CosmeticsModel extends mongoose.Model<CosmeticsSchema> {
   set: dbSetter<CosmeticsSchema>;
   get: dbGetter<CosmeticsSchema, Cosmetics>;
   bgs: (filter?: mongoose.FilterQuery<CosmeticsSchema>) => mongoose.QueryWithHelpers<CosmeticsSchema[], CosmeticsSchema, {}>;
