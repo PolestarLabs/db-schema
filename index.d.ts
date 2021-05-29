@@ -634,6 +634,22 @@ interface CosmeticsModel extends mongoose.Model<CosmeticsSchema> {
   stickers: (filter?: mongoose.FilterQuery<CosmeticsSchema>) => mongoose.QueryWithHelpers<CosmeticsSchema[], CosmeticsSchema, {}>;
 }
 
+interface Collectibles {
+  name: string;
+  id: string;
+  rarity: string;
+  icon: string;
+  emoji: string;
+  attribs: any;
+}
+interface CollectiblesSchema extends mongoose.Document, Collectibles {
+  id: string;
+}
+interface CollectiblesModel extends mongoose.Model<CollectiblesSchema> {
+  set: dbSetter<CollectiblesSchema>;
+  get: dbGetter<CollectiblesSchema, Collectibles>;
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
@@ -660,6 +676,7 @@ interface Schemas {
   usercols: miscDB['usercols'];
   gifts: miscDB['gift'];
   cosmetics: CosmeticsModel;
+  collectibles: CollectiblesModel;
 
   globals: miscDB['global'];
 }
