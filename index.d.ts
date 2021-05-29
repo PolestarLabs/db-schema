@@ -547,6 +547,21 @@ interface LocalRanksModel extends mongoose.Model<LocalRanksSchema> {
   incrementLv: (US: US, X?: number) => mongoose.Query<mongodb.UpdateWriteOpResult['result'], LocalRanksSchema, {}>;
 }
 
+interface Ranking {
+  id: string;
+  type: string;
+  points: number;
+  timestamp: number;
+  data: any;
+}
+interface RankingSchema extends mongoose.Document, Ranking {
+  id: string;
+}
+interface RankingModel extends mongoose.Model<RankingSchema> {
+  set: dbSetter<RankingSchema>;
+  get: dbGetter<RankingSchema, Ranking>;
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
@@ -555,6 +570,7 @@ interface Schemas {
   channelDB: ChannelModel;
   svMetaDB: ServerMetadataModel;
   localranks: LocalRanksModel;
+  rankings: RankingModel;
   miscDB: miscDB;
   paidroles: miscDB['paidroles'];
   gifts: miscDB['gift'];
