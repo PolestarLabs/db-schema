@@ -45,7 +45,7 @@ module.exports = function MISC_DB(activeConnection){
       autoRoleStack: { type: Boolean, default: true },
       DROPS: { type: Boolean, default: true },
       ANNOUNCE: { type: Boolean, default: true },
-      PREFIX: { type: String, default: "===" },
+      PREFIX: { type: String, default: "+" },
       LANGUAGE: { type: String, default: "en" },
       MODROLE: String,
       DISABLED: Array,
