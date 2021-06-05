@@ -692,6 +692,49 @@ interface ItemModel extends mongoose.Model<ItemSchema> {
   get: dbGetter<ItemSchema, Item>;
 }
 
+interface Achievement {
+  name: string;
+  icon: string;
+  exp: number;
+  reveal_level: number;
+  reveal_requisites: unknown[]; // TODO[epic=flicky] uhm?
+  flavor_text_id: string;
+  condition: string;
+  advanced_conditions: string[];
+  id: string;
+}
+interface AchievementSchema extends mongoose.Document, Achievement {
+  id: string;
+}
+interface AchievementModel extends mongoose.Model<AchievementSchema> {
+  award: (user: IDOrIDObject, achiev: string) => Promise<mongodb.UpdateWriteOpResult['result']>;
+  set: dbSetter<AchievementSchema>;
+  get: dbGetter<AchievementSchema, Achievement>;
+}
+
+interface Quest {
+  id: number;
+  name: string;
+  flavor_text: string;
+  instruction: string;
+  reveal_level: number;
+  action: string;
+  type: string;
+  condition: string;
+  target: number;
+  tier: string;
+  icon: string;
+  reveal_requisites: string;
+  advanced_conditions: string;
+}
+interface QuestSchema extends mongoose.Document, Quest {
+  id: number;
+}
+interface QuestModel extends mongoose.Model<QuestSchema> {
+  set: dbSetter<QuestSchema>;
+  get: dbGetter<QuestSchema, Quest>;
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
@@ -720,6 +763,8 @@ interface Schemas {
   cosmetics: CosmeticsModel;
   collectibles: CollectiblesModel;
   items: ItemModel;
+  achievements: AchievementModel;
+  quests: QuestModel;
 
   globals: miscDB['global'];
 }
