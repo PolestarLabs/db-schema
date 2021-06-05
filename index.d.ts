@@ -464,15 +464,15 @@ interface User {
   limits: any;
   quests: Quest[];
 }
-interface Item {
+interface UserItem {
   id: string;
   count: number;
 }
 interface UserSchema extends mongoose.Document, User {
   id: string;
   addItem: (item: string, amt?: number, crafted?: boolean) => Promise<mongodb.UpdateWriteOpResult['result']>;
-  modifyItems(items: Item[], debug: true): Promise<[Item[], { id: string }, { $inc: number }, { arrayFilters: { [key: string]: string }[] }]>;
-  modifyItems(items: Item[], debug?: boolean): Promise<mongodb.UpdateWriteOpResult['result']>;
+  modifyItems(items: UserItem[], debug: true): Promise<[UserItem[], { id: string }, { $inc: number }, { arrayFilters: { [key: string]: string }[] }]>;
+  modifyItems(items: UserItem[], debug?: boolean): Promise<mongodb.UpdateWriteOpResult['result']>;
   removeItem: UserSchema['addItem'];
   upCommend: (USER: ErisUser | Member, amt?: number) => ReturnType<miscDB['commends']['parseFull']>;
   hasItem: (itemId: string, count?: number) => boolean;
@@ -650,6 +650,48 @@ interface CollectiblesModel extends mongoose.Model<CollectiblesSchema> {
   get: dbGetter<CollectiblesSchema, Collectibles>;
 }
 
+interface Item {
+  name: string;
+  id: string;
+  rarity: string;
+  icon: string;
+  emoji: string;
+  price: number;
+  altEmoji: string;
+  event: string;
+  event_id: number;
+  type: string;
+  tradeable: boolean;
+  buyable: boolean;
+  destroyable: boolean;
+  usefile: string;
+  code: string;
+  misc: any;
+  subtype: string;
+  series: string;
+  filter: string;
+  crafted: boolean;
+  color: string;
+  exclusive: string;
+  public: boolean;
+  materials: UserItem[];
+  typeCraft: { type: string; count: number }[];
+  gemcraft: { RBN: number; JDE: number; SPH: number }
+}
+interface ItemSchema extends mongoose.Document, Item {
+  id: string;
+}
+interface ItemModel extends mongoose.Model<ItemSchema> {
+  getAll: () => Promise<ItemSchema[]>;
+  cat: (cat: string) => Promise<ItemSchema>;
+  consume: (user: IDOrIDObject, itemID: string, amt?: number) => mongoose.QueryWithHelpers<mongodb.UpdateWriteOpResult['result'], ItemSchema, {}>;
+  destroy: ItemModel['consume'];
+  receive: (user: IDOrIDObject, itemID: string, amt?: number) => mongoose.QueryWithHelpers<mongodb.UpdateWriteOpResult['result'], ItemSchema, {}>;
+  add: ItemModel['receive'];
+  set: dbSetter<ItemSchema>;
+  get: dbGetter<ItemSchema, Item>;
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
@@ -677,6 +719,7 @@ interface Schemas {
   gifts: miscDB['gift'];
   cosmetics: CosmeticsModel;
   collectibles: CollectiblesModel;
+  items: ItemModel;
 
   globals: miscDB['global'];
 }
