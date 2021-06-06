@@ -959,7 +959,10 @@ interface Schemas {
   temproles: TemproleModel;
   promocodes: PromoCodeModel;
   airlines: { AIRLINES: AirlineModel; ROUTES: AirlineRouteModel; AIRPORT: AirportsModel; AIRPLANES: AirplaneModel; SLOTS: AirportSlotsModel };
-
+  users: UserModel;
+  servers: ServerModel;
+  guilds: ServerModel;
+  channels: ChannelModel;
   globals: miscDB['global'];
 }
 
