@@ -530,6 +530,10 @@ interface US {
   U: IDOrIDObject;
   S: IDOrIDObject;
 }
+interface USE extends US {
+  E?: number;
+}
+
 interface LocalRanks {
   server: string;
   user: string;
@@ -768,6 +772,21 @@ interface AdventureLocationModel extends mongoose.Model<AdventureLocationSchema>
   read: dbGetter<AdventureLocationSchema, AdventureLocation>;
 }
 
+interface Mute {
+  server: string;
+  user: string;
+  expires: number;
+}
+interface MuteSchema extends mongoose.Document, Mute {}
+interface MuteModel extends mongoose.Model<MuteSchema> {
+  set: dbSetter<MuteSchema>;
+  get: dbGetter<MuteSchema, Mute>;
+  new: (US: USE) => void;
+  add: (US: USE) => void;
+  expire: (US: US) => QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
+  expire: (US: number) => QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
+}
+
 interface JourneyEvent {
   time: number;
   id: number;
@@ -821,6 +840,7 @@ interface Schemas {
   quests: QuestModel;
   advLocations: AdventureLocationModel;
   advJourneys: JourneyModel;
+  mutes: MuteModel;
 
   globals: miscDB['global'];
 }
