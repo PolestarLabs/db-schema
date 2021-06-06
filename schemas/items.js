@@ -45,9 +45,6 @@ module.exports = function ITEM_DB(activeConnection){
   const MODEL = activeConnection.model("Item", Item, "items");
 
   MODEL.getAll = async function () { return (await MODEL.find({})); };
-  MODEL.get = async function (id) {
-    return (await MODEL.findOne({ id }));
-  };
 
   MODEL.cat = async function (cat) {
     return (await MODEL.findOne({ type: cat }));
