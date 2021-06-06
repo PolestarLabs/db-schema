@@ -978,7 +978,7 @@ interface Schemas {
   guilds: ServerModel;
   channels: ChannelModel;
   globals: miscDB['global'];
-  marketbase: (projection?: MarketbaseProjection) => Promise<MarketbFase>;
+  marketbase: (projection?: MarketbaseProjection) => Promise<Marketbase>;
 }
 
 declare module 'mongoose' {
