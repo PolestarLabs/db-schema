@@ -735,6 +735,60 @@ interface QuestModel extends mongoose.Model<QuestSchema> {
   get: dbGetter<QuestSchema, Quest>;
 }
 
+interface AdventureLocationTraceRoute {
+  _id: string;
+  name: string;
+  type: string;
+  distance: number;
+}
+interface AdventureLocationTraceRouteOptions {
+  relocating?: boolean;
+  soft?: boolean;
+  exploring?: boolean;
+}
+interface AdventureLocation {
+  id: string;
+  type: string;
+  name: string;
+  description: string;
+  landmark: string;
+  connects: string[];
+  drops: unknown[]; // TODO[epic=flicky] ??
+  canSettle: boolean;
+  coordinates: { x: number; y: number };
+}
+interface AdventureLocationSchema extends mongoose.Document, AdventureLocation {
+  id: string;
+  isAdjacent: (locationID: string) => boolean;
+}
+interface AdventureLocationModel extends mongoose.Model<AdventureLocationSchema> {
+  traceRoutes: (start: string, depth: number, options?: AdventureLocationTraceRouteOptions) => Promise<AdventureLocationTraceRoute[]>;
+  set: dbSetter<AdventureLocationSchema>;
+  get: dbGetterFull<AdventureLocationSchema>;
+  read: dbGetter<AdventureLocationSchema, AdventureLocation>;
+}
+
+interface JourneyEvent {
+  time: number;
+  id: number;
+  trueTime: number;
+  interaction: any;
+}
+interface Journey {
+  user: string;
+  start: number;
+  end: number;
+  location: string;
+  insurance: number;
+  events: JourneyEvent[];
+}
+interface JourneySchema extends mongoose.Document, Journey {}
+interface JourneyModel extends mongoose.Model<JourneySchema> {
+  new: (user: string, journey: Omit<Journey, 'user' | 'events'>, events: JourneyEvent[]) => Promise<JourneySchema>;
+  set: dbSetter<JourneySchema>;
+  get: dbGetter<JourneySchema, Journey>;
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
@@ -765,6 +819,8 @@ interface Schemas {
   items: ItemModel;
   achievements: AchievementModel;
   quests: QuestModel;
+  advLocations: AdventureLocationModel;
+  advJourneys: JourneyModel;
 
   globals: miscDB['global'];
 }
