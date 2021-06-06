@@ -842,6 +842,87 @@ interface PromoCodeModel extends mongoose.Model<PromoCodeSchema> {
   get: dbGetter<PromoCodeSchema, PromoCode>;
 }
 
+interface Airports {
+  id: string;
+  name: string;
+  tier: number;
+  passengers: number;
+  slotAmount: number;
+  slotPrice: number;
+  location: { type: string; coordinates: [number, number] };
+}
+interface AirportsSchema extends mongoose.Document, Airports {
+  id: string;
+  withinRange: (kilometers: number) => mongoose.QueryWithHelpers<AirportsSchema[], AirportsSchema, {}>;
+}
+interface AirportsModel extends mongoose.Model<AirportsSchema> {
+  set: dbSetter<AirportsSchema>;
+  get: dbGetter<AirportsSchema, Airports>;
+  getFull: dbGetterFull<AirportsSchema>;
+}
+
+interface Airline {
+  id: string;
+  acquiredAirplanes: { id: string; assigned: boolean }[];
+  user: string;
+  airlineName: string;
+}
+interface AirlineSchema extends mongoose.Document, Airline {
+  id: string;
+}
+interface AirlineModel extends mongoose.Model<AirlineSchema> {
+  set: dbSetter<AirlineSchema>;
+  get: dbGetter<AirlineSchema, Airline>;
+  new: (user: string, id: string, airlineName: string) => Promise<AirlineSchema>;
+}
+
+interface AirportSlots {
+  airline: string;
+  airport: string;
+  expiresIn: number;
+}
+interface AirportSlotsSchema extends mongoose.Document, AirportSlots {}
+interface AirportSlotsModel extends mongoose.Model<AirportSlotsSchema> {
+  set: dbSetter<AirportSlotsSchema>;
+  get: dbGetter<AirportSlotsSchema, AirportSlots>;
+  new: (id: string, airport: string, time: number) => Promise<AirportSlotsSchema>;
+}
+
+interface AirlineRoute {
+  startAirport: string;
+  endAirport: string;
+  airline: string;
+  airplane: string;
+  ticketPrice: number;
+}
+interface AirlineRouteSchema extends mongoose.Document, AirlineRoute {}
+interface AirlineRouteModel extends mongoose.Model<AirlineRouteSchema> {
+  set: dbSetter<AirlineRouteSchema>;
+  get: dbGetter<AirlineRouteSchema, AirlineRoute>;
+  new: (sa: string, ea: string, airline: string, airplane: string, prie: number) => Promise<AirlineRouteSchema>;
+  check: (a: AirlineRoute) => Promise<AirlineRouteSchema | true>;
+  shutdown: (options: { _id: string, airplane: string, airline: string }) => Promise<AirlineRouteSchema>;
+}
+
+interface Airplane {
+  id: string;
+  humanName: string;
+  price: number;
+  passengerCap: number;
+  maintenanceCost: number;
+  make: string;
+  tier: number;
+  range: number;
+}
+interface AirplaneSchema extends mongoose.Document, Airplane {
+  id: string;
+}
+interface AirplaneModel extends mongoose.Model<AirplaneSchema> {
+  set: dbSetter<AirplaneSchema>;
+  get: dbGetter<AirplaneSchema, Airplane>;
+  buy: (airline: string, id: string) => Promise<AirplaneSchema>;
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
@@ -877,6 +958,7 @@ interface Schemas {
   mutes: MuteModel;
   temproles: TemproleModel;
   promocodes: PromoCodeModel;
+  airlines: { AIRLINES: AirlineModel; ROUTES: AirlineRouteModel; AIRPORT: AirportsModel; AIRPLANES: AirplaneModel; SLOTS: AirportSlotsModel };
 
   globals: miscDB['global'];
 }
