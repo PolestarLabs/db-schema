@@ -24,6 +24,18 @@ declare type dbGetterFull<T extends mongoose.Document> = (
   avoidNew?: boolean,
 ) => Promise<T>;
 
+type IDOrIDObject = string | { id: string };
+interface US {
+  U: IDOrIDObject;
+  S: IDOrIDObject;
+}
+interface USE extends US {
+  E?: number;
+}
+interface USER extends USE {
+  R: string;
+}
+
 
 interface GiftItem {
   id: string;
@@ -525,15 +537,6 @@ interface ChannelModel extends mongoose.Model<ChannelSchema> {
   get: dbGetter<ChannelSchema, Channel>;
 }
 
-type IDOrIDObject = string | { id: string };
-interface US {
-  U: IDOrIDObject;
-  S: IDOrIDObject;
-}
-interface USE extends US {
-  E?: number;
-}
-
 interface LocalRanks {
   server: string;
   user: string;
@@ -808,6 +811,22 @@ interface JourneyModel extends mongoose.Model<JourneySchema> {
   get: dbGetter<JourneySchema, Journey>;
 }
 
+interface Temprole {
+  server: string;
+  user: string;
+  role: string;
+  expires: number;
+}
+interface TemproleSchema extends mongoose.Document, Temprole {}
+interface TemproleModel extends mongoose.Model<TemproleSchema> {
+  set: dbSetter<TemproleSchema>;
+  get: dbGetter<TemproleSchema, Temprole>;
+  new: (US: USER) => void;
+  add: (US: USER) => void;
+  expire: (US: US) => QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
+  expire: (US: number) => QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
@@ -841,6 +860,7 @@ interface Schemas {
   advLocations: AdventureLocationModel;
   advJourneys: JourneyModel;
   mutes: MuteModel;
+  temproles: TemproleModel;
 
   globals: miscDB['global'];
 }
