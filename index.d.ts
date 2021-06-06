@@ -786,8 +786,8 @@ interface MuteModel extends mongoose.Model<MuteSchema> {
   get: dbGetter<MuteSchema, Mute>;
   new: (US: USE) => void;
   add: (US: USE) => void;
-  expire: (US: US) => QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
-  expire: (US: number) => QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
+  expire(US: US): mongoose.QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
+  expire(US: number): mongoose.QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
 }
 
 interface JourneyEvent {
@@ -823,8 +823,8 @@ interface TemproleModel extends mongoose.Model<TemproleSchema> {
   get: dbGetter<TemproleSchema, Temprole>;
   new: (US: USER) => void;
   add: (US: USER) => void;
-  expire: (US: US) => QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
-  expire: (US: number) => QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
+  expire(US: US): mongoose.QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
+  expire(US: number): mongoose.QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
 }
 
 interface Schemas {
