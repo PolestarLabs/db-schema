@@ -827,6 +827,21 @@ interface TemproleModel extends mongoose.Model<TemproleSchema> {
   expire(US: number): mongoose.QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
 }
 
+interface PromoCode {
+  code: string;
+  locked: boolean;
+  consumed: boolean;
+  redeemedBy: any;
+  maxUses: number;
+  uses: number;
+  prize: any;
+}
+interface PromoCodeSchema extends mongoose.Document, PromoCode {}
+interface PromoCodeModel extends mongoose.Model<PromoCodeSchema> {
+  set: dbSetter<PromoCodeSchema>;
+  get: dbGetter<PromoCodeSchema, PromoCode>;
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
@@ -861,6 +876,7 @@ interface Schemas {
   advJourneys: JourneyModel;
   mutes: MuteModel;
   temproles: TemproleModel;
+  promocodes: PromoCodeModel;
 
   globals: miscDB['global'];
 }
