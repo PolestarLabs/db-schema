@@ -923,6 +923,20 @@ interface AirplaneModel extends mongoose.Model<AirplaneSchema> {
   buy: (airline: string, id: string) => Promise<AirplaneSchema>;
 }
 
+interface MarketbaseProjection {
+  bgBase?: boolean;
+  mdBase?: boolean;
+  stBase?: boolean;
+  itBase?: boolean;
+  fullbase?: boolean;
+}
+interface Marketbase {
+  bgBase: Cosmetics[];
+  mdBase: Cosmetics[];
+  stBase: Cosmetics[];
+  itBase: Item[];
+}
+
 interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
@@ -964,6 +978,7 @@ interface Schemas {
   guilds: ServerModel;
   channels: ChannelModel;
   globals: miscDB['global'];
+  marketbase: (projection?: MarketbaseProjection) => Promise<MarketBase>;
 }
 
 declare module 'mongoose' {
