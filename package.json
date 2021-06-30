@@ -1,6 +1,6 @@
 {
   "name": "@polestar/database_schema",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "Database Schemas & Functions",
   "main": "index.js",
   "types": "index.d.ts",

@@ -34,9 +34,9 @@ const init = (host, port, options = {time:600}) => {
         let queryFilter = this.getFilter();
         let filterKeys = Object.keys(queryFilter);
         
-        let queryKey = `${this.mongooseCollection.db.name}.${this.mongooseCollection.name}.${this.op}.${JSON.stringify(queryFilter)}` 
+        let queryKey = `${this.mongooseCollection.conn.name}.${this.mongooseCollection.name}.${this.op}.${JSON.stringify(queryFilter)}` 
         if ( filterKeys.length === 1 && filterKeys[0] === 'id' ){
-            queryKey - `${this.mongooseCollection.db.name}.${this.mongooseCollection.name}.${this.op}.${queryFilter.id}`
+            queryKey - `${this.mongooseCollection.conn.name}.${this.mongooseCollection.name}.${this.op}.${queryFilter.id}`
         }
 
         if ( this.ignoreCache === true ||  ["update","updateOne","updateMany"].includes(this.op) ) {
