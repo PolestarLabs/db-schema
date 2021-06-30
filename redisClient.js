@@ -15,9 +15,10 @@ const init = (host, port, options = {time:600}) => {
         this.ignoreCache = true;
         return this;
     };
-    mongoose.Query.prototype.cache = function () {
+    mongoose.Query.prototype.cache = function (time=60) {
         this.ignoreCache = false;
-        this.ignoreCache = false;
+        this.skipCache = false;
+        this.cacheTime = time;
         return this;
     };
 
@@ -38,8 +39,8 @@ const init = (host, port, options = {time:600}) => {
             queryKey - `${this.mongooseCollection.name}.${this.op}.${queryFilter.id}`
         }
 
-        if ( this.ignoreCache ||  ["update","updateOne","updateMany"].includes(this.op) ) {
-            if (!this.skipCache) redisClient.expire(queryKey,1);            
+        if ( this.ignoreCache === true ||  ["update","updateOne","updateMany"].includes(this.op) ) {
+            if (this.skipCache === false) redisClient.expire(queryKey,1);
             return await original_exec.apply(this, arguments);
         }
         
