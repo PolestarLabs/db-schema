@@ -26,7 +26,11 @@ module.exports = function MISC_DB(activeConnection){
     prime: Mixed,
     partnerDetails: Mixed,
     utilityChannels: Mixed,
-    musicOptions: Mixed,
+    musicOptions: {
+      stayOnEmpty: { type: Boolean, default: false },
+      djRole: { type: String },
+      misc: Mixed
+    },
     logging: { type: Boolean, default: false },
     imgwelcome: { type: Boolean, default: false },
     splitLogs: { type: Boolean, default: false },
