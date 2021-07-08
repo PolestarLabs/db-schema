@@ -56,6 +56,8 @@ module.exports = function MISC_DB(activeConnection){
     message: String,
     server: String,
     rolemoji: Array,
+    options: Array,
+    type: String,
   }, { strict: false });
 
   const PaidRoles = new Schema({
@@ -137,6 +139,7 @@ module.exports = function MISC_DB(activeConnection){
     thumb: String,
     name: String,
     expires: Number,
+    errors: {type:Number,default:0},
     repeat: Number,
   });
   const feed = activeConnection.model("Feeds", FeedModel, "Feeds");
