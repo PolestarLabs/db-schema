@@ -108,6 +108,7 @@ module.exports = function MISC_DB(activeConnection){
     },
     channels: Mixed,
     lastUpdated: Mixed,
+    activeClients:  { type: Array, default: [] },
   }, { strict: false });
 
   ServerSchema.pre(/^update/, function () {
