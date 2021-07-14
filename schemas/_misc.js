@@ -139,7 +139,7 @@ module.exports = function MISC_DB(activeConnection){
     thumb: String,
     name: String,
     expires: Number,
-    errors: {type:Number,default:0},
+    erroredCount: {type:Number,default:0},
     repeat: Number,
   });
   const feed = activeConnection.model("Feeds", FeedModel, "Feeds");
