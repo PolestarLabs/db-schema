@@ -145,6 +145,7 @@ module.exports = function USER_DB(activeConnection){
     polluxmod: Boolean,
     donator: String, // LEGACY
     prime: {
+      type: Object,
       tier: {type:String, index: true},
       lastClaimed: Number,
       active: Boolean,
