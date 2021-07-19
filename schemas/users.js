@@ -28,7 +28,7 @@ module.exports = function USER_DB(activeConnection){
 
     // COUNTERS
     eventDaily: Number,
-    eventGoodie: {type:Number, default: 0},
+    eventGoodie: Number, //backwards
 
     cherries: Number,
     cherrySet: Mixed,
@@ -71,6 +71,7 @@ module.exports = function USER_DB(activeConnection){
       achievements: Array,
 
       // FINANCES
+      TKN: { type: Number, default: 0 ,index: true},
       SPH: { type: Number, default: 0 ,index: true},
       RBN: { type: Number, default: 500, index: true },
       JDE: { type: Number, default: 2500, index: true },
