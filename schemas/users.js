@@ -28,7 +28,7 @@ module.exports = function USER_DB(activeConnection){
 
     // COUNTERS
     eventDaily: Number,
-    eventGoodie: Number,
+    eventGoodie: {type:Number, default: 0},
 
     cherries: Number,
     cherrySet: Mixed,
