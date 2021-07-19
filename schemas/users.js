@@ -158,6 +158,15 @@ module.exports = function USER_DB(activeConnection){
       misc: Mixed,
     },
     donatorActive: String,
+    connections:{
+      discord: Mixed,
+      lastfm: Mixed,
+      patreon: Mixed,
+
+      twitter: Mixed, // FUTURE
+      spotify: Mixed, // FUTURE
+      twitch: Mixed,  // FUTURE
+    },
     limits: Mixed,
     quests: [
       {id:Number, tracker: String, completed: Boolean, progress: Number, target: Number}
