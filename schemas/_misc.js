@@ -141,6 +141,7 @@ module.exports = function MISC_DB(activeConnection){
     expires: Number,
     erroredCount: {type:Number,default:0},
     repeat: Number,
+    client: String
   });
   const feed = activeConnection.model("Feeds", FeedModel, "Feeds");
   feed.set = utils.dbSetter;
