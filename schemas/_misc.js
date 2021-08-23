@@ -222,7 +222,7 @@ module.exports = function MISC_DB(activeConnection){
       if (rel.length > 0) return reject(`Duplicate Relationship: \n${JSON.stringify(rel, null, 2)}`);
 
       relationship = new relationships({
-        type, users, initiative, ring, since: date || Date.now(),
+        type, users, initiative, ring, ringCollection: [ring], since: date || Date.now(),
       });
       relationship.save((err, item) => {
         resolve(item);
