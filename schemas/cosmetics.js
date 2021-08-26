@@ -19,7 +19,7 @@ module.exports = function COSMO_DB(activeConnection){
     code: String,
     rarity: String,
     price: Number,
-    event: String,
+    event: Mixed,
     droppable: Boolean,
     buyable: Boolean,
     howto: String,
