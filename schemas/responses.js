@@ -15,6 +15,7 @@ module.exports = function RESPO_DB(activeConnection){
     server: { type: String, required: true, index: { unique: false } },
     id: { type: String, required: true, index: { unique: true } },
     embed: Mixed,
+    tag: String,
     type: String, // EMBED, STRING, FILE
 
   });
