@@ -11,11 +11,12 @@ module.exports = function PROMO_DB(activeConnection){
     code: { type: String, required: true, index: { unique: true } },
     locked: Boolean,
     consumed: Boolean,
-    redeemedBy:  Mixed,
     maxUses: Number,
     uses: Number,
     prize: Mixed,
-  });
+    redeemedAt: Number,
+    usedBy: Mixed,
+  },{ strict: false });
 
   const MODEL = activeConnection.model("promo-codes", promo, "promo-codes");
 
