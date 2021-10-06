@@ -13,7 +13,7 @@ module.exports = function MISC_DB(activeConnection){
     id: { type: String, required: true, index: { unique: true } },
     name: String,
     globalhandle: String,
-    globalPrefix: { type: Boolean, default: false },
+    globalPrefix: { type: Boolean, default: true },
     respondDisabled: { type: Boolean, default: false },
     event: Mixed,
     eventReg: String,
