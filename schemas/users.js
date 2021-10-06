@@ -71,7 +71,7 @@ module.exports = function USER_DB(activeConnection){
       achievements: Array,
 
       // FINANCES
-      TKN: { type: Number, default: 0 ,index: true},
+      EVT: { type: Number, default: 0 ,index: true},
       SPH: { type: Number, default: 0 ,index: true},
       RBN: { type: Number, default: 500, index: true },
       JDE: { type: Number, default: 2500, index: true },
