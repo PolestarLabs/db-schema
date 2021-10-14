@@ -8,9 +8,15 @@ module.exports = function AIRLINES_DB(activeConnection){
 
   /* AIRPORTS */
   const airports = new Schema({
-    id: { type: String, required: true, index: {unique:true} },
+    ICAO: { type: String, required: true, index: {unique:true} },
+    IATA: { type: String, required: true, index: {unique:true} },
     name: String,
     tier: Number,
+    starter: Boolean,
+    city: String,
+    continent: String,
+    region: String,
+    country: String,
     passengers: Number,
     slotAmount: Number,
     slotPrice: Number,
@@ -66,11 +72,13 @@ module.exports = function AIRLINES_DB(activeConnection){
 
   const airplane = new Schema({
     id: { type: String, required: true, index: true },
-    humanName: { type: String, required: true },
+    name: { type: String, required: true },
     price: { type: Number, required: true },
-    passengerCap: { type: Number, required: true },
+    capacity: { type: Number, required: true },
     maintenanceCost: { type: Number, required: true },
     make: String,
+    country: String,
+    starter: Boolean,
     tier: Number,
     range: { type: Number, required: true }
   });
@@ -95,7 +103,7 @@ module.exports = function AIRLINES_DB(activeConnection){
     const airlineCheck = await AIRLINES.findOne({ id });
     if (!airlineCheck) return Promise.reject("Invalid airline ID.");
     
-    const airportd = await AIRPORT.findOne({ id: airport });
+    const airportd = await AIRPORT.findOne({ ICAO: airport });
     if (!airportd) return Promise.reject("Invalid airport ID.");
     
     const slotCheck = await SLOTS.findOne({ airport, airline: id });
