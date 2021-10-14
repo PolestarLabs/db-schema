@@ -175,7 +175,7 @@ module.exports = function MISC_DB(activeConnection){
         const guild = new MODEL({
           id: svDATA.id,
           name: svDATA.name,
-          modules: { LANGUAGE: "en" },
+          modules: { LANGUAGE: "en", PREFIX: "+" },
           meta: null,
         });
         guild.save((err) => {
