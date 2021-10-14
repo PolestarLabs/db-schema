@@ -90,7 +90,8 @@ module.exports = function AIRLINES_DB(activeConnection){
 
   /* ---------------- METHODS ----------------- */
 
-  SLOTS.new = async (id, airport, time) => { /* if time is 0 = pay-as-you-go */
+
+  SLOTS.validate = async (id, airport) => {
     const airlineCheck = await AIRLINES.findOne({ id });
     if (!airlineCheck) return Promise.reject("Invalid airline ID.");
     
@@ -102,13 +103,21 @@ module.exports = function AIRLINES_DB(activeConnection){
     
     const usedSlots = await SLOTS.find({ airport }).lean();
     if (usedSlots.length >= (airportd.slotAmount||0)) return Promise.reject("Airport hit max slot capacity!");
-    
-    const slot = new SLOTS({
-      airline: id,
-      airport,
-      expiresIn: time
-    });
-    return slot.save();
+
+    return Promise.resolve("OK")
+  }
+
+  SLOTS.new = async (id, airport, time) => { /* if time is 0 = pay-as-you-go */
+    return SLOTS.validate(id,airport).then(res=>{      
+      const slot = new SLOTS({
+        airline: id,
+        airport,
+        expiresIn: time
+      });
+      return slot.save();
+    }).catch(err=>{
+      return err;
+    })
   };
 
   AIRPLANES.buy = async (airline, id) => {
