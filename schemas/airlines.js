@@ -110,7 +110,7 @@ module.exports = function AIRLINES_DB(activeConnection){
     if (slotCheck) return Promise.reject("User already bought this slot.");
     
     const usedSlots = await SLOTS.find({ airport }).lean();
-    if (usedSlots.length >= (airportd.slotAmount||0)) return Promise.reject("Airport hit max slot capacity!");
+    if ( !usedSlots.starter && usedSlots.length >= (airportd.slotAmount||0)) return Promise.reject("Airport hit max slot capacity!");
 
     return Promise.resolve("OK")
   }
