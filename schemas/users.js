@@ -75,37 +75,29 @@ module.exports = function USER_DB(activeConnection){
       SPH: { type: Number, default: 0 ,index: true},
       RBN: { type: Number, default: 500, index: true },
       JDE: { type: Number, default: 2500, index: true },
-      coins: { type: Number, default: 0 },
-
-      dyStreakHard: { type: Number, default: 0 },
-      daily: { type: Number, default: 1486595162497 },
 
       flairTop: { type: String, default: "default" },
       flairDown: { type: String, default: "default" },
-      flairsInventory: Array,
-
+      
       // cosmetics
-
+      flairsInventory: Array,
+      
       // ----MEDALS
       medals: { type: Array, default: [0, 0, 0, 0, 0, 0, 0, 0, 0] },
       medalInventory: Array,
 
-      // -/---CARDS
-      // cards: Array,
-      // cardInventory: Array,
-      // cardCollection: Array,
-      // ----STAMPS
-      // stampInventory: Array,
-      // stampCollection: Array,
       // ----STICKERS
       stickerInventory: Array,
-      stickerCollection: Array,
+      stickerCollection: Array, // Showcase
+
       // ----FISHES
       fishes: Array,
       fishCollection: Array,
+
       // ----ELEMENTS
       // elements: Array,
       // elementCollection: Array,
+
       // ----FLOWERS
       // flowers: Array,
       // flowerCollection: Array,
@@ -132,8 +124,7 @@ module.exports = function USER_DB(activeConnection){
             MP:{type:Number,default:100}
         },
         */
-      commend: { type: Number, index: true },
-      commended: { type: Number, index: true },
+
       fun: {
         waifu: Mixed,
         lovers: Mixed,
@@ -142,9 +133,10 @@ module.exports = function USER_DB(activeConnection){
       statistics: Mixed,
     },
 
-    partner: Boolean,
-    polluxmod: Boolean,
-    donator: String, // LEGACY
+    //partner: Boolean,
+    //polluxmod: Boolean,
+    //donator: String, // LEGACY
+
     prime: {
       type: Object,
       tier: {type:String, index: true},
@@ -157,16 +149,18 @@ module.exports = function USER_DB(activeConnection){
       custom_shop: Boolean,
       misc: Mixed,
     },
+
     donatorActive: String,
+
     connections:{
       discord: Mixed,
       lastfm: Mixed,
       patreon: Mixed,
-
       twitter: Mixed, // FUTURE
       spotify: Mixed, // FUTURE
       twitch: Mixed,  // FUTURE
     },
+
     limits: Mixed,
     quests: [
       {id:Number, tracker: String, completed: Boolean, progress: Number, target: Number}
