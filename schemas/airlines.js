@@ -46,7 +46,7 @@ module.exports = function AIRLINES_DB(activeConnection){
   /* AIRLINES */
   const airline = new Schema({
     id: { type: String, required: true, index: { unique: true } },
-    acquiredAirplanes: { type: [{ id: String, assigned: Boolean }], default: [] },
+    acquiredAirplanes: { type: [{ id: String, assigned: Boolean, mods: Mixed }], default: [] },
     user: String,
     airlineName: String
   });
