@@ -1,8 +1,10 @@
 
 const mongoose = require("mongoose");
+
+//FIXME: REDIS IS MANDATORY, MUST MAKE IT NOT MANDATORY OTHERWISE .cache() and .noCache() will fail
 const RedisCache = require("./redisClient.js");
 
-module.exports = async function ({hook,	url, options},extras) {
+module.exports = async function ({hook, url, options},extras) {
 
 	return new Promise(async resolve => {
 
@@ -13,6 +15,11 @@ module.exports = async function ({hook,	url, options},extras) {
 				extras.redis.port,
 				extras.redis.options
 			)
+		}else{
+			// DUCT TAPING SHIT TOGETHER
+			mongoose.Query.prototype.noCache = function() {return this};
+			mongoose.Query.prototype.cache = function() {return this};
+			//Probably won't work
 		}
 
 		console.info("• ".blue, "Connecting to Database...");
