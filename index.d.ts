@@ -937,7 +937,7 @@ interface Marketbase {
   itBase: Item[];
 }
 
-interface Schemas {
+export interface Schemas {
   // TODO missing
   native: miscDB['global']['db'];
   serverDB: ServerModel;
