@@ -1,6 +1,12 @@
 
 const mongoose = require("mongoose");
 
+// lightweight color helpers (replacing the `colors` package usage)
+function red(s){return `\x1b[31m${s}\x1b[0m`;}
+function green(s){return `\x1b[32m${s}\x1b[0m`;}
+function yellow(s){return `\x1b[33m${s}\x1b[0m`;}
+function blue(s){return `\x1b[34m${s}\x1b[0m`;}
+
 //FIXME: REDIS IS MANDATORY, MUST MAKE IT NOT MANDATORY OTHERWISE .cache() and .noCache() will fail
 const RedisCache = require("./redisClient.js");
 
@@ -22,11 +28,11 @@ module.exports = async function ({hook, url, options},extras) {
 			//Probably won't work
 		}
 
-		console.info("• ".blue, "Connecting to Database...");
+		console.info(blue("• "), "Connecting to Database...");
 
 		const db = mongoose.createConnection(url, options, (err) => {
-			if (err) return console.error(err, `${"• ".red}Failed to connect to Database!`);
-			return console.log("• ".green, "Connection OK");
+			if (err) return console.error(err, `${red("• ")}Failed to connect to Database!`);
+			return console.log(green("• "), "Connection OK");
 		});
 
 		const Schemas = require('./schemas.js')(db);
@@ -36,9 +42,10 @@ module.exports = async function ({hook, url, options},extras) {
 		mongoose.set("useFindAndModify", false);
 		mongoose.set("useCreateIndex", true);
 
-		db.on("error", console.error.bind(console, "• ".red + "DB connection error:".red));
+		db.on("error", console.error.bind(console, red("• ") + red("DB connection error:")));
+
 		db.once("open", async () => {
-			console.log("• ".green, "DB connection successful");
+			console.log(green("• "), "DB connection successful");
 			Schemas.collections = Schemas.users.db.collections;
 			Schemas.raw = Schemas.users.db;
 
@@ -46,15 +53,15 @@ module.exports = async function ({hook, url, options},extras) {
 		});		
 		db.on("reconnected", () => {
 			if (hook) hook.ok("**RECONNECTED:** Database connection recovered.");
-			else console.info(" ".blue, "[DB] Reconnected")
+			else console.info(blue(" "), "[DB] Reconnected");
 		});
 		db.on("reconnectFailed", () => {
 			if (hook) hook.error("**CRITICAL:** Database shutdown detected. All reconnection attempts failed.");
-			else console.warn(" ".yellow, "[DB] Reconnect Failed")
+			else console.warn(yellow(" "), "[DB] Reconnect Failed")
 		});
 		db.on("disconnected", () => {
 			if (hook) hook.warn("**ATTENTION:** Database possible shutdown detected. Attempting recovery.");
-			else console.error(" ".red, "[DB] Disconnected")
+			else console.error(red(" "), "[DB] Disconnected")
 		});
 
 	})
