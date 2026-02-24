@@ -5,39 +5,39 @@ import redis from 'redis';
 
 // Utils
 
-type CustomQuery<T extends mongoose.Document> = string | number | mongoose.FilterQuery<T>;
+export type CustomQuery<T extends mongoose.Document> = string | number | mongoose.FilterQuery<T>;
 
-declare type dbSetter<T extends mongoose.Document> = (
+export declare type dbSetter<T extends mongoose.Document> = (
   query: CustomQuery<T>,
   alter: mongoose.UpdateQuery<T>,
   options?: mongoose.QueryOptions | null,
 ) => Promise<mongodb.UpdateWriteOpResult['result']>;
 
-declare type dbGetter<T extends mongoose.Document, R> = (
+export declare type dbGetter<T extends mongoose.Document, R> = (
   query: CustomQuery<T>,
   project?: any | null,
 ) => Promise<mongoose.LeanDocumentOrArray<R | null>>;
 
-declare type dbGetterFull<T extends mongoose.Document> = (
+export declare type dbGetterFull<T extends mongoose.Document> = (
   query: CustomQuery<T>,
   project?: any | null,
   avoidNew?: boolean,
 ) => Promise<T>;
 
-type IDOrIDObject = string | { id: string };
-interface US {
+export type IDOrIDObject = string | { id: string };
+export interface US {
   U: IDOrIDObject;
   S: IDOrIDObject;
 }
-interface USE extends US {
+export interface USE extends US {
   E?: number;
 }
-interface USER extends USE {
+export interface USER extends USE {
   R: string;
 }
 
 
-interface GiftItem {
+export interface GiftItem {
   id: string;
   creator: string;
   holder: string;
@@ -47,54 +47,54 @@ interface GiftItem {
   icon: string;
   message: string;
 }
-interface GiftItemSchema extends mongoose.Document, GiftItem {
+export interface GiftItemSchema extends mongoose.Document, GiftItem {
   id: string;
 }
-interface GiftItemModel extends mongoose.Model<GiftItemSchema> {
+export interface GiftItemModel extends mongoose.Model<GiftItemSchema> {
   set: dbSetter<GiftItemSchema>;
   get: dbGetter<GiftItemSchema, GiftItem>;
 }
 
-interface PaidRoles {
+export interface PaidRoles {
   server: string;
   role: string;
   price: string;
   temp: number;
   unique: any;
 }
-interface PaidRolesSchema extends mongoose.Document, PaidRoles {}
-interface PaidRolesModel extends mongoose.Model<PaidRolesSchema> {
+export interface PaidRolesSchema extends mongoose.Document, PaidRoles {}
+export interface PaidRolesModel extends mongoose.Model<PaidRolesSchema> {
   set: dbSetter<PaidRolesSchema>;
   get: dbGetter<PaidRolesSchema, PaidRoles>;
   // TODO paidroles.new
 }
 
-interface Globals {
+export interface Globals {
   id: number;
   data: any;
 }
-interface GlobalsSchema extends mongoose.Document, Globals {
+export interface GlobalsSchema extends mongoose.Document, Globals {
   id: number;
 }
-interface GlobalsModel extends mongoose.Model<GlobalsSchema> {
+export interface GlobalsModel extends mongoose.Model<GlobalsSchema> {
   set(alter: Globals): Promise<mongodb.UpdateWriteOpResult['result']>;
   get(): Promise<GlobalsSchema | any>;
 }
 
-interface UserCollection {
+export interface UserCollection {
   id: string;
   collections: any;
 }
-interface UserCollectionSchema extends mongoose.Document, UserCollection {
+export interface UserCollectionSchema extends mongoose.Document, UserCollection {
   id: string;
 }
-interface UserCollectionModel extends mongoose.Model<UserCollectionSchema> {
+export interface UserCollectionModel extends mongoose.Model<UserCollectionSchema> {
   set: dbSetter<UserCollectionSchema>;
   get: dbGetter<UserCollectionSchema, UserCollection>;
   new: (payload: UserCollection) => void;
 }
 
-interface Fanart {
+export interface Fanart {
   id: string;
   src: string;
   thumb: string;
@@ -106,15 +106,15 @@ interface Fanart {
   publish: boolean;
   extras: any;
 }
-interface FanartSchema extends mongoose.Document, Fanart {
+export interface FanartSchema extends mongoose.Document, Fanart {
   id: string;
 }
-interface FanartModel extends mongoose.Model<FanartSchema> {
+export interface FanartModel extends mongoose.Model<FanartSchema> {
   set: dbSetter<FanartSchema>;
   get: dbGetter<FanartSchema, Fanart>;
 }
 
-interface Buyable {
+export interface Buyable {
   id: string;
   price_USD: number;
   price_BRL: number;
@@ -125,51 +125,51 @@ interface Buyable {
   filter: string;
   other: any;
 }
-interface BuyableSchema extends mongoose.Document, Buyable {
+export interface BuyableSchema extends mongoose.Document, Buyable {
   id: string;
 }
-interface BuyableModel extends mongoose.Model<BuyableSchema> {
+export interface BuyableModel extends mongoose.Model<BuyableSchema> {
   set: dbSetter<BuyableSchema>;
   get: dbGetter<BuyableSchema, Buyable>;
 }
 
-interface CommendsParsed {
+export interface CommendsParsed {
   id: string;
   whoIn: { id: string; count: number };
   whoOut: { id: string; count: number };
   readonly totalIn: number;
   readonly totalOut: number;
 }
-interface Commends {
+export interface Commends {
   from: string;
   to: string;
   count: number;
 }
-interface CommendsSchema extends mongoose.Document, Commends {}
-interface CommendsModel extends mongoose.Model<CommendsSchema> {
+export interface CommendsSchema extends mongoose.Document, Commends {}
+export interface CommendsModel extends mongoose.Model<CommendsSchema> {
   set: dbSetter<CommendsSchema>;
   get: dbGetter<CommendsSchema, Commends>;
   add: (idFrom: string, idTo: string) => Promise<number>;
   parseFull: (userId: string | Member | ErisUser) => Promise<CommendsParsed>;
 }
 
-interface ReactionRole {
+export interface ReactionRole {
   role: string;
   emoji: string;
 }
-interface ReactionRoles {
+export interface ReactionRoles {
   channel: string;
   message: string;
   server: string;
   rolemoji: ReactionRole[];
 }
-interface ReactionRolesSchema extends mongoose.Document, ReactionRoles {}
-interface ReactionRolesModel extends mongoose.Model<ReactionRolesSchema> {
+export interface ReactionRolesSchema extends mongoose.Document, ReactionRoles {}
+export interface ReactionRolesModel extends mongoose.Model<ReactionRolesSchema> {
   set: dbSetter<ReactionRolesSchema>;
   get: dbGetter<ReactionRolesSchema, ReactionRoles>;
 }
 
-interface Marketplace {
+export interface Marketplace {
   id: string;
   item_id: string;
   item_type: string;
@@ -178,16 +178,16 @@ interface Marketplace {
   author: string;
   timestamp: number;
 }
-interface MarketplaceSchema extends mongoose.Document, Marketplace {
+export interface MarketplaceSchema extends mongoose.Document, Marketplace {
   id: string;
 }
-interface MarketplaceModel extends mongoose.Model<MarketplaceSchema> {
+export interface MarketplaceModel extends mongoose.Model<MarketplaceSchema> {
   set: dbSetter<MarketplaceSchema>;
   get: dbGetter<MarketplaceSchema, Marketplace>;
   new: (payload: Marketplace) => void;
 }
 
-interface Relationship {
+export interface Relationship {
   id: string;
   users: [string, string]; // NOTE this could increase to 3 in the future
   ring: 'jade' | 'sapphire' | 'stardust' | 'rubine';
@@ -197,33 +197,33 @@ interface Relationship {
   lovepoints: number;
   type: 'marriage' | 'parents' | 'children';
 }
-interface RelationshipSchema extends mongoose.Document, Relationship {
+export interface RelationshipSchema extends mongoose.Document, Relationship {
   id: string;
 } // @ts-ignore
-interface RelationshipModel extends mongoose.Model<RelationshipSchema> {
+export interface RelationshipModel extends mongoose.Model<RelationshipSchema> {
   set: dbSetter<RelationshipSchema>;
   get: dbGetter<RelationshipSchema, Relationship>;
   create: (type: 'marriage' | 'parents' | 'children', users: [string, string], initiative: string, ring: 'jade' | 'sapphire' | 'stardust' | 'rubine', date?: number) => Promise<RelationshipSchema>;
 }
 
-interface AlertInfo {
+export interface AlertInfo {
   time: number;
   interval: number;
   text: string;
 }
-interface Alerts {
+export interface Alerts {
   type: 'recurring' | 'onetime';
   scope: 'server' | 'dm';
   channel: string;
   alerts: AlertInfo[];
 }
-interface AlertsSchema extends mongoose.Document, Alerts {}
-interface AlertsModel extends mongoose.Model<AlertsSchema> {
+export interface AlertsSchema extends mongoose.Document, Alerts {}
+export interface AlertsModel extends mongoose.Model<AlertsSchema> {
   set: dbSetter<AlertsSchema>;
   get: dbGetter<AlertsSchema, Alerts>;
 }
 
-interface Feed<T extends 'rss' | 'twitch' | 'youtube' | 'reminder' = 'rss' | 'twitch' | 'youtube' | 'reminder'> {
+export interface Feed<T extends 'rss' | 'twitch' | 'youtube' | 'reminder' = 'rss' | 'twitch' | 'youtube' | 'reminder'> {
   server: T extends 'reminder' ? undefined : string;
   type: T;
   url: string;
@@ -234,25 +234,25 @@ interface Feed<T extends 'rss' | 'twitch' | 'youtube' | 'reminder' = 'rss' | 'tw
   expires: T extends 'reminder' ? number : undefined;
   repeat: T extends 'reminder' ? number : undefined;
 }
-interface FeedSchema extends mongoose.Document, Feed {}
-interface FeedModel extends mongoose.Model<FeedSchema> {
+export interface FeedSchema extends mongoose.Document, Feed {}
+export interface FeedModel extends mongoose.Model<FeedSchema> {
   set: dbSetter<FeedSchema>;
   get: dbGetter<FeedSchema, Feed>;
 }
 
-interface Control {
+export interface Control {
   id: string;
   data: any;
 }
-interface ControlSchema extends mongoose.Document, Control {
+export interface ControlSchema extends mongoose.Document, Control {
   id: string;
 }
-interface ControlModel extends mongoose.Model<ControlSchema> {
+export interface ControlModel extends mongoose.Model<ControlSchema> {
   set: dbSetter<ControlSchema>;
   get: dbGetter<ControlSchema, Control>;
 }
 
-interface miscDB {
+export interface miscDB {
   gift: GiftItemModel;
   paidroles: PaidRolesModel;
   usercols: UserCollectionModel;
@@ -268,14 +268,14 @@ interface miscDB {
   control: ControlModel;
 }
 
-interface GreetModule {
+export interface GreetModule {
   enabled: boolean;
   text: string;
   channel: string;
   timer: number;
 }
-type RoleNameIDPair = [string, string];
-interface ServerModule {
+export type RoleNameIDPair = [string, string];
+export interface ServerModule {
   BUSTER: any;
   shitpostFeed: any;
   GREET: GreetModule;
@@ -311,19 +311,19 @@ interface ServerModule {
   putometro_last: number;
   putometro_max: number;
 }
-interface LogsActions {
+export interface LogsActions {
   userJoin: boolean;
   userLeave: boolean;
   messDel: boolean;
   messEdit: boolean;
 }
-interface LogsModeration {
+export interface LogsModeration {
   usrBan: boolean;
   usrKick: boolean;
   usrMute: boolean;
   usrUnmute: boolean;
 }
-interface LogsAdvanced {
+export interface LogsAdvanced {
   newChan: boolean;
   newRole: boolean;
   permsEdit: boolean;
@@ -334,12 +334,12 @@ interface LogsAdvanced {
   usrPhoto: boolean;
   usrRoles: boolean;
 }
-interface ServerLogs {
+export interface ServerLogs {
   act: LogsActions;
   mod: LogsModeration;
   adv: LogsAdvanced;
 }
-interface Server {
+export interface Server {
   id: string;
   name: string;
   globalhandle: string;
@@ -360,10 +360,10 @@ interface Server {
   channels: any;
   lastUpdated: Date; // NOTE Told flicky he can just enable the `timestamps` option for the schema
 }
-interface ServerSchema extends mongoose.Document, Server {
+export interface ServerSchema extends mongoose.Document, Server {
   id: string;
 }
-interface ServerModel extends mongoose.Model<ServerSchema> {
+export interface ServerModel extends mongoose.Model<ServerSchema> {
   updateMeta: ServerMetadataModel['updateMeta'];
   meta: ServerMetadataModel['get'];
   new: (svData: Server) => void;
@@ -372,7 +372,7 @@ interface ServerModel extends mongoose.Model<ServerSchema> {
   get: dbGetter<ServerSchema, Server>;
 }
 
-interface ServerMetadataChannel {
+export interface ServerMetadataChannel {
   name: string;
   pos: number;
   id: string;
@@ -380,7 +380,7 @@ interface ServerMetadataChannel {
   type: Exclude<ChannelTypes, 1 | 3>;
   nsfw: boolean;
 }
-interface ServerMetadata {
+export interface ServerMetadata {
   id: string;
   name: string;
   number: string;
@@ -389,17 +389,17 @@ interface ServerMetadata {
   channels: ServerMetadataChannel[];
   icon: string;
 }
-interface ServerMetadataSchema extends mongoose.Document, ServerMetadata {
+export interface ServerMetadataSchema extends mongoose.Document, ServerMetadata {
   id: string;
 }
-interface ServerMetadataModel extends mongoose.Model<ServerMetadataSchema> {
+export interface ServerMetadataModel extends mongoose.Model<ServerMetadataSchema> {
   set: dbSetter<ServerMetadataSchema>;
   get: dbGetter<ServerMetadataSchema, ServerMetadata>;
   cat: 'sv_meta';
   updateMeta: (S: ServerMetadata) => Promise<string | boolean>;
 }
 
-interface UserModules {
+export interface UserModules {
   powerups: any;
   lovepoints: number;
   PERMS: number;
@@ -437,15 +437,15 @@ interface UserModules {
   fun: { waifu: any; lovers: any; shiprate: any };
   statistics: any;
 }
-type Donator = 'plastic' | 'aluminium' | 'iron' | 'carbon' | 'lithium' | 'iridium' | 'palladium' | 'zircon' | 'uranium' | 'xastatine' | 'antimatter' | 'neutrino';
-interface Quest {
+export type Donator = 'plastic' | 'aluminium' | 'iron' | 'carbon' | 'lithium' | 'iridium' | 'palladium' | 'zircon' | 'uranium' | 'xastatine' | 'antimatter' | 'neutrino';
+export interface Quest {
   id: number;
   tracker: string; // TODO `${quest.action}.${quest.type}${quest.condition?"."+quest.condition:""}`
   completed: boolean;
   progress: number;
   target: number;
 }
-interface User {
+export interface User {
   id: string;
   name: string;
   personalhandle: string;
@@ -476,11 +476,11 @@ interface User {
   limits: any;
   quests: Quest[];
 }
-interface UserItem {
+export interface UserItem {
   id: string;
   count: number;
 }
-interface UserSchema extends mongoose.Document, User {
+export interface UserSchema extends mongoose.Document, User {
   id: string;
   addItem: (item: string, amt?: number, crafted?: boolean) => Promise<mongodb.UpdateWriteOpResult['result']>;
   modifyItems(items: UserItem[], debug: true): Promise<[UserItem[], { id: string }, { $inc: number }, { arrayFilters: { [key: string]: string }[] }]>;
@@ -492,7 +492,7 @@ interface UserSchema extends mongoose.Document, User {
   addXP: (amt?: number) => Promise<mongodb.UpdateWriteOpResult['result']>;
   incrementAttr: (attr: string, amt?: number, upper?: boolean) => Promise<mongodb.UpdateWriteOpResult['result']>;
 }
-interface UserModel extends mongoose.Model<UserSchema> {
+export interface UserModel extends mongoose.Model<UserSchema> {
   updateMeta: (U: ErisUser) => Promise<void>;
   new: (userData: User) => Promise<UserSchema>;
   cat: 'users';
@@ -502,7 +502,7 @@ interface UserModel extends mongoose.Model<UserSchema> {
   getFull: dbGetterFull<UserSchema>;
 }
 
-interface ChannelModules {
+export interface ChannelModules {
   BUSTER: any;
   DROPSLY: number;
   EXP: boolean;
@@ -513,7 +513,7 @@ interface ChannelModules {
   ENABLED: string[];
   statistics: any;
 }
-interface Channel {
+export interface Channel {
   meta: any;
   snipe: any;
   name: string;
@@ -527,17 +527,17 @@ interface Channel {
   id: string;
   modules: ChannelModules;
 }
-interface ChannelSchema extends mongoose.Document, Channel {
+export interface ChannelSchema extends mongoose.Document, Channel {
   id: string;
 }
-interface ChannelModel extends mongoose.Model<ChannelSchema> {
+export interface ChannelModel extends mongoose.Model<ChannelSchema> {
   updateMeta(C: {name: string; topic: string; position: number; nsfw: boolean}): Promise<void>;
   new: (chanData: any) => void;
   set: dbSetter<ChannelSchema>;
   get: dbGetter<ChannelSchema, Channel>;
 }
 
-interface LocalRanks {
+export interface LocalRanks {
   server: string;
   user: string;
   level: number;
@@ -545,8 +545,8 @@ interface LocalRanks {
   thx: number;
   lastUpdated: Date;
 }
-interface LocalRanksSchema extends mongoose.Document, LocalRanks {}
-interface LocalRanksModel extends mongoose.Model<LocalRanksSchema> {
+export interface LocalRanksSchema extends mongoose.Document, LocalRanks {}
+export interface LocalRanksModel extends mongoose.Model<LocalRanksSchema> {
   set: dbSetter<LocalRanksSchema>;
   get: dbGetter<LocalRanksSchema, LocalRanks>;
   new: (US: US) => void;
@@ -554,22 +554,22 @@ interface LocalRanksModel extends mongoose.Model<LocalRanksSchema> {
   incrementLv: (US: US, X?: number) => mongoose.Query<mongodb.UpdateWriteOpResult['result'], LocalRanksSchema, {}>;
 }
 
-interface Ranking {
+export interface Ranking {
   id: string;
   type: string;
   points: number;
   timestamp: number;
   data: any;
 }
-interface RankingSchema extends mongoose.Document, Ranking {
+export interface RankingSchema extends mongoose.Document, Ranking {
   id: string;
 }
-interface RankingModel extends mongoose.Model<RankingSchema> {
+export interface RankingModel extends mongoose.Model<RankingSchema> {
   set: dbSetter<RankingSchema>;
   get: dbGetter<RankingSchema, Ranking>;
 }
 
-interface Responses {
+export interface Responses {
   trigger: string;
   response: string;
   server: string;
@@ -577,15 +577,15 @@ interface Responses {
   embed: any;
   type: 'EMBED' | 'STRING' | 'FILE';
 }
-interface ResponsesSchema extends mongoose.Document, Responses {
+export interface ResponsesSchema extends mongoose.Document, Responses {
   id: string;
 }
-interface ResponsesModel extends mongoose.Model<ResponsesSchema> {
+export interface ResponsesModel extends mongoose.Model<ResponsesSchema> {
   set: dbSetter<ResponsesSchema>;
   get: dbGetter<ResponsesSchema, Responses>;
 }
 
-interface Audit {
+export interface Audit {
   from: string;
   to: string;
   type: string;
@@ -596,8 +596,8 @@ interface Audit {
   transactionId: string;
   details: any;
 }
-interface AuditSchema extends mongoose.Document, Audit {}
-interface AuditModel extends mongoose.Model<AuditSchema> {
+export interface AuditSchema extends mongoose.Document, Audit {}
+export interface AuditModel extends mongoose.Model<AuditSchema> {
   set: dbSetter<AuditSchema>;
   get: dbGetter<AuditSchema, Audit>;
   new: (payload: Partial<Audit>) => Promise<string>;
@@ -605,7 +605,7 @@ interface AuditModel extends mongoose.Model<AuditSchema> {
   forfeit: (user: string, type: string, currency?: string, amt?: number) => Promise<string>;
 }
 
-interface Cosmetics {
+export interface Cosmetics {
   id: string;
   name: string;
   tags: string;
@@ -630,10 +630,10 @@ interface Cosmetics {
   filter: string;
   expires: number;
 }
-interface CosmeticsSchema extends mongoose.Document, Cosmetics {
+export interface CosmeticsSchema extends mongoose.Document, Cosmetics {
   id: string;
 }
-interface CosmeticsModel extends mongoose.Model<CosmeticsSchema> {
+export interface CosmeticsModel extends mongoose.Model<CosmeticsSchema> {
   set: dbSetter<CosmeticsSchema>;
   get: dbGetter<CosmeticsSchema, Cosmetics>;
   bgs: (filter?: mongoose.FilterQuery<CosmeticsSchema>) => mongoose.QueryWithHelpers<CosmeticsSchema[], CosmeticsSchema, {}>;
@@ -641,7 +641,7 @@ interface CosmeticsModel extends mongoose.Model<CosmeticsSchema> {
   stickers: (filter?: mongoose.FilterQuery<CosmeticsSchema>) => mongoose.QueryWithHelpers<CosmeticsSchema[], CosmeticsSchema, {}>;
 }
 
-interface Collectibles {
+export interface Collectibles {
   name: string;
   id: string;
   rarity: string;
@@ -649,15 +649,15 @@ interface Collectibles {
   emoji: string;
   attribs: any;
 }
-interface CollectiblesSchema extends mongoose.Document, Collectibles {
+export interface CollectiblesSchema extends mongoose.Document, Collectibles {
   id: string;
 }
-interface CollectiblesModel extends mongoose.Model<CollectiblesSchema> {
+export interface CollectiblesModel extends mongoose.Model<CollectiblesSchema> {
   set: dbSetter<CollectiblesSchema>;
   get: dbGetter<CollectiblesSchema, Collectibles>;
 }
 
-interface Item {
+export interface Item {
   name: string;
   id: string;
   rarity: string;
@@ -685,10 +685,10 @@ interface Item {
   typeCraft: { type: string; count: number }[];
   gemcraft: { RBN: number; JDE: number; SPH: number }
 }
-interface ItemSchema extends mongoose.Document, Item {
+export interface ItemSchema extends mongoose.Document, Item {
   id: string;
 }
-interface ItemModel extends mongoose.Model<ItemSchema> {
+export interface ItemModel extends mongoose.Model<ItemSchema> {
   getAll: () => Promise<ItemSchema[]>;
   cat: (cat: string) => Promise<ItemSchema>;
   consume: (user: IDOrIDObject, itemID: string, amt?: number) => mongoose.QueryWithHelpers<mongodb.UpdateWriteOpResult['result'], ItemSchema, {}>;
@@ -699,7 +699,7 @@ interface ItemModel extends mongoose.Model<ItemSchema> {
   get: dbGetter<ItemSchema, Item>;
 }
 
-interface Achievement {
+export interface Achievement {
   name: string;
   icon: string;
   exp: number;
@@ -710,16 +710,16 @@ interface Achievement {
   advanced_conditions: string[];
   id: string;
 }
-interface AchievementSchema extends mongoose.Document, Achievement {
+export interface AchievementSchema extends mongoose.Document, Achievement {
   id: string;
 }
-interface AchievementModel extends mongoose.Model<AchievementSchema> {
+export interface AchievementModel extends mongoose.Model<AchievementSchema> {
   award: (user: IDOrIDObject, achiev: string) => Promise<mongodb.UpdateWriteOpResult['result']>;
   set: dbSetter<AchievementSchema>;
   get: dbGetter<AchievementSchema, Achievement>;
 }
 
-interface Quest {
+export interface Quest {
   id: number;
   name: string;
   flavor_text: string;
@@ -734,26 +734,26 @@ interface Quest {
   reveal_requisites: string;
   advanced_conditions: string;
 }
-interface QuestSchema extends mongoose.Document, Quest {
+export interface QuestSchema extends mongoose.Document, Quest {
   id: number;
 }
-interface QuestModel extends mongoose.Model<QuestSchema> {
+export interface QuestModel extends mongoose.Model<QuestSchema> {
   set: dbSetter<QuestSchema>;
   get: dbGetter<QuestSchema, Quest>;
 }
 
-interface AdventureLocationTraceRoute {
+export interface AdventureLocationTraceRoute {
   _id: string;
   name: string;
   type: string;
   distance: number;
 }
-interface AdventureLocationTraceRouteOptions {
+export interface AdventureLocationTraceRouteOptions {
   relocating?: boolean;
   soft?: boolean;
   exploring?: boolean;
 }
-interface AdventureLocation {
+export interface AdventureLocation {
   id: string;
   type: string;
   name: string;
@@ -764,24 +764,24 @@ interface AdventureLocation {
   canSettle: boolean;
   coordinates: { x: number; y: number };
 }
-interface AdventureLocationSchema extends mongoose.Document, AdventureLocation {
+export interface AdventureLocationSchema extends mongoose.Document, AdventureLocation {
   id: string;
   isAdjacent: (locationID: string) => boolean;
 }
-interface AdventureLocationModel extends mongoose.Model<AdventureLocationSchema> {
+export interface AdventureLocationModel extends mongoose.Model<AdventureLocationSchema> {
   traceRoutes: (start: string, depth: number, options?: AdventureLocationTraceRouteOptions) => Promise<AdventureLocationTraceRoute[]>;
   set: dbSetter<AdventureLocationSchema>;
   get: dbGetterFull<AdventureLocationSchema>;
   read: dbGetter<AdventureLocationSchema, AdventureLocation>;
 }
 
-interface Mute {
+export interface Mute {
   server: string;
   user: string;
   expires: number;
 }
-interface MuteSchema extends mongoose.Document, Mute {}
-interface MuteModel extends mongoose.Model<MuteSchema> {
+export interface MuteSchema extends mongoose.Document, Mute {}
+export interface MuteModel extends mongoose.Model<MuteSchema> {
   set: dbSetter<MuteSchema>;
   get: dbGetter<MuteSchema, Mute>;
   new: (US: USE) => void;
@@ -790,13 +790,13 @@ interface MuteModel extends mongoose.Model<MuteSchema> {
   expire(US: number): mongoose.QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
 }
 
-interface JourneyEvent {
+export interface JourneyEvent {
   time: number;
   id: number;
   trueTime: number;
   interaction: any;
 }
-interface Journey {
+export interface Journey {
   user: string;
   start: number;
   end: number;
@@ -804,21 +804,21 @@ interface Journey {
   insurance: number;
   events: JourneyEvent[];
 }
-interface JourneySchema extends mongoose.Document, Journey {}
-interface JourneyModel extends mongoose.Model<JourneySchema> {
+export interface JourneySchema extends mongoose.Document, Journey {}
+export interface JourneyModel extends mongoose.Model<JourneySchema> {
   new: (user: string, journey: Omit<Journey, 'user' | 'events'>, events: JourneyEvent[]) => Promise<JourneySchema>;
   set: dbSetter<JourneySchema>;
   get: dbGetter<JourneySchema, Journey>;
 }
 
-interface Temprole {
+export interface Temprole {
   server: string;
   user: string;
   role: string;
   expires: number;
 }
-interface TemproleSchema extends mongoose.Document, Temprole {}
-interface TemproleModel extends mongoose.Model<TemproleSchema> {
+export interface TemproleSchema extends mongoose.Document, Temprole {}
+export interface TemproleModel extends mongoose.Model<TemproleSchema> {
   set: dbSetter<TemproleSchema>;
   get: dbGetter<TemproleSchema, Temprole>;
   new: (US: USER) => void;
@@ -827,7 +827,7 @@ interface TemproleModel extends mongoose.Model<TemproleSchema> {
   expire(US: number): mongoose.QueryWithHelpers<mongodb.DeleteWriteOpResultObject['result'] & { deletedCount?: number }, MuteSchema, {}>;
 }
 
-interface PromoCode {
+export interface PromoCode {
   code: string;
   locked: boolean;
   consumed: boolean;
@@ -836,13 +836,13 @@ interface PromoCode {
   uses: number;
   prize: any;
 }
-interface PromoCodeSchema extends mongoose.Document, PromoCode {}
-interface PromoCodeModel extends mongoose.Model<PromoCodeSchema> {
+export interface PromoCodeSchema extends mongoose.Document, PromoCode {}
+export interface PromoCodeModel extends mongoose.Model<PromoCodeSchema> {
   set: dbSetter<PromoCodeSchema>;
   get: dbGetter<PromoCodeSchema, PromoCode>;
 }
 
-interface Airports {
+export interface Airports {
   id: string;
   name: string;
   tier: number;
@@ -851,52 +851,52 @@ interface Airports {
   slotPrice: number;
   location: { type: string; coordinates: [number, number] };
 }
-interface AirportsSchema extends mongoose.Document, Airports {
+export interface AirportsSchema extends mongoose.Document, Airports {
   id: string;
   withinRange: (kilometers: number) => mongoose.QueryWithHelpers<AirportsSchema[], AirportsSchema, {}>;
 }
-interface AirportsModel extends mongoose.Model<AirportsSchema> {
+export interface AirportsModel extends mongoose.Model<AirportsSchema> {
   set: dbSetter<AirportsSchema>;
   get: dbGetter<AirportsSchema, Airports>;
   getFull: dbGetterFull<AirportsSchema>;
 }
 
-interface Airline {
+export interface Airline {
   id: string;
   acquiredAirplanes: { id: string; assigned: boolean }[];
   user: string;
   airlineName: string;
 }
-interface AirlineSchema extends mongoose.Document, Airline {
+export interface AirlineSchema extends mongoose.Document, Airline {
   id: string;
 }
-interface AirlineModel extends mongoose.Model<AirlineSchema> {
+export interface AirlineModel extends mongoose.Model<AirlineSchema> {
   set: dbSetter<AirlineSchema>;
   get: dbGetter<AirlineSchema, Airline>;
   new: (user: string, id: string, airlineName: string) => Promise<AirlineSchema>;
 }
 
-interface AirportSlots {
+export interface AirportSlots {
   airline: string;
   airport: string;
   expiresIn: number;
 }
-interface AirportSlotsSchema extends mongoose.Document, AirportSlots {}
-interface AirportSlotsModel extends mongoose.Model<AirportSlotsSchema> {
+export interface AirportSlotsSchema extends mongoose.Document, AirportSlots {}
+export interface AirportSlotsModel extends mongoose.Model<AirportSlotsSchema> {
   set: dbSetter<AirportSlotsSchema>;
   get: dbGetter<AirportSlotsSchema, AirportSlots>;
   new: (id: string, airport: string, time: number) => Promise<AirportSlotsSchema>;
 }
 
-interface AirlineRoute {
+export interface AirlineRoute {
   startAirport: string;
   endAirport: string;
   airline: string;
   airplane: string;
   ticketPrice: number;
 }
-interface AirlineRouteSchema extends mongoose.Document, AirlineRoute {}
-interface AirlineRouteModel extends mongoose.Model<AirlineRouteSchema> {
+export interface AirlineRouteSchema extends mongoose.Document, AirlineRoute {}
+export interface AirlineRouteModel extends mongoose.Model<AirlineRouteSchema> {
   set: dbSetter<AirlineRouteSchema>;
   get: dbGetter<AirlineRouteSchema, AirlineRoute>;
   new: (sa: string, ea: string, airline: string, airplane: string, prie: number) => Promise<AirlineRouteSchema>;
@@ -904,7 +904,7 @@ interface AirlineRouteModel extends mongoose.Model<AirlineRouteSchema> {
   shutdown: (options: { _id: string, airplane: string, airline: string }) => Promise<AirlineRouteSchema>;
 }
 
-interface Airplane {
+export interface Airplane {
   id: string;
   humanName: string;
   price: number;
@@ -914,23 +914,23 @@ interface Airplane {
   tier: number;
   range: number;
 }
-interface AirplaneSchema extends mongoose.Document, Airplane {
+export interface AirplaneSchema extends mongoose.Document, Airplane {
   id: string;
 }
-interface AirplaneModel extends mongoose.Model<AirplaneSchema> {
+export interface AirplaneModel extends mongoose.Model<AirplaneSchema> {
   set: dbSetter<AirplaneSchema>;
   get: dbGetter<AirplaneSchema, Airplane>;
   buy: (airline: string, id: string) => Promise<AirplaneSchema>;
 }
 
-interface MarketbaseProjection {
+export interface MarketbaseProjection {
   bgBase?: boolean;
   mdBase?: boolean;
   stBase?: boolean;
   itBase?: boolean;
   fullbase?: boolean;
 }
-interface Marketbase {
+export interface Marketbase {
   bgBase: Cosmetics[];
   mdBase: Cosmetics[];
   stBase: Cosmetics[];
