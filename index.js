@@ -22,10 +22,14 @@ module.exports = async function ({hook, url, options},extras) {
 				extras.redis.options
 			)
 		}else{
-			// DUCT TAPING SHIT TOGETHER
-			mongoose.Query.prototype.noCache = function() {return this};
-			mongoose.Query.prototype.cache = function() {return this};
-			//Probably won't work
+			// Only install no-op stubs if RedisCache was never initialized.
+			// Without this guard, a second DBSchema() call (vanilla connection
+			// with redis:null) would overwrite the real .cache()/.noCache()
+			// methods that the first call installed.
+			if (!RedisCache.isInitialized()) {
+				mongoose.Query.prototype.noCache = function() {return this};
+				mongoose.Query.prototype.cache = function() {return this};
+			}
 		}
 
 		console.info(blue("• "), "Connecting to Database...");
