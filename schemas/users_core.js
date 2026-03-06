@@ -117,7 +117,7 @@ module.exports = function USERS_CORE(activeConnection) {
     limits: Mixed,
 
   }, {
-    strict: false, // allow gradual migration of undeclared fields
+    strict: true, // only persist declared paths; typos in $set no longer create ghost fields
     collection: "users",
     timestamps: false,
   });
