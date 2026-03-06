@@ -530,8 +530,8 @@ export interface UserCoreModel extends mongoose.Model<UserCoreSchema> {
   getFull: dbGetterFull<UserCoreSchema>;
 }
 
-/** Cosmetics satellite document (new "user_cosmetics" collection) */
-export interface UserCosmeticsData {
+/** Cosmetics satellite document (new "user_inventory" collection) */
+export interface UserInventoryData {
   userId: string;
   inventory: Array<{ id: string; count: number; crafted?: number }>;
   bgInventory: string[];
@@ -544,7 +544,7 @@ export interface UserCosmeticsData {
   fishShowcase: any[];
   achievements: any[];
 }
-export interface UserCosmeticsSchema extends mongoose.Document, UserCosmeticsData {
+export interface UserInventorySchema extends mongoose.Document, UserInventoryData {
   addItem: (item: string, amt?: number, crafted?: boolean) => Promise<mongodb.UpdateWriteOpResult['result']>;
   removeItem: (item: string, amt?: number, crafted?: boolean) => Promise<mongodb.UpdateWriteOpResult['result']>;
   modifyItems(items: UserItem[], debug: true): Promise<[UserItem[], { userId: string }, { $inc: any }, { arrayFilters: any[] }]>;
@@ -552,12 +552,12 @@ export interface UserCosmeticsSchema extends mongoose.Document, UserCosmeticsDat
   hasItem: (itemId: string, count?: number) => boolean;
   amtItem: (itemId: string) => number;
 }
-export interface UserCosmeticsModel extends mongoose.Model<UserCosmeticsSchema> {
-  get: (userId: IDOrIDObject, project?: any) => Promise<UserCosmeticsData | null>;
-  getFull: (userId: IDOrIDObject) => Promise<UserCosmeticsSchema | null>;
-  set: (userId: IDOrIDObject, alter: mongoose.UpdateQuery<UserCosmeticsSchema>, options?: mongoose.QueryOptions) => Promise<any>;
-  getOrCreate: (userId: IDOrIDObject) => Promise<UserCosmeticsSchema>;
-  new: (userId: IDOrIDObject) => Promise<UserCosmeticsSchema>;
+export interface UserInventoryModel extends mongoose.Model<UserInventorySchema> {
+  get: (userId: IDOrIDObject, project?: any) => Promise<UserInventoryData | null>;
+  getFull: (userId: IDOrIDObject) => Promise<UserInventorySchema | null>;
+  set: (userId: IDOrIDObject, alter: mongoose.UpdateQuery<UserInventorySchema>, options?: mongoose.QueryOptions) => Promise<any>;
+  getOrCreate: (userId: IDOrIDObject) => Promise<UserInventorySchema>;
+  new: (userId: IDOrIDObject) => Promise<UserInventorySchema>;
 }
 
 /** OAuth satellite document (new "user_oauth" collection) */
@@ -1221,7 +1221,7 @@ export interface Schemas {
 
   // ── New split user collections (authoritative) ──────────────────
   users: UserCoreModel;
-  userCosmetics: UserCosmeticsModel;
+  userInventory: UserInventoryModel;
   userOAuth: UserOAuthModel;
   userGuilds: UserGuildModel;
   userQuests: UserQuestModel;

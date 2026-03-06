@@ -7,7 +7,7 @@ module.exports = function SCHEMAS(activeConnection){
 
 	// ── New split user collections ────────────────────────────────
 	const usersCore      = require("./schemas/users_core.js")(activeConnection);
-	const userCosmetics  = require("./schemas/user_cosmetics.js")(activeConnection);
+	const userInventory  = require("./schemas/user_inventory.js")(activeConnection);
 	const userOAuth      = require("./schemas/user_oauth.js")(activeConnection);
 	const userGuilds     = require("./schemas/user_guilds.js")(activeConnection);
 	const userQuests     = require("./schemas/user_quests.js")(activeConnection);
@@ -59,7 +59,7 @@ module.exports = function SCHEMAS(activeConnection){
 
 		// ── New collections (authoritative) ───────────────────────
 		users: usersCore,
-		userCosmetics,
+		userInventory,
 		userOAuth,
 		userGuilds,
 		userQuests,

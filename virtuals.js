@@ -2,7 +2,7 @@ module.exports = function VIRTUALS(Schemas) {
 
   const Marketplace = Schemas.marketplace.schema;
   const Users = Schemas.users.schema;
-  const UserCosmetics = Schemas.userCosmetics.schema;
+  const UserInventory = Schemas.userInventory.schema;
   const Items = Schemas.items.schema;
   const Cosmetics = Schemas.cosmetics.schema;
   const Relationships = Schemas.relationships.schema;
@@ -43,7 +43,7 @@ module.exports = function VIRTUALS(Schemas) {
 
   // USER COSMETICS
 
-  UserCosmetics.virtual("itemsData", {
+  UserInventory.virtual("itemsData", {
     ref: "Item",
     localField: "inventory.id",
     foreignField: "id",

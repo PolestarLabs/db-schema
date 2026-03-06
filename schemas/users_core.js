@@ -4,7 +4,7 @@
  *
  * Only data needed for profile rendering, command execution, and
  * economy transactions lives here. Everything else is split into
- * satellite collections (user_cosmetics, user_oauth, etc.).
+ * satellite collections (user_inventory, user_oauth, etc.).
  *
  * Field layout mirrors the canonical mongoscript.js migration output.
  *

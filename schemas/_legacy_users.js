@@ -4,7 +4,7 @@
  * This schema targets the OLD "userdb" collection and is retained ONLY
  * as a fallback for the migration period. All new code MUST use:
  *   - schemas/users_core.js          (core user data)
- *   - schemas/user_cosmetics.js      (inventories, achievements)
+ *   - schemas/user_inventory.js      (inventories, achievements)
  *   - schemas/user_oauth.js          (OAuth tokens, identity cache)
  *   - schemas/user_guilds.js         (cached guild memberships)
  *   - schemas/user_quests.js         (quest progress)
