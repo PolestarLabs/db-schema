@@ -68,6 +68,8 @@ module.exports = function USERS_CORE(activeConnection) {
       lastLogin: { type: Date, default: null },
       lastUpdated: { type: Date, default: Date.now },
       migrated: { type: Boolean, default: false },
+      apiKey: { type: String, default: null, sparse: true },
+      apiPerms: { type: String, default: "basic" },
     },
 
     // ── Subscription / Prime ──────────────────────────────────────
