@@ -1,29 +1,40 @@
 module.exports = function SCHEMAS(activeConnection){
 
-
-
 	const miscDB = require("./schemas/_misc.js")(activeConnection);
 	const serverDB = require("./schemas/servers.js")(activeConnection);
-	const userDB = require("./schemas/users.js")(activeConnection);
 	const channelDB = require("./schemas/channels.js")(activeConnection);
 	const svMetaDB = require("./schemas/serverMeta.js")(activeConnection);
+
+	// ── New split user collections ────────────────────────────────
+	const usersCore      = require("./schemas/users_core.js")(activeConnection);
+	const userCosmetics  = require("./schemas/user_cosmetics.js")(activeConnection);
+	const userOAuth      = require("./schemas/user_oauth.js")(activeConnection);
+	const userGuilds     = require("./schemas/user_guilds.js")(activeConnection);
+	const userQuests     = require("./schemas/user_quests.js")(activeConnection);
+	const userAnalytics  = require("./schemas/user_analytics.js")(activeConnection);
+	const userConnections = require("./schemas/user_connections.js")(activeConnection);
+
+	// ── Legacy monolithic userdb (fallback only) ──────────────────
+	/** @deprecated Only used by _legacy_userdb_shim files. Will be removed. */
+	const _legacyUserDB  = require("./schemas/_legacy_users.js")(activeConnection);
 
 	return {
 		version: require('./package.json').version,
 		native: miscDB.global.db,
 		serverDB,
-		userDB,
+		/** @deprecated Use DB._legacyUserDB for explicit legacy access. DB.users now points to new collection. */
+		userDB: _legacyUserDB,
 		channelDB,
 		svMetaDB,
 		localranks: require("./schemas/localranks.js")(activeConnection),
 		rankings: require("./schemas/rankings.js")(activeConnection),
 		responses: require("./schemas/responses.js")(activeConnection),
 		audits: require("./schemas/audits.js")(activeConnection),
-		miscDB, 
+		miscDB,
 			buyables: miscDB.buyables,
 			fanart: miscDB.fanart,
 			globalDB: miscDB.global,
-			commends: miscDB.commends,		
+			commends: miscDB.commends,
 			control: miscDB.control,
 			marketplace: miscDB.marketplace,
 			reactRoles: miscDB.reactRoles,
@@ -45,7 +56,20 @@ module.exports = function SCHEMAS(activeConnection){
 		temproles: require("./schemas/temproles.js")(activeConnection),
 		promocodes: require("./schemas/promocodes.js")(activeConnection),
 		airlines: require("./schemas/airlines.js")(activeConnection),
-		users: userDB,
+
+		// ── New collections (authoritative) ───────────────────────
+		users: usersCore,
+		userCosmetics,
+		userOAuth,
+		userGuilds,
+		userQuests,
+		userAnalytics,
+		userConnections,
+
+		// ── Legacy (fallback shim only) ───────────────────────────
+		/** @deprecated Only for _legacy_userdb_shim. Delete when sunset. */
+		_legacyUserDB,
+
 		servers: serverDB,
 		guilds: serverDB,
 		channels: channelDB,
