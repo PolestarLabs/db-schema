@@ -44,10 +44,10 @@ module.exports = function MISC_DB(activeConnection){
   const QUESTS = activeConnection.model("Quests", Quests, "Quests");
 
   ACHIEVEMENTS.award = (user, achiev) => {
-    const userDB = require("./users.js")(activeConnection);
+    const userCosmetics = require("./user_cosmetics.js")(activeConnection);
     return new Promise(async (resolve) => {
-      await userDB
-        .updateOne({ id: user.id || user }, { $push: { "modules.achievements": { id: achiev, unlocked: Date.now() } } }).then((res) => resolve(res));
+      await userCosmetics
+        .updateOne({ id: user.id || user }, { $push: { "achievements": { id: achiev, unlocked: Date.now() } } }).then((res) => resolve(res));
     });
   };
 

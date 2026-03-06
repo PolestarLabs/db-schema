@@ -51,10 +51,10 @@ module.exports = function ITEM_DB(activeConnection){
   };
 
   const itemOperation = (user, itemId, field, amt=1) => {
-    return this.model("UserDB").updateOne(
+    return this.model("UsersCore").updateOne(
       { id: user.id||user },
       {$inc:{
-        ["modules.inventory.$[item]."+field]: amt
+        ["profile.inventory.$[item]."+field]: amt
       }},
       {arrayFilters: [
         {"item.id":itemId}

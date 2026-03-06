@@ -44,7 +44,7 @@ module.exports = function VIRTUALS(Schemas) {
 
   Users.virtual("itemsData", {
     ref: "Item",
-    localField: "modules.inventory.id",
+    localField: "profile.inventory.id",
     foreignField: "id",
     justOne: false,
   });
