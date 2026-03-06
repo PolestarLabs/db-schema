@@ -7,7 +7,7 @@ module.exports = function VIRTUALS(Schemas) {
   const Relationships = Schemas.relationships.schema;
 
   Marketplace.virtual("authorData", {
-    ref: "UserDB",
+    ref: "UsersCore", // Was "UserDB" (legacy userdb collection)
     localField: "author",
     foreignField: "id",
     justOne: true,
@@ -66,7 +66,7 @@ module.exports = function VIRTUALS(Schemas) {
 
   Users.virtual("marriageData", {
     ref: "Relationship",
-    localField: "featuredMarriage",
+    localField: "profile.featuredMarriage", // Was "featuredMarriage" (top-level in legacy)
     foreignField: "_id",
     justOne: true,
   });
@@ -74,7 +74,7 @@ module.exports = function VIRTUALS(Schemas) {
   // RELATIONSHIPS
 
   Relationships.virtual("usersData", {
-    ref: "UserDB",
+    ref: "UsersCore", // Was "UserDB" (legacy userdb collection)
     localField: "users",
     foreignField: "id",
     justOne: false,
