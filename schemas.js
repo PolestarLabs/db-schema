@@ -1,3 +1,4 @@
+/** Mongoose query conventions (.lean(), .exec()): see ./utils.js JSDoc. */
 module.exports = function SCHEMAS(activeConnection){
 
 	const miscDB = require("./schemas/_misc.js")(activeConnection);

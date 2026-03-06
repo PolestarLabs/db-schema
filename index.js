@@ -1,6 +1,9 @@
 
 const mongoose = require("mongoose");
 
+// Default all find/findOne to lean. Opt out with findOne(q, proj, { lean: false }).
+mongoose.plugin(require("./leanDefaultPlugin.js"));
+
 // lightweight color helpers (replacing the `colors` package usage)
 function red(s){return `\x1b[31m${s}\x1b[0m`;}
 function green(s){return `\x1b[32m${s}\x1b[0m`;}
