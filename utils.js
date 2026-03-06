@@ -1,3 +1,18 @@
+/**
+ * Mongoose query conventions (bot + dashboard + database_schema):
+ *
+ * READS (read-only):
+ *   - Use .lean() so results are plain objects. Prefer model.get(id) when it exists.
+ *   - Example: await Model.findOne(query).lean() or await DB.users.get(id).
+ *
+ * NEED DOCUMENT (instance methods, .save()):
+ *   - Do not use .lean(). Use findOne() or model.getFull(id).
+ *
+ * .exec():
+ *   - Use .exec() only on hand-offs: when the promise is passed elsewhere (e.g. .then(cb),
+ *     Promise.all([ query.lean().exec(), ... ]), or return query.lean().exec()).
+ *   - When we await the result in the same flow, do not use .exec(): use await Model.find().lean().
+ */
 module.exports = {
   dbSetter(query, alter, options = {}) {
     return new Promise((resolve) => {
