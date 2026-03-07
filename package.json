@@ -1,22 +1,19 @@
 {
   "name": "@polestar/database_schema",
-  "version": "0.19.0",
+  "version": "0.19.2",
   "description": "Database Schemas & Functions",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://gitlab.com/PolestarLabs/database_schema.git"
-  },
+  "repository": "https://github.com/PolestarLabs/database_schema",
   "author": "",
   "license": "UNLICENSED",
   "bugs": {
-    "url": "https://gitlab.com/PolestarLabs/database_schema/issues"
+    "url": "https://github.com/PolestarLabs/database_schema/issues"
   },
-  "homepage": "https://gitlab.com/PolestarLabs/database_schema#README",
+  "homepage": "https://github.com/PolestarLabs/database_schema#readme",
   "dependencies": {
     "bluebird": "^3.5.1",
     "mongoose": "^5.9.20",
