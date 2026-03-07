@@ -1,5 +1,5 @@
 {
-  "name": "@polestar/database_schema",
+  "name": "@polestarlabs/database_schema",
   "version": "0.19.2",
   "description": "Database Schemas & Functions",
   "main": "index.js",
@@ -8,6 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "https://github.com/PolestarLabs/database_schema",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "author": "",
   "license": "UNLICENSED",
   "bugs": {
