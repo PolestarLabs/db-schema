@@ -442,7 +442,7 @@ export interface UserModulesLegacy {
 /** Alias for backwards-compat in consumer type annotations */
 export type UserModules = UserModulesLegacy;
 
-export type Donator = 'plastic' | 'aluminium' | 'iron' | 'carbon' | 'lithium' | 'iridium' | 'palladium' | 'zircon' | 'uranium' | 'xastatine' | 'antimatter' | 'neutrino';
+export type Donator = 'plastic' | 'aluminium' | 'iron' | 'carbon' | 'lithium' | 'iridium' | 'palladium' | 'zircon' | 'uranium' | 'astatine' | 'antimatter' | 'neutrino';
 export type PrimeTier = Donator;
 
 // ── New split collection types ──────────────────────────────────────
@@ -1231,6 +1231,11 @@ export interface Schemas {
   // ── Legacy (fallback shim only) ─────────────────────────────────
   /** @deprecated Only for _legacy_userdb_shim. Delete when sunset. */
   _legacyUserDB: UserModel;
+
+  // ── PascalCase accessor aliases (preferred) ─────────────────────
+  Users: UserCoreModel;
+  Items: ItemModel;
+  UserInventory: UserInventoryModel;
 
   servers: ServerModel;
   guilds: ServerModel;
