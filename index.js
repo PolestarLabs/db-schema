@@ -2,7 +2,7 @@
 const mongoose = require("mongoose");
 
 // Default all find/findOne to lean. Opt out with findOne(q, proj, { lean: false }).
-mongoose.plugin(require("./leanDefaultPlugin.js"));
+mongoose.plugin(require("./plugins/leanDefaultPlugin.js"));
 
 // lightweight color helpers (replacing the `colors` package usage)
 function red(s){return `\x1b[31m${s}\x1b[0m`;}
@@ -11,7 +11,7 @@ function yellow(s){return `\x1b[33m${s}\x1b[0m`;}
 function blue(s){return `\x1b[34m${s}\x1b[0m`;}
 
 //FIXME: REDIS IS MANDATORY, MUST MAKE IT NOT MANDATORY OTHERWISE .cache() and .noCache() will fail
-const RedisCache = require("./redisClient.js");
+const RedisCache = require("./plugins/redisClient.js");
 
 module.exports = async function ({hook, url, options},extras) {
 
