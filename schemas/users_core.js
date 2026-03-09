@@ -40,12 +40,12 @@ module.exports = function USERS_CORE(activeConnection) {
     // ── Profile (equipped cosmetic state) ─────────────────────────
     // Old path: modules.bgID  →  New path: profile.bgID
     profile: {
-      bgID: { type: String, default: null },
-      flairTop: { type: String, default: "default" },
+      background: { type: String, default: null },
+      flair: { type: String, default: "default" },
       flairDown: { type: String, default: "default" },
       sticker: { type: String, default: null },
-      favcolor: { type: String, default: "#eb497b" },
-      persotext: { type: String, default: "I have no personal text because I'm too lazy to set one." },
+      color: { type: String, default: "#eb497b" },
+      about: { type: String, default: "I have no bio because I'm too lazy to set one." },
       tagline: { type: String, default: "A fellow Pollux user" },
       medals: { type: [Mixed], default: [0, 0, 0, 0, 0, 0, 0, 0, 0] },
       skins: { type: Mixed, default: {} },
@@ -57,8 +57,6 @@ module.exports = function USERS_CORE(activeConnection) {
     progression: {
       level: { type: Number, default: 0, index: true },
       exp: { type: Number, default: 0, min: 0, index: true },
-      globalLV: { type: Number, default: 0 },
-      globalXP: { type: Number, default: 0 },
       craftingExp: { type: Number, default: 0 },
     },
 
