@@ -2,18 +2,18 @@
 module.exports = function SCHEMAS(activeConnection){
 
 	const miscDB = require("./schemas/_misc.js")(activeConnection);
-	const serverDB = require("./schemas/servers.js")(activeConnection);
-	const channelDB = require("./schemas/channels.js")(activeConnection);
-	const svMetaDB = require("./schemas/serverMeta.js")(activeConnection);
+	const serverDB = require("./schemas/servers/servers.js")(activeConnection);
+	const channelDB = require("./schemas/channels/channels.js")(activeConnection);
+	const svMetaDB = require("./schemas/serverMeta/serverMeta.js")(activeConnection);
 
 	// ── New split user collections ────────────────────────────────
-	const usersCore      = require("./schemas/users_core.js")(activeConnection);
-	const userInventory  = require("./schemas/user_inventory.js")(activeConnection);
-	const userOAuth      = require("./schemas/user_oauth.js")(activeConnection);
-	const userGuilds     = require("./schemas/user_guilds.js")(activeConnection);
-	const userQuests     = require("./schemas/user_quests.js")(activeConnection);
-	const userAnalytics  = require("./schemas/user_analytics.js")(activeConnection);
-	const userConnections = require("./schemas/user_connections.js")(activeConnection);
+	const usersCore      = require("./schemas/users_core/users_core.js")(activeConnection);
+	const userInventory  = require("./schemas/user_inventory/user_inventory.js")(activeConnection);
+	const userOAuth      = require("./schemas/user_oauth/user_oauth.js")(activeConnection);
+	const userGuilds     = require("./schemas/user_guilds/user_guilds.js")(activeConnection);
+	const userQuests     = require("./schemas/user_quests/user_quests.js")(activeConnection);
+	const userAnalytics  = require("./schemas/user_analytics/user_analytics.js")(activeConnection);
+	const userConnections = require("./schemas/user_connections/user_connections.js")(activeConnection);
 
 	// ── Legacy monolithic userdb (fallback only) ──────────────────
 	/** @deprecated Only used by _legacy_userdb_shim files. Will be removed. */
@@ -27,10 +27,10 @@ module.exports = function SCHEMAS(activeConnection){
 		userDB: _legacyUserDB,
 		channelDB,
 		svMetaDB,
-		localranks: require("./schemas/localranks.js")(activeConnection),
-		rankings: require("./schemas/rankings.js")(activeConnection),
-		responses: require("./schemas/responses.js")(activeConnection),
-		audits: require("./schemas/audits.js")(activeConnection),
+		localranks: require("./schemas/localranks/localranks.js")(activeConnection),
+		rankings: require("./schemas/rankings/rankings.js")(activeConnection),
+		responses: require("./schemas/responses/responses.js")(activeConnection),
+		audits: require("./schemas/audits/audits.js")(activeConnection),
 		miscDB,
 			buyables: miscDB.buyables,
 			fanart: miscDB.fanart,
@@ -46,17 +46,17 @@ module.exports = function SCHEMAS(activeConnection){
 			usercols: miscDB.usercols,
 			gifts: miscDB.gift,
 
-		cosmetics: require("./schemas/cosmetics.js")(activeConnection),
-		collectibles: require("./schemas/collectibles.js")(activeConnection),
-		items: require("./schemas/items.js")(activeConnection),
-		achievements: require("./schemas/achievements.js")(activeConnection).ACHIEVEMENTS,
-		quests: require("./schemas/achievements.js")(activeConnection).QUESTS,
-		advLocations: (require("./schemas/adventure.js"))(activeConnection).LOCATIONS,
-		advJourneys: (require("./schemas/adventure.js"))(activeConnection).JOURNEYS,
-		mutes: require("./schemas/mutes.js")(activeConnection),
-		temproles: require("./schemas/temproles.js")(activeConnection),
-		promocodes: require("./schemas/promocodes.js")(activeConnection),
-		airlines: require("./schemas/airlines.js")(activeConnection),
+		cosmetics: require("./schemas/cosmetics/cosmetics.js")(activeConnection),
+		collectibles: require("./schemas/collectibles/collectibles.js")(activeConnection),
+		items: require("./schemas/items/items.js")(activeConnection),
+		achievements: require("./schemas/achievements/achievements.js")(activeConnection).ACHIEVEMENTS,
+		quests: require("./schemas/achievements/achievements.js")(activeConnection).QUESTS,
+		advLocations: (require("./schemas/adventure/adventure.js"))(activeConnection).LOCATIONS,
+		advJourneys: (require("./schemas/adventure/adventure.js"))(activeConnection).JOURNEYS,
+		mutes: require("./schemas/mutes/mutes.js")(activeConnection),
+		temproles: require("./schemas/temproles/temproles.js")(activeConnection),
+		promocodes: require("./schemas/promocodes/promocodes.js")(activeConnection),
+		airlines: require("./schemas/airlines/airlines.js")(activeConnection),
 
 		// ── New collections (authoritative) ───────────────────────
 		users: usersCore,
