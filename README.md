@@ -177,7 +177,7 @@ Use these when:
 
 ### Layer 2: Front-Facing Types (`/types`)
 
-These live in `types/index.d.ts` and are the "pretty" types meant for bot commands, API responses, and dashboard rendering. They use proper type unions instead of raw strings, have cleaner names, and include instance method signatures.
+These are defined in per-schema `*.types.d.ts` files and re-exported through the `types/index.d.ts` barrel. They are the "pretty" types meant for bot commands, API responses, and dashboard rendering. They use proper type unions instead of raw strings, have cleaner names, and include instance method signatures.
 
 ```ts
 import type { User, CosmeticItem, Rarity, Currency } from "@polestarlabs/database_schema/types";
@@ -192,6 +192,8 @@ import type { User, CosmeticItem, Rarity, Currency } from "@polestarlabs/databas
 | `type: string` | `type: CosmeticType` | `"background" \| "medal" \| ...` |
 
 **Rule of thumb:** Consumer code should always import from `/types`. Only reach for raw doc types when doing direct database operations.
+
+> **For contributors:** Front-facing types live in `schemas/<name>/<name>.types.d.ts`. Generic types (Currency, Rarity, etc.) live in `types/generics.d.ts`. The barrel at `types/index.d.ts` re-exports everything. See [CONTRIBUTING.md](./CONTRIBUTING.md) and `generate-schema.sh` for adding new schemas.
 
 ### Constants (`/constants`)
 
