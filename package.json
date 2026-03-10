@@ -1,6 +1,6 @@
 {
   "name": "@polestarlabs/database_schema",
-  "version": "0.20.2",
+  "version": "0.20.3",
   "description": "Database Schemas & Functions",
   "main": "index.js",
   "types": "index.d.ts",
@@ -24,7 +24,8 @@
     }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node check-structure.js",
+    "new": "./generate-schema.sh"
   },
   "repository": "https://github.com/PolestarLabs/database_schema",
   "publishConfig": {
