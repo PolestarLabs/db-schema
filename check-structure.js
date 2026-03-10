@@ -183,6 +183,51 @@ for (const req of virtualsJsRequires) {
   }
 }
 
+// ── 3.5. schema files — verify all require() paths resolve ───────
+//
+// In the past we shipped packages where a relative path inside a schema
+// file pointed at a non-existent location (e.g. `require("../utils.js")`).
+// The bundler would later emit "Could not resolve" errors.  To prevent
+// that from reaching release we scan every .js file under schemas/ and
+// attempt to resolve each require() string using the file's own directory
+// as the base.  Any failures are treated as errors.
+
+section('schema files — inline require resolution');
+
+/**
+ * Walk a directory, collecting all .js files (non-recursive for simplicity).
+ */
+function walkJsFiles(dir, accumulator) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      walkJsFiles(p, accumulator);
+    } else if (entry.isFile() && p.endsWith('.js')) {
+      accumulator.push(p);
+    }
+  }
+}
+
+const schemaJsFiles = [];
+walkJsFiles(path.join(ROOT, 'schemas'), schemaJsFiles);
+
+for (const file of schemaJsFiles) {
+  const relFile = path.relative(ROOT, file);
+  const reqs = extractRequires(file);
+  for (const req of reqs) {
+    // Only validate relative paths; external modules are handled by npm
+    if (req.startsWith('.')) {
+      try {
+        // require.resolve will throw if resolution fails.
+        require.resolve(req, { paths: [path.dirname(file)] });
+        ok(`${relFile} → ${req}`);
+      } catch (err) {
+        fail(`${relFile} → ${req}`, 'cannot resolve', relFile);
+      }
+    }
+  }
+}
+
 // ── Build combined referenced-file set ───────────────────────────
 // Used by orphan detection. Normalised to absolute path (no extension).
 
