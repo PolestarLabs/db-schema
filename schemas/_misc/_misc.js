@@ -82,33 +82,6 @@ module.exports = function MISC_DB(activeConnection){
     extras: Mixed,
   }, { strict: false });
 
-  const MarketplaceModel = new Schema({
-    id: String,
-    item_id: String,
-    item_type: String,
-    price: Number,
-    currency: String,
-    author: String,
-    timestamp: Number,
-    type: String,
-    lock: Boolean,
-    completed: Boolean,
-  }, { strict: false });
-
-
-
-
-  const RelationShipModel = new Schema({
-    id: String,
-    users: [{type:String }],
-    ring: {type:String },
-    ringCollection: [{type:String }],
-    initiative: {type:String },
-    since: Number,
-    lovepoints: Number,
-    type: String, // MARRIAGE / PARENTS / CHILDREN
-
-  }, { strict: false });
 
 
 
