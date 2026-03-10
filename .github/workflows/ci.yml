@@ -3,10 +3,9 @@ name: Schema CI
 on:
   push:
     branches: [main, refactor]
-    paths: ['schemas/**', 'virtuals.js', 'index.js']
+    
   pull_request:
     branches: [main]
-    paths: ['schemas/**', 'virtuals.js', 'index.js']
 
 jobs:
   check:
