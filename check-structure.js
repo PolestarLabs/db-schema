@@ -424,17 +424,121 @@ if (tscResult.status === 0) {
   }
 }
 
-// ── Summary ───────────────────────────────────────────────────────
+// ── 8. Database initialization check ─────────────────────────────
+//
+// Connects to MongoDB using MONGO_TEST (env var first, then .env file
+// fallback) and verifies that core Schemas collections are present on
+// the resolved object.  Runs inside a child process so any crash in
+// index.js/schemas.js is isolated and reported cleanly.
 
-console.log(`\n${'─'.repeat(50)}`);
-if (failed === 0) {
-  console.log(`\x1b[32m\x1b[1m  All ${passed} checks passed.\x1b[0m`);
-} else {
-  console.log(`\x1b[32m  ${passed} passed\x1b[0m  \x1b[31m${failed} failed\x1b[0m`);
+section('Database initialization (live connection)');
+
+// Resolve URL: process.env.MONGO_TEST → .env file → skip
+let _mongoUrl = process.env.MONGO_TEST;
+
+if (!_mongoUrl) {
+  const envFile = path.join(ROOT, '.env');
+  if (fs.existsSync(envFile)) {
+    const envSrc = fs.readFileSync(envFile, 'utf8');
+    const match  = /^MONGO_TEST\s*=\s*["']?([^"'\r\n]+)["']?/m.exec(envSrc);
+    if (match) _mongoUrl = match[1].trim();
+  }
 }
-console.log(`\x1b[33m  ${warns} remarks\x1b[0m (can safely ignore)`);
-console.log(`\x1b[90m  Strict TRUE: \x1b[0m${strict}\x1b[90m    Strict FALSE: \x1b[0m${noStrict}`);
-console.log();
 
-process.exit(failed > 0 ? 1 : 0);
+if (!_mongoUrl) {
+  warn('MONGO_TEST not set and .env has no MONGO_TEST — skipping live DB check');
+
+  // ── Summary (sync path) ────────────────────────────────────────
+  console.log(`\n${'─'.repeat(50)}`);
+  if (failed === 0) {
+    console.log(`\x1b[32m\x1b[1m  All ${passed} checks passed.\x1b[0m`);
+  } else {
+    console.log(`\x1b[32m  ${passed} passed\x1b[0m  \x1b[31m${failed} failed\x1b[0m`);
+  }
+  console.log(`\x1b[33m  ${warns} remarks\x1b[0m (can safely ignore)`);
+  console.log(`\x1b[90m  Strict TRUE: \x1b[0m${strict}\x1b[90m    Strict FALSE: \x1b[0m${noStrict}`);
+  console.log();
+  process.exit(failed > 0 ? 1 : 0);
+
+} else {
+  // ── Run DB check in a child process ───────────────────────────
+  // index.js uses `new Promise(async resolve => {...})` — an async executor
+  // whose thrown errors become unhandled rejections that crash the process.
+  // Isolating in a subprocess keeps the test runner alive regardless.
+
+  const EXPECTED_COLLECTIONS = [
+    'users', 'commends', 'userInventory', 'cosmetics', 'items',
+    'fanart', 'relationships', 'servers', 'globalDB',
+  ];
+
+  const dbCheckScript = `
+'use strict';
+const initSchema = require(${JSON.stringify(path.join(ROOT, 'index.js'))});
+const EXPECTED   = ${JSON.stringify(EXPECTED_COLLECTIONS)};
+process.on('unhandledRejection', (err) => {
+  process.stdout.write(JSON.stringify({ ok: false, error: String(err) }) + '\\n');
+  process.exit(1);
+});
+initSchema(
+  { url: process.env.MONGO_URL, options: { useNewUrlParser: true, useUnifiedTopology: true }, hook: undefined },
+  null,
+).then(Schemas => {
+  const missing = EXPECTED.filter(col => !Schemas[col]);
+  const present = EXPECTED.filter(col => !!Schemas[col]);
+  process.stdout.write(JSON.stringify({ ok: missing.length === 0, present, missing }) + '\\n');
+  const conn = Schemas.raw;
+  const done = () => process.exit(missing.length > 0 ? 1 : 0);
+  if (conn && typeof conn.close === 'function') conn.close().then(done).catch(done);
+  else done();
+}).catch(err => {
+  process.stdout.write(JSON.stringify({ ok: false, error: String(err) }) + '\\n');
+  process.exit(1);
+});
+`;
+
+  const dbResult = spawnSync(
+    process.execPath,
+    ['-e', dbCheckScript],
+    {
+      env:     { ...process.env, MONGO_URL: _mongoUrl },
+      encoding: 'utf8',
+      timeout:  30_000,
+    },
+  );
+
+  // Parse last JSON line written by the child script
+  const outLines  = (dbResult.stdout ?? '').split('\n').filter(Boolean);
+  const jsonLine  = outLines.filter(l => l.trim().startsWith('{')).pop();
+  let   dbPayload = null;
+  try { if (jsonLine) dbPayload = JSON.parse(jsonLine); } catch (_) {}
+
+  if (dbResult.signal === 'SIGTERM' || dbResult.error?.code === 'ETIMEDOUT') {
+    fail('DB initialization', 'timed out after 30 s — server unreachable?');
+  } else if (!dbPayload) {
+    const stderr = (dbResult.stderr ?? '').trim();
+    fail('DB initialization', stderr || 'child process produced no output');
+  } else if (!dbPayload.ok && dbPayload.error) {
+    fail('DB initialization', dbPayload.error);
+  } else {
+    for (const col of (dbPayload.present ?? [])) {
+      ok(`db.${col} — collection present`);
+    }
+    for (const col of (dbPayload.missing ?? [])) {
+      fail(`db.${col}`, 'collection missing from resolved Schemas');
+    }
+  }
+
+  // ── Summary ────────────────────────────────────────────────────
+
+  console.log(`\n${'─'.repeat(50)}`);
+  if (failed === 0) {
+    console.log(`\x1b[32m\x1b[1m  All ${passed} checks passed.\x1b[0m`);
+  } else {
+    console.log(`\x1b[32m  ${passed} passed\x1b[0m  \x1b[31m${failed} failed\x1b[0m`);
+  }
+  console.log(`\x1b[33m  ${warns} remarks\x1b[0m (can safely ignore)`);
+  console.log(`\x1b[90m  Strict TRUE: \x1b[0m${strict}\x1b[90m    Strict FALSE: \x1b[0m${noStrict}`);
+  console.log();
+  process.exit(failed > 0 ? 1 : 0);
+}
 
