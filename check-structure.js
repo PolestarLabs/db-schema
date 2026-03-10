@@ -26,6 +26,8 @@ const CI    = process.env.GITHUB_ACTIONS === 'true';
 let passed = 0;
 let failed = 0;
 let warns  = 0;
+let strict  = 0;
+let noStrict  = 0;
 
 // ── Helpers ──────────────────────────────────────────────────────
 
@@ -133,10 +135,32 @@ section('schemas.js — require paths (dynamic)');
 
 const schemasJsRequires = extractRequires(path.join(ROOT, 'schemas.js'), './schemas/');
 
+function fileStrictMode(absPath) {
+  try {
+    const src = fs.readFileSync(absPath, 'utf8');
+    if(/strict\s*:\s*false/.test(src)){
+        noStrict++
+        return "⚠️ ";
+    }
+    else if(/strict\s*:\s*true/.test(src)){
+        strict++
+        return "✔️ ";
+    }else{
+        return "❓";
+    }
+    ;
+  } catch (_) {
+    return "❌";
+  }
+}
+
 for (const req of schemasJsRequires) {
   const candidates = resolveRequire(req);
-  if (candidates.some(c => fs.existsSync(c))) {
-    ok(req);
+  const found = candidates.find(c => fs.existsSync(c));
+  if (found) {
+    const rel = path.relative(ROOT, found);
+    const flag = fileStrictMode(found);
+    ok(`${flag}  ${req}`);
   } else {
     fail(req, 'file not found on disk', 'schemas.js');
   }
@@ -150,8 +174,10 @@ const virtualsJsRequires = extractRequires(path.join(ROOT, 'virtuals.js'), './sc
 
 for (const req of virtualsJsRequires) {
   const candidates = resolveRequire(req);
-  if (candidates.some(c => fs.existsSync(c))) {
-    ok(req);
+  const found = candidates.find(c => fs.existsSync(c));
+  if (found) {
+    const rel = path.relative(ROOT, found);
+    ok(`${req}`);
   } else {
     fail(req, 'file not found on disk', 'virtuals.js');
   }
@@ -344,7 +370,7 @@ if (tscResult.status === 0) {
   fail('TypeScript detected errors in the public type surface', '', 'types/index.d.ts');
   console.error(cleaned.split('\n').map(l => `     ${l}`).join('\n'));
   // Emit one annotation per tsc diagnostic line so they appear inline in CI
-  if (CI) {
+  if (!CI) {
     const tscLineRe = /\(\d+,\d+\):\s+error\s+(TS\d+):\s+(.+)$/;
     for (const line of tscOutput.split('\n')) {
       const m = tscLineRe.exec(line);
@@ -362,6 +388,7 @@ if (failed === 0) {
   console.log(`\x1b[32m  ${passed} passed\x1b[0m  \x1b[31m${failed} failed\x1b[0m`);
 }
 console.log(`\x1b[33m  ${warns} remarks\x1b[0m (can safely ignore)`);
+console.log(`\x1b[90m  Strict TRUE: \x1b[0m${strict}\x1b[90m    Strict FALSE: \x1b[0m${noStrict}`);
 console.log();
 
 process.exit(failed > 0 ? 1 : 0);
