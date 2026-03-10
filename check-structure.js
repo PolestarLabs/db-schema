@@ -240,7 +240,7 @@ for (const entry of fs.readdirSync(schemasDir, { withFileTypes: true })) {
   }
 
   if (!fs.existsSync(typesD))    warn(`${name}/${name}.types.d.ts (optional — no front-facing types)`);
-  if (!fs.existsSync(virtualsJ)) warn(`${name}/${name}.virtuals.js (optional — no virtuals)`);
+  //if (!fs.existsSync(virtualsJ)) warn(`${name}/${name}.virtuals.js (optional — no virtuals)`);
 }
 
 // ── 6. types/index.d.ts — barrel exports ─────────────────────────
