@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 const Mixed = mongoose.Schema.Types.Mixed;
-const utils = require("../utils.js");
+const utils = require("../../utils.js");
 
 module.exports = function AIRLINES_DB(activeConnection){
 

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const utils = require("../utils.js");
+const utils = require("../../utils.js");
 
 const { Mixed } = mongoose.Schema.Types;
 

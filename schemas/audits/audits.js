@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 const { Mixed } = Schema.Types;
-const utils = require("../utils.js");
+const utils = require("../../utils.js");
 const crypto = require('crypto')
 
 module.exports = function MISC_DB(activeConnection){
