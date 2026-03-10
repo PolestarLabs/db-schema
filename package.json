@@ -1,6 +1,6 @@
 {
   "name": "@polestarlabs/database_schema",
-  "version": "0.20.5",
+  "version": "0.20.6",
   "description": "Database Schemas & Functions",
   "main": "index.js",
   "types": "index.d.ts",
@@ -25,7 +25,8 @@
   },
   "scripts": {
     "test": "node check-structure.js",
-    "new": "./generate-schema.sh"
+    "new": "./generate-schema.sh",
+    "prepare": "husky install"
   },
   "repository": "https://github.com/PolestarLabs/database_schema",
   "publishConfig": {
@@ -45,6 +46,12 @@
   "devDependencies": {
     "@types/redis": "^2.8.28",
     "eris": "^0.15.0",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "husky": "^8.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm test"
+    }
   }
 }
