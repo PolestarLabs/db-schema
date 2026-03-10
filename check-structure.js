@@ -25,6 +25,7 @@ const ROOT = __dirname;
 const CI    = process.env.GITHUB_ACTIONS === 'true';
 let passed = 0;
 let failed = 0;
+let warns  = 0;
 
 // ── Helpers ──────────────────────────────────────────────────────
 
@@ -70,7 +71,8 @@ function fail(label, detail = '', file = '') {
 }
 
 function warn(label) {
-  console.warn(`  \x1b[33m⚠\x1b[0m  ${label}`);
+  console.warn(`  \x1b[33m⚠\x1b[90m  ${label}\x1b[0m`);
+  warns++;
 }
 
 function section(title) {
@@ -359,6 +361,7 @@ if (failed === 0) {
 } else {
   console.log(`\x1b[32m  ${passed} passed\x1b[0m  \x1b[31m${failed} failed\x1b[0m`);
 }
+console.log(`\x1b[33m  ${warns} remarks\x1b[0m (can safely ignore)`);
 console.log();
 
 process.exit(failed > 0 ? 1 : 0);
