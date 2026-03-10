@@ -22,14 +22,13 @@ const collections = {
 	/** @deprecated Only used by _legacy_userdb_shim files. Will be removed. */
 	const _legacyUserDB  = require("./schemas/_legacy_users.js")(activeConnection);
 
+	const {channelDB,serverDB,miscDB} = collections;
+
 	return {
 		version: require('./package.json').version,
 		native: miscDB.global.db,
-		serverDB,
 		/** @deprecated Use DB._legacyUserDB for explicit legacy access. DB.users now points to new collection. */
 		userDB: _legacyUserDB,
-		channelDB,
-		svMetaDB,
 		localranks: require("./schemas/localranks/localranks.js")(activeConnection),
 		rankings: require("./schemas/rankings/rankings.js")(activeConnection),
 		responses: require("./schemas/responses/responses.js")(activeConnection),
@@ -62,13 +61,13 @@ const collections = {
 		airlines: require("./schemas/airlines/airlines.js")(activeConnection),
 
 		// ── New collections (authoritative) ───────────────────────
-		users: usersCore,
+		/*users: usersCore,
 		userInventory,
 		userOAuth,
 		userGuilds,
 		userQuests,
 		userAnalytics,
-		userConnections,
+		userConnections,*/
 
 		// ── Legacy (fallback shim only) ───────────────────────────
 		/** @deprecated Only for _legacy_userdb_shim. Delete when sunset. */
@@ -78,6 +77,7 @@ const collections = {
 		guilds: serverDB,
 		channels: channelDB,
 		globals: miscDB.global,
+		users: collections.usersCore, // alias
 		marketbase: async function refreshBases(projection) {
 			let [bgBase, mdBase, stBase, itBase] = await Promise.all([
 				this.cosmetics.find({

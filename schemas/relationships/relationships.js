@@ -1,6 +1,7 @@
 'use strict';
 const mongoose = require('mongoose');
-
+const utils = require("../../utils.js");
+const { Schema } = mongoose;
 
 const RelationShipModel = new Schema({
   id: String,
