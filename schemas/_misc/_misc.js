@@ -174,35 +174,6 @@ module.exports = function MISC_DB(activeConnection){
     }
   };
 
-  const MARKETPLACE = activeConnection.model("marketplace", MarketplaceModel, "marketplace");
-  MARKETPLACE.set = utils.dbSetter;
-  MARKETPLACE.get = utils.dbGetter;
-  MARKETPLACE.new = (payload) => {
-    const aud = new MARKETPLACE(payload);
-    aud.save((err) => {
-      if (err) return console.error(err);
-      console.log("[NEW MARKETPLACE ENTRY]".blue, payload);
-    });
-    return aud;
-  };
-
-  const relationships = activeConnection.model("Relationship", RelationShipModel, "relationships");
-  relationships.set = utils.dbSetter;
-  relationships.get = utils.dbGetter;
-  relationships.create = function (type, users, initiative, ring, date) {
-    return new Promise(async (resolve, reject) => {
-      const rel = await relationships.find({ type, users: { $all: users } });
-      if (rel.length > 0) return reject(`Duplicate Relationship: \n${JSON.stringify(rel, null, 2)}`);
-
-      relationship = new relationships({
-        type, users, initiative, ring, ringCollection: [ring], since: date || Date.now(),
-      });
-      relationship.save((err, item) => {
-        resolve(item);
-      });
-    });
-  };
-
   const fanart = activeConnection.model("fanart", FanartModel, "fanart");
   fanart.set = utils.dbSetter;
   fanart.get = utils.dbGetter;
@@ -244,9 +215,7 @@ module.exports = function MISC_DB(activeConnection){
     }
   }
 
-
-
   return {
-    gift, paidroles, usercols, global, fanart, buyables, commends, reactRoles, marketplace: MARKETPLACE, relationships, alert, feed, control,
+    gift, paidroles, usercols, global, fanart, buyables, commends, reactRoles,  alert, feed, control,
   };
 }
