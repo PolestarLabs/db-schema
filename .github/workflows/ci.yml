@@ -1,0 +1,24 @@
+name: Schema CI
+
+on:
+  push:
+    branches: [main, refactor]
+    paths: ['schemas/**', 'virtuals.js', 'index.js']
+  pull_request:
+    branches: [main]
+    paths: ['schemas/**', 'virtuals.js', 'index.js']
+
+jobs:
+  check:
+    name: Structure & Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run structure check
+        run: node check-structure.js
