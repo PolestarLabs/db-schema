@@ -1,19 +1,22 @@
 /** Mongoose query conventions (.lean(), .exec()): see ./utils.js JSDoc. */
 module.exports = function SCHEMAS(activeConnection){
-
-	const miscDB = require("./schemas/_misc.js")(activeConnection);
-	const serverDB = require("./schemas/servers/servers.js")(activeConnection);
-	const channelDB = require("./schemas/channels/channels.js")(activeConnection);
-	const svMetaDB = require("./schemas/serverMeta/serverMeta.js")(activeConnection);
+const collections = {
+	miscDBrequire("./schemas/_misc/_misc.js")(activeConnection),
+	serverDBrequire("./schemas/servers/servers.js")(activeConnection),
+	channelDBrequire("./schemas/channels/channels.js")(activeConnection),
+	svMetaDBrequire("./schemas/serverMeta/serverMeta.js")(activeConnection),
+	marketplacerequire("./schemas/marketplace/marketplace.js")(activeConnection),
+	relationshipsrequire("./schemas/relationships/relationships.js")(activeConnection),
 
 	// ── New split user collections ────────────────────────────────
-	const usersCore      = require("./schemas/users_core/users_core.js")(activeConnection);
-	const userInventory  = require("./schemas/user_inventory/user_inventory.js")(activeConnection);
-	const userOAuth      = require("./schemas/user_oauth/user_oauth.js")(activeConnection);
-	const userGuilds     = require("./schemas/user_guilds/user_guilds.js")(activeConnection);
-	const userQuests     = require("./schemas/user_quests/user_quests.js")(activeConnection);
-	const userAnalytics  = require("./schemas/user_analytics/user_analytics.js")(activeConnection);
-	const userConnections = require("./schemas/user_connections/user_connections.js")(activeConnection);
+	usersCorerequire("./schemas/users_core/users_core.js")(activeConnection),
+	userInventoryrequire("./schemas/user_inventory/user_inventory.js")(activeConnection),
+	userOAuthrequire("./schemas/user_oauth/user_oauth.js")(activeConnection),
+	userGuildsrequire("./schemas/user_guilds/user_guilds.js")(activeConnection),
+	userQuestsrequire("./schemas/user_quests/user_quests.js")(activeConnection),
+	userAnalyticsrequire("./schemas/user_analytics/user_analytics.js")(activeConnection),
+	userConnectionsrequire("./schemas/user_connections/user_connections.js")(activeConnection),
+}
 
 	// ── Legacy monolithic userdb (fallback only) ──────────────────
 	/** @deprecated Only used by _legacy_userdb_shim files. Will be removed. */
@@ -170,5 +173,6 @@ module.exports = function SCHEMAS(activeConnection){
 			};
 		},
 
+		...collections,
 	};
 }

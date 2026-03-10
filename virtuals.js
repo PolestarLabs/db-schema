@@ -8,6 +8,6 @@ module.exports = function VIRTUALS(Schemas) {
   require('./schemas/cosmetics/cosmetics.virtuals')(Schemas.cosmetics.schema);
   require('./schemas/user_inventory/user_inventory.virtuals')(Schemas.userInventory.schema);
   require('./schemas/users_core/users_core.virtuals')(Schemas.users.schema);
-  require('./schemas/_misc/marketplace.virtuals')(Schemas.marketplace.schema);
-  require('./schemas/_misc/relationships.virtuals')(Schemas.relationships.schema);
+  require('./schemas/marketplace/marketplace.virtuals')(Schemas.marketplace.schema);
+  require('./schemas/relationships/relationships.virtuals')(Schemas.relationships.schema);
 };
