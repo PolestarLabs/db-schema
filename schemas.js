@@ -1,21 +1,21 @@
 /** Mongoose query conventions (.lean(), .exec()): see ./utils.js JSDoc. */
 module.exports = function SCHEMAS(activeConnection){
 const collections = {
-	miscDBrequire("./schemas/_misc/_misc.js")(activeConnection),
-	serverDBrequire("./schemas/servers/servers.js")(activeConnection),
-	channelDBrequire("./schemas/channels/channels.js")(activeConnection),
-	svMetaDBrequire("./schemas/serverMeta/serverMeta.js")(activeConnection),
-	marketplacerequire("./schemas/marketplace/marketplace.js")(activeConnection),
-	relationshipsrequire("./schemas/relationships/relationships.js")(activeConnection),
+	miscDB: require("./schemas/_misc/_misc.js")(activeConnection),
+	serverDB: require("./schemas/servers/servers.js")(activeConnection),
+	channelDB: require("./schemas/channels/channels.js")(activeConnection),
+	svMetaDB: require("./schemas/serverMeta/serverMeta.js")(activeConnection),
+	marketplace: require("./schemas/marketplace/marketplace.js")(activeConnection),
+	relationships: require("./schemas/relationships/relationships.js")(activeConnection),
 
 	// ── New split user collections ────────────────────────────────
-	usersCorerequire("./schemas/users_core/users_core.js")(activeConnection),
-	userInventoryrequire("./schemas/user_inventory/user_inventory.js")(activeConnection),
-	userOAuthrequire("./schemas/user_oauth/user_oauth.js")(activeConnection),
-	userGuildsrequire("./schemas/user_guilds/user_guilds.js")(activeConnection),
-	userQuestsrequire("./schemas/user_quests/user_quests.js")(activeConnection),
-	userAnalyticsrequire("./schemas/user_analytics/user_analytics.js")(activeConnection),
-	userConnectionsrequire("./schemas/user_connections/user_connections.js")(activeConnection),
+	usersCore: require("./schemas/users_core/users_core.js")(activeConnection),
+	userInventory: require("./schemas/user_inventory/user_inventory.js")(activeConnection),
+	userOAuth: require("./schemas/user_oauth/user_oauth.js")(activeConnection),
+	userGuilds: require("./schemas/user_guilds/user_guilds.js")(activeConnection),
+	userQuests: require("./schemas/user_quests/user_quests.js")(activeConnection),
+	userAnalytics: require("./schemas/user_analytics/user_analytics.js")(activeConnection),
+	userConnections: require("./schemas/user_connections/user_connections.js")(activeConnection),
 }
 
 	// ── Legacy monolithic userdb (fallback only) ──────────────────
@@ -172,7 +172,6 @@ const collections = {
 				fullbase,
 			};
 		},
-
-		...collections,
+		...collections
 	};
 }
