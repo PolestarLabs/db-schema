@@ -37,12 +37,24 @@ module.exports = async function ({hook, url, options},extras) {
 
 		console.info(blue("• "), "Connecting to Database...");
 
-		// strip out options the current driver warns about; keep everything
-		// else so callers can still pass legitimate settings (replicaSet, etc).
+		const mongooseMajor = parseInt(mongoose.version.split('.')[0], 10);
 		const cleanedOptions = { ...(options || {}) };
-		["useNewUrlParser", "useUnifiedTopology", "useFindAndModify", "useCreateIndex"].forEach(
-			(k) => delete cleanedOptions[k]
-		);
+		if (mongooseMajor >= 6) {
+			// Mongoose 6+ removed these flags entirely; passing them throws.
+			["useNewUrlParser", "useUnifiedTopology", "useFindAndModify", "useCreateIndex"].forEach(
+				(k) => delete cleanedOptions[k]
+			);
+		} else {
+			// Mongoose 5.x: these flags suppress deprecation warnings from the
+			// legacy MongoDB driver and must be set explicitly.
+			cleanedOptions.useNewUrlParser    = true;
+			cleanedOptions.useUnifiedTopology = true;
+			cleanedOptions.useCreateIndex     = true;
+			cleanedOptions.useFindAndModify   = false;
+			mongoose.set('useCreateIndex', true);
+			mongoose.set('useFindAndModify', false);
+		}
+
 		const db = mongoose.createConnection(url, cleanedOptions, (err) => {
 			if (err) return console.error(err, `${red("• ")}Failed to connect to Database ${url}!`);
 			return console.log(green("• "), "Connection OK");
@@ -50,12 +62,6 @@ module.exports = async function ({hook, url, options},extras) {
 
 		const Schemas = require('./schemas.js')(db);
 		const Virtuals = require('./virtuals.js')(Schemas);
-
-
-		// previous versions toggled these driver behaviours; current releases
-		// no longer expose them and calling mongoose.set() throws.  the
-		// defaults are already sane (no findAndModify, createIndex instead of
-		// ensureIndex) so we simply drop the legacy configuration.
 
 		db.on("error", console.error.bind(console, red("• ") + red("DB connection error:")));
 
