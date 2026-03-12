@@ -44,7 +44,7 @@ module.exports = async function ({hook, url, options},extras) {
 			(k) => delete cleanedOptions[k]
 		);
 		const db = mongoose.createConnection(url, cleanedOptions, (err) => {
-			if (err) return console.error(err, `${red("• ")}Failed to connect to Database!`);
+			if (err) return console.error(err, `${red("• ")}Failed to connect to Database ${url}!`);
 			return console.log(green("• "), "Connection OK");
 		});
 
