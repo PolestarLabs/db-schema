@@ -37,7 +37,13 @@ module.exports = async function ({hook, url, options},extras) {
 
 		console.info(blue("• "), "Connecting to Database...");
 
-		const db = mongoose.createConnection(url, options, (err) => {
+		// strip out options the current driver warns about; keep everything
+		// else so callers can still pass legitimate settings (replicaSet, etc).
+		const cleanedOptions = { ...(options || {}) };
+		["useNewUrlParser", "useUnifiedTopology", "useFindAndModify", "useCreateIndex"].forEach(
+			(k) => delete cleanedOptions[k]
+		);
+		const db = mongoose.createConnection(url, cleanedOptions, (err) => {
 			if (err) return console.error(err, `${red("• ")}Failed to connect to Database!`);
 			return console.log(green("• "), "Connection OK");
 		});
@@ -46,8 +52,10 @@ module.exports = async function ({hook, url, options},extras) {
 		const Virtuals = require('./virtuals.js')(Schemas);
 
 
-		mongoose.set("useFindAndModify", false);
-		mongoose.set("useCreateIndex", true);
+		// previous versions toggled these driver behaviours; current releases
+		// no longer expose them and calling mongoose.set() throws.  the
+		// defaults are already sane (no findAndModify, createIndex instead of
+		// ensureIndex) so we simply drop the legacy configuration.
 
 		db.on("error", console.error.bind(console, red("• ") + red("DB connection error:")));
 
