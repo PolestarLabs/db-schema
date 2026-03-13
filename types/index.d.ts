@@ -19,3 +19,6 @@ export * from '../schemas/cosmetics/cosmetics.types';
 export * from '../schemas/users_core/users_core.types';
 export * from '../schemas/user_inventory/user_inventory.types';
 
+// Schema model helpers (updateMeta parameter, etc.)
+export type { UserMetaUpdate } from '../schemas/users_core/users_core.schema';
+

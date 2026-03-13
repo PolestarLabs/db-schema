@@ -521,8 +521,20 @@ export interface UserCoreSchema extends mongoose.Document, UserCore {
   addXP: (amt?: number) => Promise<mongodb.UpdateWriteOpResult['result']>;
   incrementAttr: (attr: string, amt?: number) => Promise<mongodb.UpdateWriteOpResult['result']>;
 }
+
+/** Parameter for UsersCore.updateMeta(). Accepts Discord/Eris-like user objects. */
+export interface UserMetaUpdate {
+  id: string;
+  username?: string;
+  global_name?: string | null;
+  discriminator?: string;
+  tag?: string;
+  avatar?: string | null;
+  displayAvatarURL?: string | null;
+}
+
 export interface UserCoreModel extends mongoose.Model<UserCoreSchema> {
-  updateMeta: (U: ErisUser) => Promise<void>;
+  updateMeta: (U: UserMetaUpdate) => Promise<void>;
   new: (userData: Partial<UserCore>) => Promise<UserCoreSchema>;
   cat: 'users';
   set: dbSetter<UserCoreSchema>;

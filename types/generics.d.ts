@@ -9,7 +9,7 @@
 
 // ── Currency ──────────────────────────────────────────────────────
 
-export type Currency = "RBN" | "JDE" | "SPH" | "AMY" | "EMD" | "PSM" | "EVT";
+export type Currency = "RBN" | "JDE" | "SPH" | "AMY" | "EMD" | "PSM" | "COS" | "EVT";
 
 export type CurrencyLabel = {
   RBN: "Rubine";
@@ -18,7 +18,8 @@ export type CurrencyLabel = {
   AMY: "Amethyst";
   EMD: "Emerald";
   PSM: "Prism";
-  EVT: "Event";
+  COS: "Cosmic Fragment";
+  EVT: "Event Token";
 };
 
 // ── Rarity ────────────────────────────────────────────────────────

@@ -117,7 +117,7 @@ module.exports = function USERS_CORE(activeConnection) {
   }, {
     strict: true, // only persist declared paths; typos in $set no longer create ghost fields
     collection: "users",
-    timestamps: false,
+    timestamps: true,
   });
 
   // ── Pre-save hook: update meta.lastUpdated ──────────────────────
