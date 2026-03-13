@@ -207,13 +207,17 @@ module.exports = function USERS_CORE(activeConnection) {
   MODEL.check = utils.dbChecker;
   MODEL.set = utils.dbSetter;
 
+  /**
+   * Get user by id or query. Always bypasses Redis cache so user data is fresh.
+   * Callers that want to cache must use findOne({ id }).cache(ttl) explicitly.
+   */
   MODEL.get = function (query, project, avoidNew) {
     return new Promise(async (resolve) => {
       if (["string", "number"].includes(typeof query)) {
         query = { id: query.toString() };
       }
       if (!typeof project) project = { _id: 0 };
-      const data = await this.findOne(query, project).lean();
+      const data = await this.findOne(query, project).lean().noCache();
       if (data === null && (query.id || typeof query === "string"))
         return resolve(this.new(await PLX.resolveUser?.(query.id || query)));
       return resolve(data);

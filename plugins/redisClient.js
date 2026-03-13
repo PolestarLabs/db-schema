@@ -187,15 +187,16 @@ const init = (host, port, options = { time: 600 }) => {
         const result = await _origExec.apply(this, arguments);
         if (redisClient.verbose) console.log("\x1b[31m•\x1b[0m", "Uncached", queryKey.slice(0, 60));
 
-        // ── Cache WRITE — always warm regardless of .cache()/.noCache() ──
-        if (result === null || result === undefined) {
-            // Cache null results with a short TTL to prevent repeated DB misses
-            safeSet(queryKey, "__null__", Math.min(ttl, 30));
-        } else {
-            try {
-                safeSet(queryKey, JSON.stringify(result), ttl);
-            } catch (serErr) {
-                if (redisClient.verbose) console.warn("[Cache] Serialize error:", serErr.message);
+        // ── Cache WRITE — only when .cache() was used (opt-in). Default and .noCache() do not populate cache.
+        if (this.ignoreCache === false) {
+            if (result === null || result === undefined) {
+                safeSet(queryKey, "__null__", Math.min(ttl, 30));
+            } else {
+                try {
+                    safeSet(queryKey, JSON.stringify(result), ttl);
+                } catch (serErr) {
+                    if (redisClient.verbose) console.warn("[Cache] Serialize error:", serErr.message);
+                }
             }
         }
 
