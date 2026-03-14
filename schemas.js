@@ -1,29 +1,43 @@
+/** Mongoose query conventions (.lean(), .exec()): see ./utils.js JSDoc. */
 module.exports = function SCHEMAS(activeConnection){
+const collections = {
+	miscDB: require("./schemas/_misc/_misc.js")(activeConnection),
+	serverDB: require("./schemas/servers/servers.js")(activeConnection),
+	channelDB: require("./schemas/channels/channels.js")(activeConnection),
+	svMetaDB: require("./schemas/serverMeta/serverMeta.js")(activeConnection),
+	marketplace: require("./schemas/marketplace/marketplace.js")(activeConnection),
+	relationships: require("./schemas/relationships/relationships.js")(activeConnection),
 
+	// ── New split user collections ────────────────────────────────
+	usersCore: require("./schemas/users_core/users_core.js")(activeConnection),
+	userInventory: require("./schemas/user_inventory/user_inventory.js")(activeConnection),
+	userOAuth: require("./schemas/user_oauth/user_oauth.js")(activeConnection),
+	userGuilds: require("./schemas/user_guilds/user_guilds.js")(activeConnection),
+	userQuests: require("./schemas/user_quests/user_quests.js")(activeConnection),
+	userAnalytics: require("./schemas/user_analytics/user_analytics.js")(activeConnection),
+	userConnections: require("./schemas/user_connections/user_connections.js")(activeConnection),
+}
 
+	// ── Legacy monolithic userdb (fallback only) ──────────────────
+	/** @deprecated Only used by _legacy_userdb_shim files. Will be removed. */
+	const _legacyUserDB  = require("./schemas/_legacy_users.js")(activeConnection);
 
-	const miscDB = require("./schemas/_misc.js")(activeConnection);
-	const serverDB = require("./schemas/servers.js")(activeConnection);
-	const userDB = require("./schemas/users.js")(activeConnection);
-	const channelDB = require("./schemas/channels.js")(activeConnection);
-	const svMetaDB = require("./schemas/serverMeta.js")(activeConnection);
+	const {channelDB,serverDB,miscDB} = collections;
 
 	return {
 		version: require('./package.json').version,
 		native: miscDB.global.db,
-		serverDB,
-		userDB,
-		channelDB,
-		svMetaDB,
-		localranks: require("./schemas/localranks.js")(activeConnection),
-		rankings: require("./schemas/rankings.js")(activeConnection),
-		responses: require("./schemas/responses.js")(activeConnection),
-		audits: require("./schemas/audits.js")(activeConnection),
-		miscDB, 
+		/** @deprecated Use DB._legacyUserDB for explicit legacy access. DB.users now points to new collection. */
+		userDB: _legacyUserDB,
+		localranks: require("./schemas/localranks/localranks.js")(activeConnection),
+		rankings: require("./schemas/rankings/rankings.js")(activeConnection),
+		responses: require("./schemas/responses/responses.js")(activeConnection),
+		audits: require("./schemas/audits/audits.js")(activeConnection),
+		miscDB,
 			buyables: miscDB.buyables,
 			fanart: miscDB.fanart,
 			globalDB: miscDB.global,
-			commends: miscDB.commends,		
+			commends: miscDB.commends,
 			control: miscDB.control,
 			marketplace: miscDB.marketplace,
 			reactRoles: miscDB.reactRoles,
@@ -34,22 +48,36 @@ module.exports = function SCHEMAS(activeConnection){
 			usercols: miscDB.usercols,
 			gifts: miscDB.gift,
 
-		cosmetics: require("./schemas/cosmetics.js")(activeConnection),
-		collectibles: require("./schemas/collectibles.js")(activeConnection),
-		items: require("./schemas/items.js")(activeConnection),
-		achievements: require("./schemas/achievements.js")(activeConnection).ACHIEVEMENTS,
-		quests: require("./schemas/achievements.js")(activeConnection).QUESTS,
-		advLocations: (require("./schemas/adventure.js"))(activeConnection).LOCATIONS,
-		advJourneys: (require("./schemas/adventure.js"))(activeConnection).JOURNEYS,
-		mutes: require("./schemas/mutes.js")(activeConnection),
-		temproles: require("./schemas/temproles.js")(activeConnection),
-		promocodes: require("./schemas/promocodes.js")(activeConnection),
-		airlines: require("./schemas/airlines.js")(activeConnection),
-		users: userDB,
+		cosmetics: require("./schemas/cosmetics/cosmetics.js")(activeConnection),
+		collectibles: require("./schemas/collectibles/collectibles.js")(activeConnection),
+		items: require("./schemas/items/items.js")(activeConnection),
+		achievements: require("./schemas/achievements/achievements.js")(activeConnection).ACHIEVEMENTS,
+		quests: require("./schemas/achievements/achievements.js")(activeConnection).QUESTS,
+		advLocations: (require("./schemas/adventure/adventure.js"))(activeConnection).LOCATIONS,
+		advJourneys: (require("./schemas/adventure/adventure.js"))(activeConnection).JOURNEYS,
+		mutes: require("./schemas/mutes/mutes.js")(activeConnection),
+		temproles: require("./schemas/temproles/temproles.js")(activeConnection),
+		promocodes: require("./schemas/promocodes/promocodes.js")(activeConnection),
+		airlines: require("./schemas/airlines/airlines.js")(activeConnection),
+
+		// ── New collections (authoritative) ───────────────────────
+		/*users: usersCore,
+		userInventory,
+		userOAuth,
+		userGuilds,
+		userQuests,
+		userAnalytics,
+		userConnections,*/
+
+		// ── Legacy (fallback shim only) ───────────────────────────
+		/** @deprecated Only for _legacy_userdb_shim. Delete when sunset. */
+		_legacyUserDB,
+
 		servers: serverDB,
 		guilds: serverDB,
 		channels: channelDB,
 		globals: miscDB.global,
+		users: collections.usersCore, // alias
 		marketbase: async function refreshBases(projection) {
 			let [bgBase, mdBase, stBase, itBase] = await Promise.all([
 				this.cosmetics.find({
@@ -144,6 +172,6 @@ module.exports = function SCHEMAS(activeConnection){
 				fullbase,
 			};
 		},
-
+		...collections
 	};
 }

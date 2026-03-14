@@ -399,7 +399,8 @@ export interface ServerMetadataModel extends mongoose.Model<ServerMetadataSchema
   updateMeta: (S: ServerMetadata) => Promise<string | boolean>;
 }
 
-export interface UserModules {
+/** @deprecated Use UserModulesLegacy only in legacy shim context */
+export interface UserModulesLegacy {
   powerups: any;
   lovepoints: number;
   PERMS: number;
@@ -437,14 +438,270 @@ export interface UserModules {
   fun: { waifu: any; lovers: any; shiprate: any };
   statistics: any;
 }
-export type Donator = 'plastic' | 'aluminium' | 'iron' | 'carbon' | 'lithium' | 'iridium' | 'palladium' | 'zircon' | 'uranium' | 'xastatine' | 'antimatter' | 'neutrino';
+
+/** Alias for backwards-compat in consumer type annotations */
+export type UserModules = UserModulesLegacy;
+
+export type Donator = 'plastic' | 'aluminium' | 'iron' | 'carbon' | 'lithium' | 'iridium' | 'palladium' | 'zircon' | 'uranium' | 'astatine' | 'antimatter' | 'neutrino';
+export type PrimeTier = Donator;
+
+// ── New split collection types ──────────────────────────────────────
+
+export interface UserCurrencies {
+  RBN: number;
+  SPH: number;
+  JDE: number;
+  PSM: number;
+  EVT: number;
+}
+
+export interface UserProfile {
+  bgID: string | null;
+  flairTop: string;
+  flairDown: string;
+  sticker: string | null;
+  favcolor: string;
+  persotext: string;
+  tagline: string;
+  medals: (string | 0)[];
+  skins: Record<string, any>;
+  featuredMarriage: string | null;
+}
+
+export interface UserProgression {
+  level: number;
+  exp: number;
+  globalLV: number;
+  globalXP: number;
+  craftingExp: number;
+}
+
+export interface UserMeta {
+  createdAt: Date;
+  lastLogin: Date | null;
+  lastUpdated: Date;
+  migrated: boolean;
+}
+
+export interface PrimeData {
+  tier: PrimeTier | null;
+  lastClaimed: number;
+  active: boolean;
+  maxServers: number;
+  canReallocate: boolean;
+  custom_background: boolean;
+  custom_handle: boolean;
+  custom_shop: boolean;
+  servers: string[];
+  misc: any;
+}
+
+/** Core user document (new "users" collection) */
+export interface UserCore {
+  id: string;
+  name: string;
+  tag: string;
+  avatar: string | null;
+  personalhandle?: string;
+  currency: UserCurrencies;
+  profile: UserProfile;
+  progression: UserProgression;
+  meta: UserMeta;
+  prime: PrimeData | null;
+  blacklisted: string | null;
+  switches: Record<string, any>;
+  counters: Record<string, any>;
+  eventData: Record<string, any>;
+  /** @deprecated read from prime.tier instead */
+  donator?: Donator | null;
+}
+export interface UserCoreSchema extends mongoose.Document, UserCore {
+  id: string;
+  addCurrency: (curr: keyof UserCurrencies, amt?: number) => Promise<mongodb.UpdateWriteOpResult['result']>;
+  addXP: (amt?: number) => Promise<mongodb.UpdateWriteOpResult['result']>;
+  incrementAttr: (attr: string, amt?: number) => Promise<mongodb.UpdateWriteOpResult['result']>;
+}
+
+/** Parameter for UsersCore.updateMeta(). Accepts Discord/Eris-like user objects. */
+export interface UserMetaUpdate {
+  id: string;
+  username?: string;
+  global_name?: string | null;
+  discriminator?: string;
+  tag?: string;
+  avatar?: string | null;
+  displayAvatarURL?: string | null;
+}
+
+export interface UserCoreModel extends mongoose.Model<UserCoreSchema> {
+  updateMeta: (U: UserMetaUpdate) => Promise<void>;
+  new: (userData: Partial<UserCore>) => Promise<UserCoreSchema>;
+  cat: 'users';
+  set: dbSetter<UserCoreSchema>;
+  get: (query: CustomQuery<UserCoreSchema>, project?: any) => Promise<UserCore | null>;
+  getFull: dbGetterFull<UserCoreSchema>;
+}
+
+/** Cosmetics satellite document (new "user_inventory" collection) */
+export interface UserInventoryData {
+  userId: string;
+  inventory: Array<{ id: string; count: number; crafted?: number }>;
+  bgInventory: string[];
+  skinInventory: string[];
+  flairInventory: string[];
+  medalInventory: string[];
+  stickerInventory: string[];
+  stickerShowcase: string[];
+  fishes: any[];
+  fishShowcase: any[];
+  achievements: any[];
+}
+export interface UserInventorySchema extends mongoose.Document, UserInventoryData {
+  addItem: (item: string, amt?: number, crafted?: boolean) => Promise<mongodb.UpdateWriteOpResult['result']>;
+  removeItem: (item: string, amt?: number, crafted?: boolean) => Promise<mongodb.UpdateWriteOpResult['result']>;
+  modifyItems(items: UserItem[], debug: true): Promise<[UserItem[], { userId: string }, { $inc: any }, { arrayFilters: any[] }]>;
+  modifyItems(items: UserItem[], debug?: boolean): Promise<mongodb.UpdateWriteOpResult['result']>;
+  hasItem: (itemId: string, count?: number) => boolean;
+  amtItem: (itemId: string) => number;
+}
+export interface UserInventoryModel extends mongoose.Model<UserInventorySchema> {
+  get: (userId: IDOrIDObject, project?: any) => Promise<UserInventoryData | null>;
+  getFull: (userId: IDOrIDObject) => Promise<UserInventorySchema | null>;
+  set: (userId: IDOrIDObject, alter: mongoose.UpdateQuery<UserInventorySchema>, options?: mongoose.QueryOptions) => Promise<any>;
+  getOrCreate: (userId: IDOrIDObject) => Promise<UserInventorySchema>;
+  new: (userId: IDOrIDObject) => Promise<UserInventorySchema>;
+}
+
+/** OAuth satellite document (new "user_oauth" collection) */
+export interface UserOAuthData {
+  userId: string;
+  discordIdentityCache: {
+    id: string;
+    username: string;
+    avatar: string;
+    discriminator: string;
+    global_name: string;
+    banner: string;
+    flags: number;
+    premium_type: number;
+  } | null;
+  discord: {
+    accessToken: string;
+    refreshToken: string;
+    expiresAt: Date;
+    scope: string;
+    email: string;
+    locale: string;
+    verified: boolean;
+    mfa_enabled: boolean;
+    premium_type: number;
+  } | null;
+  patreon: {
+    accessToken: string;
+    refreshToken: string;
+    expiresAt: Date;
+    scope: string;
+    identity: any;
+  } | null;
+  geo: any;
+  fetchedAt: Date;
+}
+export interface UserOAuthSchema extends mongoose.Document, UserOAuthData {}
+export interface UserOAuthModel extends mongoose.Model<UserOAuthSchema> {
+  get: (userId: IDOrIDObject, project?: any) => Promise<UserOAuthData | null>;
+  getFull: (userId: IDOrIDObject) => Promise<UserOAuthSchema | null>;
+  set: (userId: IDOrIDObject, alter: mongoose.UpdateQuery<UserOAuthSchema>, options?: mongoose.QueryOptions) => Promise<any>;
+  getOrCreate: (userId: IDOrIDObject) => Promise<UserOAuthSchema>;
+  new: (userId: IDOrIDObject) => Promise<UserOAuthSchema>;
+}
+
+/** Guild membership satellite document (new "user_guilds" collection) */
+export interface UserGuildData {
+  userId: string;
+  guildId: string;
+  name: string;
+  icon: string | null;
+  banner: string | null;
+  owner: boolean;
+  permissions: number;
+  permissions_new: string | null;
+  features: string[];
+  cachedAt: Date;
+}
+export interface UserGuildSchema extends mongoose.Document, UserGuildData {}
+export interface UserGuildModel extends mongoose.Model<UserGuildSchema> {
+  get: (query: any, project?: any) => Promise<UserGuildData | null>;
+  set: (query: any, alter: mongoose.UpdateQuery<UserGuildSchema>, options?: mongoose.QueryOptions) => Promise<any>;
+  allForUser: (userId: IDOrIDObject) => Promise<UserGuildData[]>;
+  bulkUpsert: (userId: string, guilds: any[]) => Promise<any>;
+}
+
+/** Quest progress satellite document (new "user_quests" collection) */
+export interface UserQuestData {
+  userId: string;
+  questId: number;
+  target: number;
+  tracker: string;
+  progress: number;
+  completed: boolean;
+  completedAt: Date | null;
+}
+export interface UserQuestSchema extends mongoose.Document, UserQuestData {}
+export interface UserQuestModel extends mongoose.Model<UserQuestSchema> {
+  get: (query: any, project?: any) => Promise<UserQuestData | null>;
+  set: (query: any, alter: mongoose.UpdateQuery<UserQuestSchema>, options?: mongoose.QueryOptions) => Promise<any>;
+  allForUser: (userId: IDOrIDObject) => Promise<UserQuestData[]>;
+  incrementProgress: (userId: string, questId: number, amt?: number) => Promise<UserQuestSchema | null>;
+}
+
+/** Analytics satellite document (new "user_analytics" collection) */
+export interface UserAnalyticsData {
+  userId: string;
+  legacy: { globalLV: number; globalXP: number };
+  dashThemeClicks: number;
+  statistics: any;
+}
+export interface UserAnalyticsSchema extends mongoose.Document, UserAnalyticsData {}
+export interface UserAnalyticsModel extends mongoose.Model<UserAnalyticsSchema> {
+  get: (userId: IDOrIDObject, project?: any) => Promise<UserAnalyticsData | null>;
+  set: (userId: IDOrIDObject, alter: mongoose.UpdateQuery<UserAnalyticsSchema>, options?: mongoose.QueryOptions) => Promise<any>;
+  getOrCreate: (userId: IDOrIDObject) => Promise<UserAnalyticsSchema>;
+  new: (userId: IDOrIDObject) => Promise<UserAnalyticsSchema>;
+}
+
+/** Connection satellite document (new "user_connections" collection) */
+export interface UserConnectionData {
+  userId: string;
+  type: string;
+  externalId: string;
+  name: string;
+  verified: boolean;
+  visibility: number;
+  show_activity: boolean;
+  friend_sync: boolean;
+  two_way_link: boolean;
+  metadata_visibility: number;
+  extra: any;
+}
+export interface UserConnectionSchema extends mongoose.Document, UserConnectionData {}
+export interface UserConnectionModel extends mongoose.Model<UserConnectionSchema> {
+  get: (query: any, project?: any) => Promise<UserConnectionData | null>;
+  set: (query: any, alter: mongoose.UpdateQuery<UserConnectionSchema>, options?: mongoose.QueryOptions) => Promise<any>;
+  allForUser: (userId: IDOrIDObject) => Promise<UserConnectionData[]>;
+  bulkUpsert: (userId: string, connections: any[]) => Promise<any>;
+}
+
+// ── Legacy types (kept for shim/migration period) ───────────────────
+
+/** @deprecated Legacy embedded quest shape from monolithic userdb. Use UserQuestData instead. */
 export interface Quest {
   id: number;
-  tracker: string; // TODO `${quest.action}.${quest.type}${quest.condition?"."+quest.condition:""}`
+  tracker: string;
   completed: boolean;
   progress: number;
   target: number;
 }
+/** @deprecated Legacy monolithic user shape from "userdb". Use UserCore instead. */
 export interface User {
   id: string;
   name: string;
@@ -938,9 +1195,9 @@ export interface Marketbase {
 }
 
 export interface Schemas {
-  // TODO missing
   native: miscDB['global']['db'];
   serverDB: ServerModel;
+  /** @deprecated Use DB._legacyUserDB for explicit legacy access. DB.users now points to new collection. */
   userDB: UserModel;
   channelDB: ChannelModel;
   svMetaDB: ServerMetadataModel;
@@ -973,7 +1230,25 @@ export interface Schemas {
   temproles: TemproleModel;
   promocodes: PromoCodeModel;
   airlines: { AIRLINES: AirlineModel; ROUTES: AirlineRouteModel; AIRPORT: AirportsModel; AIRPLANES: AirplaneModel; SLOTS: AirportSlotsModel };
-  users: UserModel;
+
+  // ── New split user collections (authoritative) ──────────────────
+  users: UserCoreModel;
+  userInventory: UserInventoryModel;
+  userOAuth: UserOAuthModel;
+  userGuilds: UserGuildModel;
+  userQuests: UserQuestModel;
+  userAnalytics: UserAnalyticsModel;
+  userConnections: UserConnectionModel;
+
+  // ── Legacy (fallback shim only) ─────────────────────────────────
+  /** @deprecated Only for _legacy_userdb_shim. Delete when sunset. */
+  _legacyUserDB: UserModel;
+
+  // ── PascalCase accessor aliases (preferred) ─────────────────────
+  Users: UserCoreModel;
+  Items: ItemModel;
+  UserInventory: UserInventoryModel;
+
   servers: ServerModel;
   guilds: ServerModel;
   channels: ChannelModel;

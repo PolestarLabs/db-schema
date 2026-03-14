@@ -1,6 +1,9 @@
 
 const mongoose = require("mongoose");
 
+// Default all find/findOne to lean. Opt out with findOne(q, proj, { lean: false }).
+mongoose.plugin(require("./plugins/leanDefaultPlugin.js"));
+
 // lightweight color helpers (replacing the `colors` package usage)
 function red(s){return `\x1b[31m${s}\x1b[0m`;}
 function green(s){return `\x1b[32m${s}\x1b[0m`;}
@@ -8,7 +11,7 @@ function yellow(s){return `\x1b[33m${s}\x1b[0m`;}
 function blue(s){return `\x1b[34m${s}\x1b[0m`;}
 
 //FIXME: REDIS IS MANDATORY, MUST MAKE IT NOT MANDATORY OTHERWISE .cache() and .noCache() will fail
-const RedisCache = require("./redisClient.js");
+const RedisCache = require("./plugins/redisClient.js");
 
 module.exports = async function ({hook, url, options},extras) {
 
@@ -34,17 +37,31 @@ module.exports = async function ({hook, url, options},extras) {
 
 		console.info(blue("• "), "Connecting to Database...");
 
-		const db = mongoose.createConnection(url, options, (err) => {
-			if (err) return console.error(err, `${red("• ")}Failed to connect to Database!`);
+		const mongooseMajor = parseInt(mongoose.version.split('.')[0], 10);
+		const cleanedOptions = { ...(options || {}) };
+		if (mongooseMajor >= 6) {
+			// Mongoose 6+ removed these flags entirely; passing them throws.
+			["useNewUrlParser", "useUnifiedTopology", "useFindAndModify", "useCreateIndex"].forEach(
+				(k) => delete cleanedOptions[k]
+			);
+		} else {
+			// Mongoose 5.x: these flags suppress deprecation warnings from the
+			// legacy MongoDB driver and must be set explicitly.
+			cleanedOptions.useNewUrlParser    = true;
+			cleanedOptions.useUnifiedTopology = true;
+			cleanedOptions.useCreateIndex     = true;
+			cleanedOptions.useFindAndModify   = false;
+			mongoose.set('useCreateIndex', true);
+			mongoose.set('useFindAndModify', false);
+		}
+
+		const db = mongoose.createConnection(url, cleanedOptions, (err) => {
+			if (err) return console.error(err, `${red("• ")}Failed to connect to Database ${url}!`);
 			return console.log(green("• "), "Connection OK");
 		});
 
 		const Schemas = require('./schemas.js')(db);
 		const Virtuals = require('./virtuals.js')(Schemas);
-
-
-		mongoose.set("useFindAndModify", false);
-		mongoose.set("useCreateIndex", true);
 
 		db.on("error", console.error.bind(console, red("• ") + red("DB connection error:")));
 

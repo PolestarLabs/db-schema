@@ -1,22 +1,47 @@
 {
-  "name": "@polestar/database_schema",
-  "version": "0.18.6",
+  "name": "@polestarlabs/database_schema",
+  "version": "0.20.12",
   "description": "Database Schemas & Functions",
   "main": "index.js",
   "types": "index.d.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./types": {
+      "types": "./types/index.d.ts"
+    },
+    "./constants": {
+      "types": "./constants/index.d.ts",
+      "default": "./constants/index.js"
+    }
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://gitlab.com/PolestarLabs/database_schema.git"
+  "typesVersions": {
+    "*": {
+      "types": [
+        "types/index.d.ts"
+      ],
+      "constants": [
+        "constants/index.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "test": "node check-structure.js",
+    "new": "./generate-schema.sh",
+    "prepare": "husky install"
+  },
+  "repository": "https://github.com/PolestarLabs/database_schema",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "author": "",
   "license": "UNLICENSED",
   "bugs": {
-    "url": "https://gitlab.com/PolestarLabs/database_schema/issues"
+    "url": "https://github.com/PolestarLabs/database_schema/issues"
   },
-  "homepage": "https://gitlab.com/PolestarLabs/database_schema#README",
+  "homepage": "https://github.com/PolestarLabs/database_schema#readme",
   "dependencies": {
     "bluebird": "^3.5.1",
     "mongoose": "^5.9.20",
@@ -25,6 +50,12 @@
   "devDependencies": {
     "@types/redis": "^2.8.28",
     "eris": "^0.15.0",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "husky": "^8.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm test"
+    }
   }
 }
